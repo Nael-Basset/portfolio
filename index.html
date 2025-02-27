@@ -6,6 +6,7 @@
     <title>Portfolio Créatif | Photographie</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollToPlugin.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -38,6 +39,7 @@
             background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANZSURBVGhD7ZpNSFRRFMfnjTNjM2bjlzRCRUSLiDAxIlpEi4hoERHRIiKiRdAiWkREtIiIaBERLSIiWkS0iIgWEdEiIqJFRESLIFr0/R/uHe+8vjfvTsybN0/+8ON5557z7n33fN19M1qIRCKRSOT/YbQ9v2rU2kOYe25zLT3L7flrY3ZTaG17LkVn98lYe+7rWHtua6UtR4p5h7JUabfLSGt2geLfKdCWVU7YnK0Ybc2cxPgFir9i4wXPWk3KNgRx91tNnDkYDWaXjDRnVo+0ZHqpjIECW4daMl/RPBpqzhwfbMrc5Znnps4UNJ4dGW7JDFDkrpHmzFb1dBwYX01/S2bXUHNmlal1wUzuX/MN3rWmTg+KB6cD/zb1/4OBoaZzG9Ge1P4z2pT5QJHL1a0OuaHGM2vwPLdhuPHMBnWrQ24QN0Vuu7rVQT8kvRHLc15+cRg+zTDZoO77+HSKi/SDuhWHwjrInzD9I01nV6lbNvW3ppeTPyyUoV7PbsiM7B9oVLdi4J+m0Hq+tqtbNsRBnL+zZX6/utVRs+6Z4ftMGGDaJb/XEPNL3eqQm/QcReaZwlvVrYjB+tOr8X9S/6th/3799kMUmJa7i9ykWKFudVBkD7kvKTBtP1WjDad34bti6oKYe1z5sRiqP70Ln0nB/Qp+e1U0GRb/6nDDqT34nre51UPBe4brf6xT12SIPcIXrEIf1DUNR6fEhgYXa07IbFnXnbyd2hHElnV3GG/6jS7zxLrTZs1JIZ1uOrNfzYrBv4s8zyiyi7NiHY1uN2d2k++QZ6Hm5DbytJAj6lZHQ92p7eQJznGBMY4J59dZWKb41qDgZrzBGt3Vm9CrTzEOWQPsJcLzj9tOI2j0RnLe2FzLhTQn41AcLcTeYB9jfzbF71g89aZQY8f3Bls0+k79KIZ/BWM/frtZ1nMvmRPvXfQGM5wTmYO6YxqYfE3Mdht3OXoTnWpWDH71jI9q3OXk9RzFHvENZjjrJ9QtGbxn2KOtGndZyPV56p2m4lrcZXsH/HvcZTsrxP4h9gLfjLtcXKPHXSamkTxrPO6ydfcMedt0l4lxnzgGFhXucO5K4C7bXpK4y+54l7vnXc7zC1e5O97lSCQSiUQWOaXSX9KxQEURBi2uAAAAAElFTkSuQmCC');
             opacity: 0.05;
             z-index: -1;
+            background-size: 200% 200%;
         }
         
         .container {
@@ -163,10 +165,14 @@
             transform: translateY(50px);
             opacity: 0;
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: perspective(1000px);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .gallery-item:hover {
             transform: translateY(-10px) scale(1.02);
+            transform: perspective(1000px) translateY(-10px) rotateX(2deg);
+            z-index: 2;
         }
         
         .gallery-item img {
@@ -175,10 +181,13 @@
             object-fit: cover;
             display: block;
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+                    filter 0.4s ease;
         }
         
         .gallery-item:hover img {
             transform: scale(1.1);
+            filter: brightness(1.1);
         }
         
         .overlay {
@@ -190,6 +199,10 @@
             padding: 20px;
             transform: translateY(100%);
             transition: transform 0.3s ease;
+            transform: translateY(80px);
+            opacity: 0.8;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.4s ease;
         }
         
         .gallery-item:hover .overlay {
@@ -220,6 +233,7 @@
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             z-index: 1;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .about-section {
@@ -324,6 +338,10 @@
             transform: translateY(-5px);
         }
         
+        .social-btn svg {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
         .copyright {
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.7);
@@ -356,10 +374,13 @@
             cursor: pointer;
             padding: 5px 10px;
             transition: color 0.3s;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                   color 0.3s ease;
         }
         
         #adminBtn:hover {
             color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.2);
         }
         
         /* Modal styles */
@@ -426,6 +447,10 @@
             font-size: 14px;
             margin-top: 10px;
             text-align: center;
+        }
+
+        .title span {
+            transform: translateY(50px);
         }
     </style>
 </head>
@@ -774,6 +799,217 @@
                     passwordError.textContent = 'Mot de passe incorrect';
                 }
             });
+
+            // NOUVELLES ANIMATIONS
+            
+            // 1. Animation de scroll fluide
+            document.querySelector('.scroll-down').addEventListener('click', () => {
+                gsap.to(window, {
+                    duration: 1.2, 
+                    scrollTo: ".gallery-container",
+                    ease: "power3.inOut"
+                });
+            });
+            
+            // 2. Animation du fond avec effet parallaxe
+            gsap.to(".background-circle", {
+                scrollTrigger: {
+                    trigger: "body",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 1
+                },
+                y: (i, target) => -100 - window.innerHeight * 0.15,
+                ease: "none"
+            });
+            
+            // 3. Animation des items de la galerie au survol - effet amélioré
+            document.querySelectorAll('.gallery-item').forEach((item) => {
+                item.addEventListener('mouseenter', () => {
+                    gsap.to(item.querySelector('img'), {
+                        scale: 1.1,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                    gsap.to(item.querySelector('.overlay'), {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                    gsap.to(item.querySelector('.category'), {
+                        scale: 1.1,
+                        y: -5,
+                        duration: 0.3,
+                        ease: "back.out(1.7)"
+                    });
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    gsap.to(item.querySelector('img'), {
+                        scale: 1,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                    gsap.to(item.querySelector('.overlay'), {
+                        y: 80,
+                        opacity: 0.8,
+                        duration: 0.4,
+                        ease: "power2.in"
+                    });
+                    gsap.to(item.querySelector('.category'), {
+                        scale: 1,
+                        y: 0,
+                        duration: 0.3,
+                        ease: "back.out"
+                    });
+                });
+            });
+            
+            // 4. Effet de texte animé pour le titre principal
+            const title = document.querySelector('.title');
+            const text = title.textContent;
+            title.textContent = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                const span = document.createElement('span');
+                span.textContent = text[i];
+                span.style.display = 'inline-block';
+                span.style.opacity = 0;
+                title.appendChild(span);
+                
+                gsap.to(span, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: 0.05 * i,
+                    ease: "back.out"
+                });
+            }
+            
+            // 5. Animation du bouton de contact
+            const contactBtn = document.querySelector('.contact-btn');
+            contactBtn.addEventListener('mouseenter', () => {
+                gsap.to(contactBtn, {
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: "power1.out",
+                    boxShadow: "0 7px 20px rgba(255, 51, 102, 0.6)"
+                });
+            });
+            
+            contactBtn.addEventListener('mouseleave', () => {
+                gsap.to(contactBtn, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power1.in",
+                    boxShadow: "0 4px 15px rgba(255, 51, 102, 0.3)"
+                });
+            });
+            
+            // 6. Animation des icônes de réseaux sociaux 
+            document.querySelectorAll('.social-btn').forEach((btn, index) => {
+                gsap.fromTo(btn, 
+                    { opacity: 0, y: 20 }, 
+                    { 
+                        opacity: 1, 
+                        y: 0, 
+                        duration: 0.5, 
+                        delay: 0.1 * index,
+                        ease: "back.out(1.7)",
+                        scrollTrigger: {
+                            trigger: '.social-links',
+                            start: "top 90%"
+                        }
+                    }
+                );
+                
+                btn.addEventListener('mouseenter', () => {
+                    gsap.to(btn, {
+                        y: -8,
+                        rotation: 5,
+                        duration: 0.3,
+                        ease: "back.out(2)"
+                    });
+                    gsap.to(btn.querySelector('svg'), {
+                        scale: 1.2,
+                        rotation: -5,
+                        duration: 0.4,
+                        ease: "power1.out"
+                    });
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        y: 0,
+                        rotation: 0,
+                        duration: 0.3,
+                        ease: "power3.out"
+                    });
+                    gsap.to(btn.querySelector('svg'), {
+                        scale: 1,
+                        rotation: 0,
+                        duration: 0.3,
+                        ease: "power3.out"
+                    });
+                });
+            });
+            
+            // 7. Animation du modal d'administration
+            const adminModal = document.getElementById('adminModal');
+            const adminModalContent = document.querySelector('.admin-modal-content');
+            
+            document.getElementById('adminBtn').addEventListener('click', () => {
+                adminModal.style.display = 'flex';
+                gsap.fromTo(adminModal, 
+                    { opacity: 0 }, 
+                    { opacity: 1, duration: 0.3, ease: "power2.in" }
+                );
+                gsap.fromTo(adminModalContent, 
+                    { opacity: 0, y: 50, scale: 0.9 }, 
+                    { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+                );
+            });
+            
+            document.querySelector('.close-modal').addEventListener('click', () => {
+                gsap.to(adminModalContent, {
+                    opacity: 0, 
+                    y: 30, 
+                    scale: 0.9, 
+                    duration: 0.3, 
+                    ease: "power2.in",
+                    onComplete: () => { adminModal.style.display = 'none'; }
+                });
+                gsap.to(adminModal, { opacity: 0, duration: 0.3, ease: "power2.in" });
+            });
+            
+            // 8. Animation des transitions entre sections avec effet de parallaxe
+            gsap.utils.toArray("section").forEach((section, i) => {
+                gsap.fromTo(section, 
+                    { backgroundPositionY: '-50px' }, 
+                    {
+                        backgroundPositionY: '50px',
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
+                        }
+                    }
+                );
+            });
+            
+            // 9. Animation du fond "noise" pour un effet de mouvement subtil
+            gsap.to(".noise-bg", {
+                backgroundPosition: '100% 100%',
+                duration: 20,
+                repeat: -1,
+                ease: "linear"
+            });
+            
+            // Fin des nouvelles animations
+            
         });
     </script>
 </body>
