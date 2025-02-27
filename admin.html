@@ -686,66 +686,98 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize photos data structure if it doesn't exist
-            if (!localStorage.getItem('portfolioPhotos')) {
-                // Default photos data
-                const defaultPhotos = [
-                    {
-                        id: 1,
-                        title: "Sérénité sauvage",
-                        description: "La beauté intacte des grands espaces",
-                        category: "Nature",
-                        imageUrl: "/api/placeholder/600/400"
-                    },
-                    {
-                        id: 2,
-                        title: "Regard profond",
-                        description: "L'émotion à l'état pur",
-                        category: "Portrait",
-                        imageUrl: "/api/placeholder/600/400"
-                    },
-                    {
-                        id: 3,
-                        title: "Jungle de béton",
-                        description: "L'architecture moderne sous un nouveau jour",
-                        category: "Urbain",
-                        imageUrl: "/api/placeholder/600/400"
-                    },
-                    {
-                        id: 4,
-                        title: "Horizons lointains",
-                        description: "Aventures et découvertes au bout du monde",
-                        category: "Voyage",
-                        imageUrl: "/api/placeholder/600/400"
-                    },
-                    {
-                        id: 5,
-                        title: "Univers miniature",
-                        description: "Explorer l'infiniment petit",
-                        category: "Macro",
-                        imageUrl: "/api/placeholder/600/400"
-                    },
-                    {
-                        id: 6,
-                        title: "Visions chromatiques",
-                        description: "Quand la réalité devient art",
-                        category: "Abstrait",
-                        imageUrl: "/api/placeholder/600/400"
+            let photosData = [];
+            
+            // Fonction pour charger les photos depuis le fichier JSON
+            async function loadPhotosFromFile() {
+                try {
+                    const response = await fetch('/data/photos.json');
+                    if (!response.ok) {
+                        throw new Error('Impossible de charger les données');
                     }
-                ];
-                localStorage.setItem('portfolioPhotos', JSON.stringify(defaultPhotos));
+                    photosData = await response.json();
+                    renderGallery();
+                } catch (error) {
+                    console.error('Erreur lors du chargement des photos:', error);
+                    
+                    // Si le fichier n'est pas accessible, utiliser le localStorage comme fallback
+                    if (localStorage.getItem('portfolioPhotos')) {
+                        photosData = JSON.parse(localStorage.getItem('portfolioPhotos'));
+                    } else {
+                        // Données par défaut
+                        photosData = [
+                            {
+                                id: 1,
+                                title: "Sérénité sauvage",
+                                description: "La beauté intacte des grands espaces",
+                                category: "Nature",
+                                imageUrl: "https://picsum.photos/600/400?random=1"
+                            },
+                            // Ajoutez les autres photos par défaut ici
+                        ];
+                    }
+                    renderGallery();
+                }
             }
-
-            // Function to load photos from local storage
-            function loadPhotos() {
-                return JSON.parse(localStorage.getItem('portfolioPhotos')) || [];
-            }
-
-            // Function to save photos to local storage
+            
+            // Fonction pour sauvegarder les changements
             function savePhotos(photos) {
+                // Sauvegarde temporaire dans localStorage
                 localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
+                photosData = photos;
+                
+                // Création d'un élément pour exporter les données
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photos, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", "photos.json");
+                downloadAnchor.style.display = "none";
+                document.body.appendChild(downloadAnchor);
+                
+                // Notification à l'utilisateur
+                alert('Les modifications ont été enregistrées temporairement. Cliquez sur "Exporter les données" pour télécharger le fichier JSON mis à jour.');
+                
+                // Afficher un bouton pour exporter les données
+                showExportButton();
             }
+            
+            // Fonction pour afficher un bouton d'exportation
+            function showExportButton() {
+                // Vérifie si le bouton existe déjà
+                if (!document.getElementById('exportDataBtn')) {
+                    const exportBtn = document.createElement('button');
+                    exportBtn.id = 'exportDataBtn';
+                    exportBtn.className = 'btn btn-primary';
+                    exportBtn.textContent = 'Exporter les données';
+                    exportBtn.style.position = 'fixed';
+                    exportBtn.style.top = '10px';
+                    exportBtn.style.right = '10px';
+                    exportBtn.style.zIndex = '1000';
+                    
+                    exportBtn.addEventListener('click', () => {
+                        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photosData, null, 2));
+                        const downloadAnchor = document.createElement('a');
+                        downloadAnchor.setAttribute("href", dataStr);
+                        downloadAnchor.setAttribute("download", "photos.json");
+                        document.body.appendChild(downloadAnchor);
+                        downloadAnchor.click();
+                        document.body.removeChild(downloadAnchor);
+                    });
+                    
+                    document.body.appendChild(exportBtn);
+                }
+            }
+            
+            // Remplacer les fonctions loadPhotos et savePhotos existantes
+            function loadPhotos() {
+                return photosData;
+            }
+            
+            // Le reste du code reste identique, mais utilisera les nouvelles fonctions
 
+            // Initialisation : charger les photos depuis le fichier
+            loadPhotosFromFile();
+            
             // Function to render the gallery
             function renderGallery() {
                 const photos = loadPhotos();

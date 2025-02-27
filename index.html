@@ -664,16 +664,35 @@
                 ease: "power3.out"
             });
 
-            // Load photos from localStorage if available
-            if (localStorage.getItem('portfolioPhotos')) {
-                const photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
+            // Charger les photos depuis le fichier JSON
+            async function loadPhotosFromFile() {
+                try {
+                    const response = await fetch('/data/photos.json');
+                    if (!response.ok) {
+                        throw new Error('Impossible de charger les données');
+                    }
+                    const photos = await response.json();
+                    updateGallery(photos);
+                } catch (error) {
+                    console.error('Erreur lors du chargement des photos:', error);
+                    
+                    // Fallback vers localStorage si le fichier n'est pas accessible
+                    if (localStorage.getItem('portfolioPhotos')) {
+                        const photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
+                        updateGallery(photos);
+                    }
+                }
+            }
+            
+            // Fonction pour mettre à jour la galerie avec les photos
+            function updateGallery(photos) {
                 const galleryContainer = document.querySelector('.gallery');
                 
                 if (galleryContainer && photos.length > 0) {
-                    galleryContainer.innerHTML = ''; // Clear existing gallery
+                    galleryContainer.innerHTML = ''; // Vider la galerie actuelle
                     
                     photos.forEach((photo, index) => {
-                        // Vérifier si l'URL de l'image est une URL data ou un placeholder manquant
+                        // Vérifier si l'URL de l'image est valide
                         let imgSrc = photo.imageUrl;
                         if (imgSrc === "/api/placeholder/600/400" || !imgSrc) {
                             imgSrc = `https://picsum.photos/600/400?random=${index+1}`;
@@ -682,11 +701,11 @@
                         const galleryItem = document.createElement('div');
                         galleryItem.className = 'gallery-item';
                         galleryItem.innerHTML = `
-                            <span class="category">${photo.category}</span>
-                            <img src="${imgSrc}" alt="${photo.title}">
+                            <span class="category">${photo.category || 'Sans catégorie'}</span>
+                            <img src="${imgSrc}" alt="${photo.title || ''}">
                             <div class="overlay">
-                                <h3>${photo.title}</h3>
-                                <p>${photo.description}</p>
+                                <h3>${photo.title || 'Sans titre'}</h3>
+                                <p>${photo.description || ''}</p>
                             </div>
                         `;
                         galleryContainer.appendChild(galleryItem);
@@ -709,6 +728,9 @@
                     });
                 }
             }
+            
+            // Charger les photos au chargement de la page
+            loadPhotosFromFile();
  
             // Admin access functionality
             const adminBtn = document.getElementById('adminBtn');
