@@ -1003,18 +1003,16 @@
                 );
             });
             
-            // 9. Animation du fond "noise" pour un effet de mouvement subtil
-            gsap.to(".noise-bg", {
-                backgroundPosition: '100% 100%',
-                duration: 20,
-                repeat: -1,
-                ease: "linear"
-            });
-            
-            // Fin des nouvelles animations
-            
+        // 9. Animation du fond "noise" pour un effet de mouvement subtil
+        gsap.to(".noise-bg", {
+            backgroundPosition: '100% 100%',
+            duration: 20,
+            repeat: -1,
+            ease: "linear"
         });
-
+        
+        // Fin des nouvelles animations
+        
         // Appliquer les animations aux nouveaux éléments
         const newGalleryItems = document.querySelectorAll('.gallery-item');
         newGalleryItems.forEach((item, index) => {

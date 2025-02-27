@@ -683,6 +683,38 @@
             </div>
         </div>
     </div>
+
+    <!-- GitHub Settings Dialog -->
+    <div class="confirm-dialog" id="githubSettingsDialog">
+        <div class="dialog-content">
+            <h3>Paramètres GitHub</h3>
+            <p>Configurez ces paramètres pour pouvoir enregistrer les modifications directement dans votre dépôt GitHub.</p>
+            <form id="githubSettingsForm">
+                <div class="form-group">
+                    <label for="githubToken">Token d'accès personnel GitHub</label>
+                    <input type="password" id="githubToken" placeholder="ghp_votre_token">
+                    <small>Ce token doit avoir les permissions 'repo' pour modifier les fichiers.</small>
+                </div>
+                <div class="form-group">
+                    <label for="githubRepo">Nom du dépôt</label>
+                    <input type="text" id="githubRepo" placeholder="username/repository">
+                    <small>Par exemple: votre-nom/portfolio</small>
+                </div>
+                <div class="form-group">
+                    <label for="githubBranch">Branche</label>
+                    <input type="text" id="githubBranch" value="main">
+                </div>
+                <div class="form-group">
+                    <label for="githubPath">Chemin du fichier JSON</label>
+                    <input type="text" id="githubPath" value="data/photos.json">
+                </div>
+                <div class="dialog-actions">
+                    <button type="submit" class="btn">Enregistrer</button>
+                    <button type="button" class="btn btn-danger" id="cancelGithubSettings">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -721,24 +753,111 @@
             }
             
             // Fonction pour sauvegarder les changements
-            function savePhotos(photos) {
+            async function savePhotos(photos) {
                 // Sauvegarde temporaire dans localStorage
                 localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
                 photosData = photos;
                 
-                // Création d'un élément pour exporter les données
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photos, null, 2));
-                const downloadAnchor = document.createElement('a');
-                downloadAnchor.setAttribute("href", dataStr);
-                downloadAnchor.setAttribute("download", "photos.json");
-                downloadAnchor.style.display = "none";
-                document.body.appendChild(downloadAnchor);
+                // Tenter de sauvegarder sur GitHub si les paramètres sont disponibles
+                const githubToken = localStorage.getItem('githubToken');
+                const githubRepo = localStorage.getItem('githubRepo');
+                const githubBranch = localStorage.getItem('githubBranch') || 'main';
+                const githubPath = localStorage.getItem('githubPath') || 'data/photos.json';
                 
-                // Notification à l'utilisateur
-                alert('Les modifications ont été enregistrées temporairement. Cliquez sur "Exporter les données" pour télécharger le fichier JSON mis à jour.');
-                
-                // Afficher un bouton pour exporter les données
-                showExportButton();
+                if (githubToken && githubRepo) {
+                    try {
+                        // Afficher un indicateur de chargement
+                        const loadingMsg = document.createElement('div');
+                        loadingMsg.id = 'github-loading';
+                        loadingMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.8);color:white;padding:10px 20px;border-radius:5px;z-index:1001;';
+                        loadingMsg.textContent = 'Sauvegarde en cours sur GitHub...';
+                        document.body.appendChild(loadingMsg);
+                        
+                        // 1. Obtenir le SHA du fichier actuel
+                        const repoInfoResponse = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${githubPath}?ref=${githubBranch}`, {
+                            headers: {
+                                'Authorization': `Bearer ${githubToken}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        });
+                        
+                        if (!repoInfoResponse.ok && repoInfoResponse.status !== 404) {
+                            throw new Error(`Erreur GitHub: ${repoInfoResponse.status}`);
+                        }
+                        
+                        let sha = '';
+                        if (repoInfoResponse.ok) {
+                            const fileInfo = await repoInfoResponse.json();
+                            sha = fileInfo.sha;
+                        }
+                        
+                        // 2. Encoder le contenu en Base64
+                        const content = JSON.stringify(photos, null, 2);
+                        const encodedContent = btoa(unescape(encodeURIComponent(content)));
+                        
+                        // 3. Créer ou mettre à jour le fichier
+                        const updateResponse = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${githubPath}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${githubToken}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                message: 'Mise à jour des photos depuis l\'interface d\'administration',
+                                content: encodedContent,
+                                sha: sha || undefined,
+                                branch: githubBranch
+                            })
+                        });
+                        
+                        if (!updateResponse.ok) {
+                            const errorData = await updateResponse.json();
+                            throw new Error(`Erreur de mise à jour GitHub: ${errorData.message}`);
+                        }
+                        
+                        // Suppression de l'indicateur de chargement
+                        document.body.removeChild(loadingMsg);
+                        
+                        // Message de succès
+                        const successMsg = document.createElement('div');
+                        successMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:rgba(46,204,113,0.9);color:white;padding:10px 20px;border-radius:5px;z-index:1001;';
+                        successMsg.textContent = 'Sauvegarde réussie sur GitHub!';
+                        document.body.appendChild(successMsg);
+                        
+                        // Supprimer le message après 3 secondes
+                        setTimeout(() => {
+                            document.body.removeChild(successMsg);
+                        }, 3000);
+                        
+                        return true;
+                    } catch (error) {
+                        console.error('Erreur lors de la sauvegarde sur GitHub:', error);
+                        
+                        // Supprimer l'indicateur de chargement s'il existe
+                        const loadingMsg = document.getElementById('github-loading');
+                        if (loadingMsg) document.body.removeChild(loadingMsg);
+                        
+                        // Afficher l'erreur
+                        const errorMsg = document.createElement('div');
+                        errorMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:rgba(231,76,60,0.9);color:white;padding:10px 20px;border-radius:5px;z-index:1001;';
+                        errorMsg.textContent = `Erreur: ${error.message}. Export manuel requis.`;
+                        document.body.appendChild(errorMsg);
+                        
+                        // Supprimer le message après 5 secondes
+                        setTimeout(() => {
+                            document.body.removeChild(errorMsg);
+                        }, 5000);
+                        
+                        // Afficher le bouton d'export comme solution de secours
+                        showExportButton();
+                        return false;
+                    }
+                } else {
+                    // Si les paramètres GitHub ne sont pas configurés, afficher le bouton d'exportation
+                    showExportButton();
+                    return false;
+                }
             }
             
             // Fonction pour afficher un bouton d'exportation
@@ -775,9 +894,37 @@
             
             // Le reste du code reste identique, mais utilisera les nouvelles fonctions
 
-            // Initialisation : charger les photos depuis le fichier
+            // Ajouter ce code juste avant l'initialisation loadPhotosFromFile()
+
+            // GitHub settings event handlers
+            const githubSettingsDialog = document.getElementById('githubSettingsDialog');
+            const githubSettingsForm = document.getElementById('githubSettingsForm');
+            const cancelGithubSettings = document.getElementById('cancelGithubSettings');
+
+            githubSettingsForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Sauvegarder les paramètres
+                localStorage.setItem('githubToken', document.getElementById('githubToken').value);
+                localStorage.setItem('githubRepo', document.getElementById('githubRepo').value);
+                localStorage.setItem('githubBranch', document.getElementById('githubBranch').value);
+                localStorage.setItem('githubPath', document.getElementById('githubPath').value);
+                
+                // Fermer le dialogue
+                githubSettingsDialog.classList.remove('active');
+                
+                // Message de confirmation
+                alert('Paramètres GitHub sauvegardés ! Les modifications seront maintenant enregistrées directement dans votre dépôt GitHub.');
+            });
+
+            cancelGithubSettings.addEventListener('click', () => {
+                githubSettingsDialog.classList.remove('active');
+            });
+
+            // Initialisation : charger les photos depuis le fichier et ajouter le bouton GitHub
             loadPhotosFromFile();
-            
+            addGitHubConfigButton();
+
             // Function to render the gallery
             function renderGallery() {
                 const photos = loadPhotos();
