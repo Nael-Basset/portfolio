@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration | Portfolio Photographie</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #ff3366;
+            --color-secondary: #7d3c98;
+            --color-accent: #3498db;
+            --color-dark: #222;
+            --color-light: #f8f9fa;
+            --color-success: #2ecc71;
+            --color-danger: #e74c3c;
+            --color-warning: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #111, #333);
+            color: var(--color-light);
+            min-height: 100vh;
+        }
+        
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANZSURBVGhD7ZpNSFRRFMfnjTNjM2bjlzRCRUSLiDAxIlpEi4hoERHRIiKiRdAiWkREtIiIaBERLSIiWkS0iIgWEdEiIqJFRESLIFr0/R/uHe+8vjfvTsybN0/+8ON5557z7n33fN19M1qIRCKRSOT/YbQ9v2rU2kOYe25zLT3L7flrY3ZTaG17LkVn98lYe+7rWHtua6UtR4p5h7JUabfLSGt2geLfKdCWVU7YnK0Ybc2cxPgFir9i4wXPWk3KNgRx91tNnDkYDWaXjDRnVo+0ZHqpjIECW4daMl/RPBpqzhwfbMrc5Znnps4UNJ4dGW7JDFDkrpHmzFb1dBwYX01/S2bXUHNmlal1wUzuX/MN3rWmTg+KB6cD/zb1/4OBoaZzG9Ge1P4z2pT5QJHL1a0OuaHGM2vwPLdhuPHMBnWrQ24QN0Vuu7rVQT8kvRHLc15+cRg+zTDZoO77+HSKi/SDuhWHwjrInzD9I01nV6lbNvW3ppeTPyyUoV7PbsiM7B9oVLdi4J+m0Hq+tqtbNsRBnL+zZX6/utVRs+6Z4ftMGGDaJb/XEPNL3eqQm/QcReaZwlvVrYjB+tOr8X9S/6th/3799kMUmJa7i9ykWKFudVBkD7kvKTBtP1WjDad34bti6oKYe1z5sRiqP70Ln0nB/Qp+e1U0GRb/6nDDqT34nre51UPBe4brf6xT12SIPcIXrEIf1DUNR6fEhgYXa07IbFnXnbyd2hHElnV3GG/6jS7zxLrTZs1JIZ1uOrNfzYrBv4s8zyiyi7NiHY1uN2d2k++QZ6Hm5DbytJAj6lZHQ92p7eQJznGBMY4J59dZWKb41qDgZrzBGt3Vm9CrTzEOWQPsJcLzj9tOI2j0RnLe2FzLhTQn41AcLcTeYB9jfzbF71g89aZQY8f3Bls0+k79KIZ/BWM/frtZ1nMvmRPvXfQGM5wTmYO6YxqYfE3Mdht3OXoTnWpWDH71jI9q3OXk9RzFHvENZjjrJ9QtGbxn2KOtGndZyPV56p2m4lrcZXsH/HvcZTsrxP4h9gLfjLtcXKPHXSamkTxrPO6ydfcMedt0l4lxnzgGFhXucO5K4C7bXpK4y+54l7vnXc7zC1e5O97lSCQSiUQWOaXSX9KxQEURBi2uAAAAAElFTkSuQmCC');
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 51, 102, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 7px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background-color: rgba(0,0,0,0.3);
+            border: none;
+            color: var(--color-light);
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        
+        .item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 15px;
+        }
+        
+        .item-title {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+        }
+        
+        .item-category {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: white;
+            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .item-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background-color: var(--color-primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--color-light);
+            border-radius: 4px;
+        }
+        
+        .upload-container {
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .upload-container:hover {
+            border-color: var(--color-primary);
+            background-color: rgba(255,255,255,0.05);
+        }
+        
+        .upload-container svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .upload-container p {
+            margin: 0;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .preview-container {
+            display: none;
+            margin-bottom: 20px;
+        }
+        
+        .preview-container.active {
+            display: block;
+        }
+        
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.5);
+            color: #2ecc71;
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--color-primary);
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .category-stats {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .category-bar {
+            height: 30px;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .category-progress {
+            height: 100%;
+            border-radius: 15px;
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+        }
+        
+        .category-info {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .confirm-dialog.active {
+            display: flex;
+        }
+        
+        .dialog-content {
+            background-color: var(--color-dark);
+            border-radius: 8px;
+            padding: 30px;
+            width: 400px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        
+        .dialog-content h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .dialog-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-bg"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Administration</h1>
+            <div>
+                <a href="nael.html" class="btn">Retour au site</a>
+                <button id="logoutBtn" class="btn btn-danger">Déconnexion</button>
+            </div>
+        </header>
+        
+        <div class="admin-tabs">
+            <button class="tab-btn active" data-tab="photos">Photos</button>
+            <button class="tab-btn" data-tab="add-photo">Ajouter une photo</button>
+            <button class="tab-btn" data-tab="stats">Statistiques</button>
+        </div>
+        
+        <!-- Photos Tab -->
+        <div id="photos" class="tab-content active">
+            <h2>Gérer les photos</h2>
+            <p>Cliquez sur les icônes pour modifier ou supprimer les photos.</p>
+            
+            <div class="gallery-grid">
+                <!-- Item 1 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/600/400" alt="Nature">
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" data-id="1">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="1">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="item-category">Nature</span>
+                        <h3 class="item-title">Sérénité sauvage</h3>
+                    </div>
+                </div>
+                
+                <!-- Item 2 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/600/400" alt="Portrait">
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" data-id="2">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="2">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="item-category">Portrait</span>
+                        <h3 class="item-title">Regard profond</h3>
+                    </div>
+                </div>
+                
+                <!-- Item 3 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/600/400" alt="Urbain">
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" data-id="3">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="3">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="item-category">Urbain</span>
+                        <h3 class="item-title">Jungle de béton</h3>
+                    </div>
+                </div>
+                
+                <!-- Item 4 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/600/400" alt="Voyage">
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" data-id="4">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="4">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="item-category">Voyage</span>
+                        <h3 class="item-title">Horizons lointains</h3>
+                    </div>
+                </div>
+                
+                <!-- Item 5 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/600/400" alt="Macro">
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" data-id="5">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="5">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="item-category">Macro</span>
+                        <h3 class="item-title">Univers miniature</h3>
+                    </div>
+                </div>
+                
+                <!-- Item 6 -->
+                <div class="gallery-item">
+                    <img src="/api/placeholder/600/400" alt="Abstrait">
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" data-id="6">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button class="action-btn delete-btn" data-id="6">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="item-overlay">
+                        <span class="item-category">Abstrait</span>
+                        <h3 class="item-title">Visions chromatiques</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add Photo Tab -->
+        <div id="add-photo" class="tab-content">
+            <h2>Ajouter une photo</h2>
+            <p>Complétez le formulaire ci-dessous pour ajouter une nouvelle photo à la galerie.</p>
+            
+            <div class="status-message success" style="display: none;">
+                Photo ajoutée avec succès !
+            </div>
+            
+            <form id="addPhotoForm">
+                <div class="upload-container" id="uploadArea">
+                    <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <p>Glissez et déposez une image ou cliquez pour sélectionner</p>
+                </div>
+                
+                <div class="preview-container" id="previewContainer">
+                    <img src="" alt="Aperçu de l'image" class="image-preview" id="imagePreview">
+                </div>
+                
+                <div class="form-group">
+                    <label for="photoTitle">Titre de la photo</label>
+                    <input type="text" id="photoTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="photoDescription">Description</label>
+                    <textarea id="photoDescription" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="photoCategory">Catégorie</label>
+                    <select id="photoCategory" required>
+                        <option value="">Sélectionner une catégorie</option>
+                        <option value="Nature">Nature</option>
+                        <option value="Portrait">Portrait</option>
+                        <option value="Urbain">Urbain</option>
+                        <option value="Voyage">Voyage</option>
+                        <option value="Macro">Macro</option>
+                        <option value="Abstrait">Abstrait</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Ajouter à la galerie</button>
+            </form>
+        </div>
+        
+        <!-- Stats Tab -->
+        <div id="stats" class="tab-content">
+            <h2>Statistiques de la galerie</h2>
+            <p>Vue d'ensemble de votre contenu et des performances.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Photos</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label">Catégories</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">152</div>
+                    <div class="stat-label">Vues</div>
+                </div>
+            </div>
+            
+            <div class="category-stats">
+                <h3>Photos par catégorie</h3>
+                
+                <div class="category-bar">
+                    <div class="category-progress" style="width: 16.7%"></div>
+                    <div class="category-info">
+                        <span>Nature</span>
+                        <span>1/6</span>
+                    </div>
+                </div>
+                
+                <div class="category-bar">
+                    <div class="category-progress" style="width: 16.7%"></div>
+                    <div class="category-info">
+                        <span>Portrait</span>
+                        <span>1/6</span>
+                    </div>
+                </div>
+                
+                <div class="category-bar">
+                    <div class="category-progress" style="width: 16.7%"></div>
+                    <div class="category-info">
+                        <span>Urbain</span>
+                        <span>1/6</span>
+                    </div>
+                </div>
+                
+                <div class="category-bar">
+                    <div class="category-progress" style="width: 16.7%"></div>
+                    <div class="category-info">
+                        <span>Voyage</span>
+                        <span>1/6</span>
+                    </div>
+                </div>
+                
+                <div class="category-bar">
+                    <div class="category-progress" style="width: 16.7%"></div>
+                    <div class="category-info">
+                        <span>Macro</span>
+                        <span>1/6</span>
+                    </div>
+                </div>
+                
+                <div class="category-bar">
+                    <div class="category-progress" style="width: 16.7%"></div>
+                    <div class="category-info">
+                        <span>Abstrait</span>
+                        <span>1/6</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Dialog -->
+    <div class="confirm-dialog" id="deleteDialog">
+        <div class="dialog-content">
+            <h3>Confirmation de suppression</h3>
+            <p>Êtes-vous sûr de vouloir supprimer cette photo ? Cette action est irréversible.</p>
+            <div class="dialog-actions">
+                <button class="btn btn-danger" id="confirmDelete">Supprimer</button>
+                <button class="btn" id="cancelDelete">Annuler</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize photos data structure if it doesn't exist
+            if (!localStorage.getItem('portfolioPhotos')) {
+                // Default photos data
+                const defaultPhotos = [
+                    {
+                        id: 1,
+                        title: "Sérénité sauvage",
+                        description: "La beauté intacte des grands espaces",
+                        category: "Nature",
+                        imageUrl: "/api/placeholder/600/400"
+                    },
+                    {
+                        id: 2,
+                        title: "Regard profond",
+                        description: "L'émotion à l'état pur",
+                        category: "Portrait",
+                        imageUrl: "/api/placeholder/600/400"
+                    },
+                    {
+                        id: 3,
+                        title: "Jungle de béton",
+                        description: "L'architecture moderne sous un nouveau jour",
+                        category: "Urbain",
+                        imageUrl: "/api/placeholder/600/400"
+                    },
+                    {
+                        id: 4,
+                        title: "Horizons lointains",
+                        description: "Aventures et découvertes au bout du monde",
+                        category: "Voyage",
+                        imageUrl: "/api/placeholder/600/400"
+                    },
+                    {
+                        id: 5,
+                        title: "Univers miniature",
+                        description: "Explorer l'infiniment petit",
+                        category: "Macro",
+                        imageUrl: "/api/placeholder/600/400"
+                    },
+                    {
+                        id: 6,
+                        title: "Visions chromatiques",
+                        description: "Quand la réalité devient art",
+                        category: "Abstrait",
+                        imageUrl: "/api/placeholder/600/400"
+                    }
+                ];
+                localStorage.setItem('portfolioPhotos', JSON.stringify(defaultPhotos));
+            }
+
+            // Function to load photos from local storage
+            function loadPhotos() {
+                return JSON.parse(localStorage.getItem('portfolioPhotos')) || [];
+            }
+
+            // Function to save photos to local storage
+            function savePhotos(photos) {
+                localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
+            }
+
+            // Function to render the gallery
+            function renderGallery() {
+                const photos = loadPhotos();
+                const galleryGrid = document.querySelector('.gallery-grid');
+                galleryGrid.innerHTML = ''; // Clear existing content
+                
+                photos.forEach(photo => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `
+                        <img src="${photo.imageUrl}" alt="${photo.title}">
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" data-id="${photo.id}">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button class="action-btn delete-btn" data-id="${photo.id}">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="item-overlay">
+                            <span class="item-category">${photo.category}</span>
+                            <h3 class="item-title">${photo.title}</h3>
+                        </div>
+                    `;
+                    galleryGrid.appendChild(item);
+                });
+
+                // Reattach event listeners after DOM updates
+                attachEventListeners();
+                updateStats();
+            }
+
+            // Function to update statistics
+            function updateStats() {
+                const photos = loadPhotos();
+                
+                // Update photo count
+                const photoCountElements = document.querySelectorAll('.stats-grid .stat-value');
+                if (photoCountElements.length > 0) {
+                    photoCountElements[0].textContent = photos.length;
+                }
+                
+                // Count unique categories
+                const uniqueCategories = [...new Set(photos.map(photo => photo.category))];
+                if (photoCountElements.length > 1) {
+                    photoCountElements[1].textContent = uniqueCategories.length;
+                }
+                
+                // Count categories
+                const categories = {};
+                photos.forEach(photo => {
+                    if (!categories[photo.category]) {
+                        categories[photo.category] = 1;
+                    } else {
+                        categories[photo.category]++;
+                    }
+                });
+                
+                // Update category stats
+                const categoryStats = document.querySelector('.category-stats');
+                if (categoryStats) {
+                    categoryStats.innerHTML = '<h3>Photos par catégorie</h3>';
+                    
+                    Object.keys(categories).forEach(category => {
+                        const percentage = (categories[category] / photos.length) * 100;
+                        const bar = document.createElement('div');
+                        bar.className = 'category-bar';
+                        bar.innerHTML = `
+                            <div class="category-progress" style="width: ${percentage}%"></div>
+                            <div class="category-info">
+                                <span>${category}</span>
+                                <span>${categories[category]}/${photos.length}</span>
+                            </div>
+                        `;
+                        categoryStats.appendChild(bar);
+                    });
+                }
+            }
+
+            // Function to attach event listeners to dynamically created elements
+            function attachEventListeners() {
+                // Delete buttons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        currentItemId = parseInt(btn.dataset.id);
+                        deleteDialog.classList.add('active');
+                    });
+                });
+
+                // Edit buttons
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const itemId = parseInt(btn.dataset.id);
+                        const photos = loadPhotos();
+                        const photo = photos.find(p => p.id === itemId);
+                        
+                        if (photo) {
+                            // Switch to edit tab
+                            tabBtns.forEach(btn => btn.classList.remove('active'));
+                            tabContents.forEach(content => content.classList.remove('active'));
+                            
+                            document.querySelector('[data-tab="add-photo"]').classList.add('active');
+                            document.getElementById('add-photo').classList.add('active');
+                            
+                            // Fill form with photo data
+                            document.getElementById('photoTitle').value = photo.title;
+                            document.getElementById('photoCategory').value = photo.category;
+                            document.getElementById('photoDescription').value = photo.description;
+                            
+                            // Show image preview
+                            const previewContainer = document.getElementById('previewContainer');
+                            const imagePreview = document.getElementById('imagePreview');
+                            imagePreview.src = photo.imageUrl;
+                            previewContainer.classList.add('active');
+                            
+                            // Set edit mode
+                            document.getElementById('addPhotoForm').dataset.mode = 'edit';
+                            document.getElementById('addPhotoForm').dataset.editId = itemId;
+                            
+                            // Change button text
+                            document.querySelector('#addPhotoForm button[type="submit"]').textContent = 'Mettre à jour';
+                        }
+                    });
+                });
+            }
+
+            // Tab switching functionality
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.dataset.tab;
+                    
+                    // Reset form if switching away from add-photo
+                    if (tab !== 'add-photo') {
+                        document.getElementById('addPhotoForm').reset();
+                        document.getElementById('addPhotoForm').dataset.mode = 'add';
+                        document.querySelector('#addPhotoForm button[type="submit"]').textContent = 'Ajouter à la galerie';
+                        previewContainer.classList.remove('active');
+                    }
+                    
+                    // Remove active class from all buttons and tabs
+                    tabBtns.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding tab
+                    btn.classList.add('active');
+                    document.getElementById(tab).classList.add('active');
+                });
+            });
+            
+            // Image upload handling
+            const uploadArea = document.getElementById('uploadArea');
+            const photoUpload = document.getElementById('photoUpload');
+            const previewContainer = document.getElementById('previewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            uploadArea.addEventListener('click', () => {
+                photoUpload.click();
+            });
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'var(--color-primary)';
+                uploadArea.style.backgroundColor = 'rgba(255,255,255,0.05)';
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.style.borderColor = 'rgba(255,255,255,0.3)';
+                uploadArea.style.backgroundColor = 'transparent';
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.style.borderColor = 'rgba(255,255,255,0.3)';
+                uploadArea.style.backgroundColor = 'transparent';
+                
+                if (e.dataTransfer.files.length) {
+                    photoUpload.files = e.dataTransfer.files;
+                    showImagePreview();
+                }
+            });
+            
+            photoUpload.addEventListener('change', showImagePreview);
+            
+            function showImagePreview() {
+                if (photoUpload.files && photoUpload.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        previewContainer.classList.add('active');
+                    };
+                    
+                    reader.readAsDataURL(photoUpload.files[0]);
+                }
+            }
+            
+            // Form submission
+            const addPhotoForm = document.getElementById('addPhotoForm');
+            const successMessage = document.querySelector('.status-message.success');
+            
+            addPhotoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const title = document.getElementById('photoTitle').value;
+                const description = document.getElementById('photoDescription').value;
+                const category = document.getElementById('photoCategory').value;
+                const photos = loadPhotos();
+                
+                // Check if we're editing or adding
+                const mode = addPhotoForm.dataset.mode || 'add';
+                
+                if (mode === 'edit') {
+                    // Update existing photo
+                    const editId = parseInt(addPhotoForm.dataset.editId);
+                    const photoIndex = photos.findIndex(p => p.id === editId);
+                    
+                    if (photoIndex !== -1) {
+                        // Keep the same image URL unless a new one was uploaded
+                        let imageUrl = photos[photoIndex].imageUrl;
+                        if (photoUpload.files && photoUpload.files[0]) {
+                            imageUrl = imagePreview.src; // Use the data URL from preview
+                        }
+                        
+                        photos[photoIndex] = {
+                            ...photos[photoIndex],
+                            title,
+                            description,
+                            category,
+                            imageUrl
+                        };
+                        
+                        successMessage.textContent = 'Photo mise à jour avec succès !';
+                    }
+                } else {
+                    // Add new photo
+                    // Use placeholder if no image was uploaded
+                    let imageUrl = "/api/placeholder/600/400";
+                    if (photoUpload.files && photoUpload.files[0]) {
+                        imageUrl = imagePreview.src; // Use the data URL from preview
+                    }
+                    
+                    // Generate a new ID - find max ID and add 1
+                    const maxId = photos.length > 0 ? Math.max(...photos.map(p => p.id)) : 0;
+                    const newId = maxId + 1;
+                    
+                    photos.push({
+                        id: newId,
+                        title,
+                        description,
+                        category,
+                        imageUrl
+                    });
+                    
+                    successMessage.textContent = 'Photo ajoutée avec succès !';
+                }
+                
+                // Save updates
+                savePhotos(photos);
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                
+                // Reset form after submission
+                setTimeout(() => {
+                    addPhotoForm.reset();
+                    addPhotoForm.dataset.mode = 'add';
+                    document.querySelector('#addPhotoForm button[type="submit"]').textContent = 'Ajouter à la galerie';
+                    previewContainer.classList.remove('active');
+                    successMessage.style.display = 'none';
+                    
+                    // Switch back to photos tab to show changes
+                    tabBtns.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.querySelector('[data-tab="photos"]').classList.add('active');
+                    document.getElementById('photos').classList.add('active');
+                    
+                    // Re-render gallery to show updated photos
+                    renderGallery();
+                }, 1500);
+            });
+            
+            // Delete confirmation dialog
+            const deleteDialog = document.getElementById('deleteDialog');
+            const confirmDeleteBtn = document.getElementById('confirmDelete');
+            const cancelDeleteBtn = document.getElementById('cancelDelete');
+            let currentItemId = null;
+            
+            confirmDeleteBtn.addEventListener('click', () => {
+                if (currentItemId) {
+                    const photos = loadPhotos();
+                    const updatedPhotos = photos.filter(photo => photo.id !== currentItemId);
+                    savePhotos(updatedPhotos);
+                    renderGallery();
+                }
+                
+                deleteDialog.classList.remove('active');
+                currentItemId = null;
+            });
+            
+            cancelDeleteBtn.addEventListener('click', () => {
+                deleteDialog.classList.remove('active');
+                currentItemId = null;
+            });
+            
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            logoutBtn.addEventListener('click', () => {
+                window.location.href = 'nael.html';
+            });
+
+            // Initialize the gallery and stats
+            renderGallery();
+        });
+    </script>
+</body>
+</html>
