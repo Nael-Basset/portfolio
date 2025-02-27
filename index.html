@@ -373,7 +373,6 @@
             font-size: 20px;
             cursor: pointer;
             padding: 5px 10px;
-            transition: color 0.3s;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
                    color 0.3s ease;
         }
@@ -763,25 +762,54 @@
             const closeModal = document.querySelector('.close-modal');
             const adminForm = document.getElementById('adminForm');
             const passwordError = document.getElementById('passwordError');
+            const adminModalContent = document.querySelector('.admin-modal-content');
             
-            // Open modal
+            // Open modal avec animation GSAP
             adminBtn.addEventListener('click', () => {
                 adminModal.style.display = 'flex';
+                gsap.fromTo(adminModal, 
+                    { opacity: 0 }, 
+                    { opacity: 1, duration: 0.3, ease: "power2.in" }
+                );
+                gsap.fromTo(adminModalContent, 
+                    { opacity: 0, y: 50, scale: 0.9 }, 
+                    { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+                );
             });
             
-            // Close modal
+            // Close modal avec animation GSAP
             closeModal.addEventListener('click', () => {
-                adminModal.style.display = 'none';
-                passwordError.textContent = '';
-                adminForm.reset();
+                gsap.to(adminModalContent, {
+                    opacity: 0, 
+                    y: 30, 
+                    scale: 0.9, 
+                    duration: 0.3, 
+                    ease: "power2.in",
+                    onComplete: () => { 
+                        adminModal.style.display = 'none';
+                        passwordError.textContent = '';
+                        adminForm.reset();
+                    }
+                });
+                gsap.to(adminModal, { opacity: 0, duration: 0.3, ease: "power2.in" });
             });
             
-            // Close when clicking outside
+            // Close when clicking outside avec animation GSAP
             window.addEventListener('click', (e) => {
                 if (e.target === adminModal) {
-                    adminModal.style.display = 'none';
-                    passwordError.textContent = '';
-                    adminForm.reset();
+                    gsap.to(adminModalContent, {
+                        opacity: 0, 
+                        y: 30, 
+                        scale: 0.9, 
+                        duration: 0.3, 
+                        ease: "power2.in",
+                        onComplete: () => { 
+                            adminModal.style.display = 'none';
+                            passwordError.textContent = '';
+                            adminForm.reset();
+                        }
+                    });
+                    gsap.to(adminModal, { opacity: 0, duration: 0.3, ease: "power2.in" });
                 }
             });
             
@@ -819,7 +847,7 @@
                     end: "bottom bottom",
                     scrub: 1
                 },
-                y: (i, target) => -100 - window.innerHeight * 0.15,
+                y: "-15vh", // Valeur fixe au lieu d'une fonction qui peut causer des erreurs
                 ease: "none"
             });
             
@@ -954,33 +982,8 @@
                     });
                 });
             });
-            
             // 7. Animation du modal d'administration
-            const adminModal = document.getElementById('adminModal');
-            const adminModalContent = document.querySelector('.admin-modal-content');
-            
-            document.getElementById('adminBtn').addEventListener('click', () => {
-                adminModal.style.display = 'flex';
-                gsap.fromTo(adminModal, 
-                    { opacity: 0 }, 
-                    { opacity: 1, duration: 0.3, ease: "power2.in" }
-                );
-                gsap.fromTo(adminModalContent, 
-                    { opacity: 0, y: 50, scale: 0.9 }, 
-                    { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
-                );
-            });
-            
-            document.querySelector('.close-modal').addEventListener('click', () => {
-                gsap.to(adminModalContent, {
-                    opacity: 0, 
-                    y: 30, 
-                    scale: 0.9, 
-                    duration: 0.3, 
-                    ease: "power2.in",
-                    onComplete: () => { adminModal.style.display = 'none'; }
-                });
-                gsap.to(adminModal, { opacity: 0, duration: 0.3, ease: "power2.in" });
+            // The modal animation is already handled above
             });
             
             // 8. Animation des transitions entre sections avec effet de parallaxe
@@ -1010,6 +1013,63 @@
             
             // Fin des nouvelles animations
             
+        });
+
+        // Appliquer les animations aux nouveaux éléments
+        const newGalleryItems = document.querySelectorAll('.gallery-item');
+        newGalleryItems.forEach((item, index) => {
+            gsap.to(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 90%"
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: index * 0.1,
+                ease: "power3.out"
+            });
+            
+            // Ajouter les gestionnaires d'événements pour les animations au survol
+            item.addEventListener('mouseenter', () => {
+                gsap.to(item.querySelector('img'), {
+                    scale: 1.1,
+                    duration: 0.6,
+                    ease: "power2.out"
+                });
+                gsap.to(item.querySelector('.overlay'), {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.4,
+                    ease: "power2.out"
+                });
+                gsap.to(item.querySelector('.category'), {
+                    scale: 1.1,
+                    y: -5,
+                    duration: 0.3,
+                    ease: "back.out(1.7)"
+                });
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                gsap.to(item.querySelector('img'), {
+                    scale: 1,
+                    duration: 0.6,
+                    ease: "power2.out"
+                });
+                gsap.to(item.querySelector('.overlay'), {
+                    y: 80,
+                    opacity: 0.8,
+                    duration: 0.4,
+                    ease: "power2.in"
+                });
+                gsap.to(item.querySelector('.category'), {
+                    scale: 1,
+                    y: 0,
+                    duration: 0.3,
+                    ease: "back.out"
+                });
+            });
         });
     </script>
 </body>
