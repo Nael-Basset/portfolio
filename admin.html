@@ -399,8 +399,16 @@
                 downloadAnchorNode.setAttribute("href", dataStr);
                 downloadAnchorNode.setAttribute("download", "photos.json");
                 
-                // Ajouter des instructions pour l'utilisateur
-                alert('Les modifications ont été enregistrées dans localStorage.\n\nUn fichier photos.json va être téléchargé. Pour finaliser les changements, veuillez placer ce fichier dans le dossier "data/" de votre projet.');
+                // Instructions détaillées pour l'utilisateur
+                const message = 
+                    "Les modifications ont été enregistrées localement dans votre navigateur.\n\n" +
+                    "Pour rendre ces changements permanents :\n" +
+                    "1. Un fichier photos.json va être téléchargé\n" +
+                    "2. Remplacez le fichier existant dans le dossier 'data/' de votre projet\n" +
+                    "3. Validez et poussez les modifications vers votre dépôt GitHub\n\n" +
+                    "Note : Sans ces étapes, les modifications ne seront visibles que sur cet appareil.";
+                
+                alert(message);
                 
                 // Télécharger le fichier
                 document.body.appendChild(downloadAnchorNode);
