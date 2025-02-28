@@ -535,59 +535,7 @@
             <h2 class="section-title">Galerie</h2>
             
             <div class="gallery">
-                <div class="gallery-item">
-                    <span class="category">Nature</span>
-                    <img src="https://picsum.photos/600/400?random=1" alt="Nature">
-                    <div class="overlay">
-                        <h3>Sérénité sauvage</h3>
-                        <p>La beauté intacte des grands espaces</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <span class="category">Portrait</span>
-                    <img src="/api/placeholder/600/400" alt="Portrait">
-                    <div class="overlay">
-                        <h3>Regard profond</h3>
-                        <p>L'émotion à l'état pur</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <span class="category">Urbain</span>
-                    <img src="/api/placeholder/600/400" alt="Urbain">
-                    <div class="overlay">
-                        <h3>Jungle de béton</h3>
-                        <p>L'architecture moderne sous un nouveau jour</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <span class="category">Voyage</span>
-                    <img src="/api/placeholder/600/400" alt="Voyage">
-                    <div class="overlay">
-                        <h3>Horizons lointains</h3>
-                        <p>Aventures et découvertes au bout du monde</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <span class="category">Macro</span>
-                    <img src="/api/placeholder/600/400" alt="Macro">
-                    <div class="overlay">
-                        <h3>Univers miniature</h3>
-                        <p>Explorer l'infiniment petit</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item">
-                    <span class="category">Abstrait</span>
-                    <img src="/api/placeholder/600/400" alt="Abstrait">
-                    <div class="overlay">
-                        <h3>Visions chromatiques</h3>
-                        <p>Quand la réalité devient art</p>
-                    </div>
-                </div>
+                <!-- Les éléments de la galerie seront ajoutés ici dynamiquement -->
             </div>
         </div>
     </section>
@@ -733,32 +681,60 @@
                 const photos = await response.json();
                 console.log(`Photos chargées avec succès: ${photos.length} éléments trouvés`);
                 
+                // Assurez-vous que photos est un tableau
+                if (!Array.isArray(photos)) {
+                    console.error('Les données chargées ne sont pas un tableau:', photos);
+                    throw new Error('Format de données invalide');
+                }
+                
                 localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
                 updateGallery(photos);
                 
             } catch (error) {
                 console.error('Erreur lors du chargement des photos:', error);
                 
-                if (localStorage.getItem('portfolioPhotos')) {
+                // Vérifier le localStorage
+                const cachedData = localStorage.getItem('portfolioPhotos');
+                if (cachedData) {
                     console.log('Utilisation du cache local');
-                    const photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
-                    updateGallery(photos);
-                } else {
-                    console.error('Aucune donnée de sauvegarde disponible');
-                    
-                    const galleryContainer = document.querySelector('.gallery');
-                    if (galleryContainer) {
-                        galleryContainer.innerHTML = `
-                            <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                                <h3>Impossible de charger les images</h3>
-                                <p>Veuillez vérifier votre connexion internet et réessayer.</p>
-                                <button id="retryBtn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Réessayer</button>
-                            </div>
-                        `;
-                        
-                        document.getElementById('retryBtn')?.addEventListener('click', loadPhotosFromFile);
+                    try {
+                        const photos = JSON.parse(cachedData);
+                        if (Array.isArray(photos) && photos.length > 0) {
+                            updateGallery(photos);
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('Erreur avec les données en cache:', e);
                     }
                 }
+                
+                // Utiliser des données de secours si rien d'autre ne fonctionne
+                console.log('Utilisation des données statiques de secours');
+                const fallbackPhotos = [
+                    {
+                        id: 1,
+                        title: "Sérénité sauvage",
+                        description: "La beauté intacte des grands espaces", 
+                        category: "Nature",
+                        imageUrl: "https://picsum.photos/600/400?random=1"
+                    },
+                    {
+                        id: 2,
+                        title: "Regard profond",
+                        description: "L'émotion à l'état pur",
+                        category: "Portrait",
+                        imageUrl: "https://picsum.photos/600/400?random=2"
+                    },
+                    {
+                        id: 3,
+                        title: "Jungle de béton",
+                        description: "L'architecture moderne sous un nouveau jour",
+                        category: "Urbain",
+                        imageUrl: "https://picsum.photos/600/400?random=3"
+                    }
+                ];
+                
+                updateGallery(fallbackPhotos);
             }
         }
         
@@ -766,49 +742,80 @@
         function updateGallery(photos) {
             const galleryContainer = document.querySelector('.gallery');
             
-            if (galleryContainer && photos.length > 0) {
-                galleryContainer.innerHTML = '';
+            if (!galleryContainer) {
+                console.error("Conteneur de galerie introuvable dans le DOM!");
                 
-                photos.forEach((photo, index) => {
-                    let imgSrc = photo.imageUrl;
-                    // Décoder les caractères spéciaux si nécessaire
-                    const title = photo.title ? decodeURIComponent(encodeURIComponent(photo.title)) : 'Sans titre';
-                    const description = photo.description ? decodeURIComponent(encodeURIComponent(photo.description)) : '';
-                    const category = photo.category ? decodeURIComponent(encodeURIComponent(photo.category)) : 'Sans catégorie';
+                // Créer la galerie si elle n'existe pas
+                const gallerySection = document.querySelector('.gallery-container .container');
+                if (gallerySection) {
+                    const newGallery = document.createElement('div');
+                    newGallery.className = 'gallery';
+                    gallerySection.appendChild(newGallery);
+                    console.log("Conteneur de galerie créé");
                     
-                    const galleryItem = document.createElement('div');
-                    galleryItem.className = 'gallery-item';
-                    
-                    galleryItem.innerHTML = `
-                        <span class="category">${category}</span>
-                        <div class="image-container">
-                            <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
-                                <div class="loader"></div>
-                            </div>
-                            <img src="${imgSrc}" alt="${title}" style="display: none;">
-                        </div>
-                        <div class="overlay">
-                            <h3>${title}</h3>
-                            <p>${description}</p>
-                        </div>
-                    `;
-                    
-                    galleryContainer.appendChild(galleryItem);
-                    
-                    const img = galleryItem.querySelector('img');
-                    const placeholder = galleryItem.querySelector('.image-placeholder');
-                    
-                    img.onload = function() {
-                        placeholder.style.display = 'none';
-                        img.style.display = 'block';
-                    };
-                    
-                    img.onerror = function() {
-                        console.warn(`Impossible de charger l'image: ${imgSrc}`);
-                        img.src = `https://picsum.photos/600/400?random=${index+1}`;
-                    };
-                });
+                    // Continuer avec le nouveau conteneur
+                    updateGallery(photos);
+                    return;
+                }
+                return;
             }
+            
+            if (!photos || !Array.isArray(photos) || photos.length === 0) {
+                console.error("Aucune photo à afficher ou format de données invalide");
+                galleryContainer.innerHTML = `
+                    <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                        <h3>Aucune photo disponible</h3>
+                        <p>Essayez de rafraîchir la galerie.</p>
+                        <button id="retryBtn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Réessayer</button>
+                    </div>
+                `;
+                
+                document.getElementById('retryBtn')?.addEventListener('click', loadPhotosFromFile);
+                return;
+            }
+            
+            // Le reste du code pour afficher les photos reste inchangé
+            galleryContainer.innerHTML = '';
+            
+            photos.forEach((photo, index) => {
+                let imgSrc = photo.imageUrl;
+                // Décoder les caractères spéciaux si nécessaire
+                const title = photo.title ? decodeURIComponent(encodeURIComponent(photo.title)) : 'Sans titre';
+                const description = photo.description ? decodeURIComponent(encodeURIComponent(photo.description)) : '';
+                const category = photo.category ? decodeURIComponent(encodeURIComponent(photo.category)) : 'Sans catégorie';
+                
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                
+                galleryItem.innerHTML = `
+                    <span class="category">${category}</span>
+                    <div class="image-container">
+                        <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
+                            <div class="loader"></div>
+                        </div>
+                        <img src="${imgSrc}" alt="${title}" style="display: none;">
+                    </div>
+                    <div class="overlay">
+                        <h3>${title}</h3>
+                        <p>${description}</p>
+                    </div>
+                `;
+                
+                galleryContainer.appendChild(galleryItem);
+                
+                const img = galleryItem.querySelector('img');
+                const placeholder = galleryItem.querySelector('.image-placeholder');
+                
+                img.onload = function() {
+                    placeholder.style.display = 'none';
+                    img.style.display = 'block';
+                };
+                
+                img.onerror = function() {
+                    console.warn(`Impossible de charger l'image: ${imgSrc}`);
+                    img.src = `https://picsum.photos/600/400?random=${index+1}`;
+                };
+            });
         }
         
         // Charger les photos au chargement initial
