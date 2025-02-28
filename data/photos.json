@@ -7,13 +7,6 @@
     "imageUrl": "https://picsum.photos/600/400?random=1"
   },
   {
-    "id": 2,
-    "title": "Regard profond",
-    "description": "L'émotion à l'état pur",
-    "category": "Portrait",
-    "imageUrl": "https://picsum.photos/600/400?random=2"
-  },
-  {
     "id": 3,
     "title": "Jungle de béton",
     "description": "L'architecture moderne sous un nouveau jour",
