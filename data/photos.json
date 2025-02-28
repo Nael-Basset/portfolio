@@ -1,14 +1,14 @@
 [
   {
     "id": 1,
-    "title": "SÃ©rÃ©nitÃ© sauvage",
-    "description": "La beautÃ© intacte des grands espaces",
+    "title": "Sérén",
+    "description": "La beauté intacte des grands espaces",
     "category": "Nature",
     "imageUrl": "data/images/nature1.jpg"
   },
   {
     "id": 3,
-    "title": "Jungle de bÃ©ton",
+    "title": "Jungle de béton",
     "description": "L'architecture moderne sous un nouveau jour",
     "category": "Urbain",
     "imageUrl": "data/images/urban1.jpg"
@@ -16,7 +16,7 @@
   {
     "id": 4,
     "title": "Horizons lointains",
-    "description": "Aventures et dÃ©couvertes au bout du monde",
+    "description": "Aventures et découvertes au bout du monde",
     "category": "Voyage",
     "imageUrl": "data/images/travel1.jpg"
   },
@@ -30,7 +30,7 @@
   {
     "id": 6,
     "title": "Visions chromatiques",
-    "description": "Quand la rÃ©alitÃ© devient art",
+    "description": "Quand la réalité devient art",
     "category": "Abstrait",
     "imageUrl": "data/images/abstract1.jpg"
   }
