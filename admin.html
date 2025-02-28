@@ -390,16 +390,19 @@
             
             // Enregistrer toutes les modifications
             const saveAllChanges = () => {
-                // Dans une application réelle, on enverrait les données à un serveur
-                // Ici, on les stocke simplement dans localStorage
+                // Enregistrer dans localStorage pour utilisation locale
                 localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                alert('Les modifications ont été enregistrées avec succès !');
                 
-                // Télécharger le fichier JSON (comme solution alternative dans un environnement statique)
+                // Créer le fichier JSON à télécharger
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photos, null, 2));
                 const downloadAnchorNode = document.createElement('a');
                 downloadAnchorNode.setAttribute("href", dataStr);
                 downloadAnchorNode.setAttribute("download", "photos.json");
+                
+                // Ajouter des instructions pour l'utilisateur
+                alert('Les modifications ont été enregistrées dans localStorage.\n\nUn fichier photos.json va être téléchargé. Pour finaliser les changements, veuillez placer ce fichier dans le dossier "data/" de votre projet.');
+                
+                // Télécharger le fichier
                 document.body.appendChild(downloadAnchorNode);
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
