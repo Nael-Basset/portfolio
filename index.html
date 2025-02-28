@@ -769,6 +769,7 @@
                             ease: "power3.out"
                         });
                     });
+                    addGalleryItemAnimations();
                 }
             }
             
@@ -1101,6 +1102,51 @@
                     this.style.transform = 'rotate(0deg)';
                 }, 1000);
             });
+
+            function addGalleryItemAnimations() {
+                document.querySelectorAll('.gallery-item').forEach((item) => {
+                    item.addEventListener('mouseenter', () => {
+                        gsap.to(item.querySelector('img'), {
+                            scale: 1.1,
+                            duration: 0.6,
+                            ease: "power2.out"
+                        });
+                        gsap.to(item.querySelector('.overlay'), {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.4,
+                            ease: "power2.out"
+                        });
+                        gsap.to(item.querySelector('.category'), {
+                            scale: 1.1,
+                            y: -5,
+                            duration: 0.3,
+                            ease: "back.out(1.7)"
+                        });
+                    });
+                    
+                    item.addEventListener('mouseleave', () => {
+                        gsap.to(item.querySelector('img'), {
+                            scale: 1,
+                            duration: 0.6,
+                            ease: "power2.out"
+                        });
+                        gsap.to(item.querySelector('.overlay'), {
+                            y: 80,
+                            opacity: 0.8,
+                            duration: 0.4,
+                            ease: "power2.in"
+                        });
+                        gsap.to(item.querySelector('.category'), {
+                            scale: 1,
+                            y: 0,
+                            duration: 0.3,
+                            ease: "back.out"
+                        });
+                    });
+                });
+            }
+            addGalleryItemAnimations();
         });
     </script>
 </body>
