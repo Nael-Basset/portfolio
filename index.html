@@ -1001,9 +1001,9 @@
                     });
                 });
             });
+            
             // 7. Animation du modal d'administration
             // The modal animation is already handled above
-            });
             
             // 8. Animation des transitions entre sections avec effet de parallaxe
             gsap.utils.toArray("section").forEach((section, i) => {
@@ -1022,86 +1022,85 @@
                 );
             });
             
-        // 9. Animation du fond "noise" pour un effet de mouvement subtil
-        gsap.to(".noise-bg", {
-            backgroundPosition: '100% 100%',
-            duration: 20,
-            repeat: -1,
-            ease: "linear"
-        });
-        
-        // Fin des nouvelles animations
-        
-        // Appliquer les animations aux nouveaux éléments
-        const newGalleryItems = document.querySelectorAll('.gallery-item');
-        newGalleryItems.forEach((item, index) => {
-            gsap.to(item, {
-                scrollTrigger: {
-                    trigger: item,
-                    start: "top 90%"
-                },
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                delay: index * 0.1,
-                ease: "power3.out"
+            // 9. Animation du fond "noise" pour un effet de mouvement subtil
+            gsap.to(".noise-bg", {
+                backgroundPosition: '100% 100%',
+                duration: 20,
+                repeat: -1,
+                ease: "linear"
             });
             
-            // Ajouter les gestionnaires d'événements pour les animations au survol
-            item.addEventListener('mouseenter', () => {
-                gsap.to(item.querySelector('img'), {
-                    scale: 1.1,
-                    duration: 0.6,
-                    ease: "power2.out"
-                });
-                gsap.to(item.querySelector('.overlay'), {
-                    y: 0,
+            // Appliquer les animations aux nouveaux éléments
+            const newGalleryItems = document.querySelectorAll('.gallery-item');
+            newGalleryItems.forEach((item, index) => {
+                gsap.to(item, {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top 90%"
+                    },
                     opacity: 1,
-                    duration: 0.4,
-                    ease: "power2.out"
-                });
-                gsap.to(item.querySelector('.category'), {
-                    scale: 1.1,
-                    y: -5,
-                    duration: 0.3,
-                    ease: "back.out(1.7)"
-                });
-            });
-            
-            item.addEventListener('mouseleave', () => {
-                gsap.to(item.querySelector('img'), {
-                    scale: 1,
-                    duration: 0.6,
-                    ease: "power2.out"
-                });
-                gsap.to(item.querySelector('.overlay'), {
-                    y: 80,
-                    opacity: 0.8,
-                    duration: 0.4,
-                    ease: "power2.in"
-                });
-                gsap.to(item.querySelector('.category'), {
-                    scale: 1,
                     y: 0,
-                    duration: 0.3,
-                    ease: "back.out"
+                    duration: 0.8,
+                    delay: index * 0.1,
+                    ease: "power3.out"
+                });
+                
+                // Ajouter les gestionnaires d'événements pour les animations au survol
+                item.addEventListener('mouseenter', () => {
+                    gsap.to(item.querySelector('img'), {
+                        scale: 1.1,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                    gsap.to(item.querySelector('.overlay'), {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.4,
+                        ease: "power2.out"
+                    });
+                    gsap.to(item.querySelector('.category'), {
+                        scale: 1.1,
+                        y: -5,
+                        duration: 0.3,
+                        ease: "back.out(1.7)"
+                    });
+                });
+                
+                item.addEventListener('mouseleave', () => {
+                    gsap.to(item.querySelector('img'), {
+                        scale: 1,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                    gsap.to(item.querySelector('.overlay'), {
+                        y: 80,
+                        opacity: 0.8,
+                        duration: 0.4,
+                        ease: "power2.in"
+                    });
+                    gsap.to(item.querySelector('.category'), {
+                        scale: 1,
+                        y: 0,
+                        duration: 0.3,
+                        ease: "back.out"
+                    });
                 });
             });
-        });
 
-        document.getElementById('refreshGalleryBtn').addEventListener('click', function() {
-            // Animation de rotation
-            this.style.transition = 'transform 1s';
-            this.style.transform = 'rotate(360deg)';
-            
-            // Recharger les photos depuis le fichier JSON
-            loadPhotosFromFile();
-            
-            // Réinitialiser la rotation après l'animation
-            setTimeout(() => {
-                this.style.transition = 'none';
-                this.style.transform = 'rotate(0deg)';
-            }, 1000);
+            document.getElementById('refreshGalleryBtn').addEventListener('click', function() {
+                // Animation de rotation
+                this.style.transition = 'transform 1s';
+                this.style.transform = 'rotate(360deg)';
+                
+                // Recharger les photos depuis le fichier JSON
+                loadPhotosFromFile();
+                
+                // Réinitialiser la rotation après l'animation
+                setTimeout(() => {
+                    this.style.transition = 'none';
+                    this.style.transform = 'rotate(0deg)';
+                }, 1000);
+            });
         });
     </script>
 </body>
