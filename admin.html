@@ -188,10 +188,10 @@
                         <input type="text" id="photoCategory" required>
                     </div>
                     <div class="form-group">
-                        <label for="photoImage">URL de l'image</label>
-                        <input type="text" id="photoImage" placeholder="https://example.com/image.jpg">
+                        <label for="photoImage">Image</label>
+                        <input type="file" id="photoImageUpload" accept="image/*">
                         <p style="font-size: 0.8rem; color: #999; margin-top: 5px;">
-                            Laissez vide pour utiliser une image aléatoire de Lorem Picsum
+                            Téléchargez une image ou laissez vide pour utiliser une image temporaire
                         </p>
                     </div>
                     <button type="submit" class="btn">Ajouter</button>
@@ -281,15 +281,37 @@
             };
             
             // Ajouter une nouvelle photo
-            const addPhoto = (e) => {
+            const addPhoto = async (e) => {
                 e.preventDefault();
+                
+                const processImage = async () => {
+                    const fileInput = document.getElementById('photoImageUpload');
+                    
+                    if (fileInput.files && fileInput.files[0]) {
+                        const file = fileInput.files[0];
+                        const fileName = `${Date.now()}_${file.name}`;
+                        
+                        // Dans une application réelle, vous utiliseriez un service de stockage
+                        // Comme ça n'est pas possible avec une page statique GitHub Pages,
+                        // nous allons créer une URL temporaire pour démonstration
+                        const imageUrl = URL.createObjectURL(file);
+                        
+                        // Note: Dans une application réelle, vous téléchargeriez le fichier sur un serveur
+                        // et obtiendriez une URL permanente
+                        return `data/images/${fileName}`;
+                    }
+                    
+                    return `https://picsum.photos/600/400?random=${photos.length + 1}`;
+                };
+                
+                const imageUrl = await processImage();
                 
                 const newPhoto = {
                     id: photos.length + 1,
                     title: document.getElementById('photoTitle').value,
                     description: document.getElementById('photoDescription').value,
                     category: document.getElementById('photoCategory').value,
-                    imageUrl: document.getElementById('photoImage').value || `https://picsum.photos/600/400?random=${photos.length + 1}`
+                    imageUrl: imageUrl
                 };
                 
                 photos.push(newPhoto);

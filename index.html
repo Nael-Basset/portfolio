@@ -64,31 +64,16 @@
         }
         
         h1 {
-            font-size: 5rem;
-            font-weight: 900;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--color-primary), var(--color-accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
             opacity: 0;
             transform: translateY(50px);
         }
         
         .tagline {
-            font-size: 1.2rem;
-            margin-bottom: 40px;
             opacity: 0;
             transform: translateY(30px);
         }
         
         .scroll-down {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
             opacity: 0;
         }
         
@@ -133,8 +118,6 @@
         }
         
         .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 50px;
             position: relative;
             display: inline-block;
             opacity: 0;
@@ -158,10 +141,6 @@
         }
         
         .gallery-item {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             transform: translateY(50px);
             opacity: 0;
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
@@ -170,14 +149,12 @@
         }
         
         .gallery-item:hover {
-            transform: translateY(-10px) scale(1.02);
             transform: perspective(1000px) translateY(-10px) rotateX(2deg);
-            z-index: 2;
         }
         
         .gallery-item img {
             width: 100%;
-            height: 350px;
+            height: 300px;
             object-fit: cover;
             display: block;
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
@@ -248,7 +225,6 @@
         }
         
         .about-image {
-            flex: 1;
             opacity: 0;
             transform: translateX(-50px);
         }
@@ -262,7 +238,6 @@
         }
         
         .about-text {
-            flex: 1;
             opacity: 0;
             transform: translateX(50px);
         }
@@ -451,6 +426,86 @@
         .title span {
             transform: translateY(50px);
         }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid rgba(255, 51, 102, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--color-primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .title {
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            z-index: 2;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-image {
+            flex: 1;
+        }
+
+        .about-text {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -603,614 +658,162 @@
     </button>
 
     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Configuration de base de GSAP
         gsap.config({ 
             force3D: true,
             autoSleep: 60
         });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Header animations
-            gsap.to(".title", {
-                opacity: 1, 
-                y: 0, 
-                duration: 1.2, 
-                ease: "power3.out"
-            });
-            
-            gsap.to(".tagline", {
-                opacity: 1, 
-                y: 0, 
-                duration: 1.2, 
-                delay: 0.3, 
-                ease: "power3.out"
-            });
-            
-            gsap.to(".scroll-down", {
-                opacity: 1, 
-                duration: 1, 
-                delay: 1
-            });
-            
-            // Background circles movement
-            gsap.to(".circle1", {
-                x: 50, 
-                y: 30, 
-                duration: 8, 
-                repeat: -1, 
-                yoyo: true, 
-                ease: "sine.inOut"
-            });
-            
-            gsap.to(".circle2", {
-                x: -30, 
-                y: 50, 
-                duration: 10, 
-                repeat: -1, 
-                yoyo: true, 
-                ease: "sine.inOut"
-            });
-            
-            // Gallery animations
-            gsap.to(".section-title", {
-                scrollTrigger: {
-                    trigger: ".section-title",
-                    start: "top 80%"
-                },
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: "power3.out"
-            });
-            
-            const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach((item, index) => {
-                gsap.to(item, {
-                    scrollTrigger: {
-                        trigger: item,
-                        start: "top 90%"
-                    },
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    delay: index * 0.1,
-                    ease: "power3.out"
-                });
-            });
-            
-            // About section animations
-            gsap.to(".about-image", {
-                scrollTrigger: {
-                    trigger: ".about-content",
-                    start: "top 70%"
-                },
-                opacity: 1,
-                x: 0,
-                duration: 1,
-                ease: "power3.out"
-            });
-            
-            gsap.to(".about-text", {
-                scrollTrigger: {
-                    trigger: ".about-content",
-                    start: "top 70%"
-                },
-                opacity: 1,
-                x: 0,
-                duration: 1,
-                delay: 0.3,
-                ease: "power3.out"
-            });
-
-            // Charger les photos depuis le fichier JSON
-            async function loadPhotosFromFile() {
-                try {
-                    // Ajout d'un timestamp pour éviter les problèmes de cache
-                    const timestamp = new Date().getTime();
-                    
-                    // Déterminer si on est en développement local ou en production
-                    const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                    
-                    let url;
-                    if (isLocalDev) {
-                        // En développement local
-                        url = `data/photos.json?t=${timestamp}`;
-                    } else {
-                        // En production (GitHub Pages)
-                        const repoName = 'portfolio'; // Remplacer si nécessaire
-                        const username = 'Nael-Basset'; // Remplacer par votre nom d'utilisateur GitHub
-                        url = `https://${username}.github.io/${repoName}/data/photos.json?t=${timestamp}`;
-                    }
-                    
-                    // Afficher un message de débogage
-                    console.log(`Tentative de chargement depuis: ${url}`);
-                    
-                    const response = await fetch(url);
-                    
-                    if (!response.ok) {
-                        throw new Error(`Impossible de charger les données (statut: ${response.status})`);
-                    }
-                    
-                    const photos = await response.json();
-                    console.log(`Photos chargées avec succès: ${photos.length} éléments trouvés`);
-                    
-                    // Sauvegarder une copie dans localStorage pour avoir une version à jour
-                    localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                    
-                    updateGallery(photos);
-                } catch (error) {
-                    console.error('Erreur lors du chargement des photos:', error);
-                    
-                    // Fallback vers localStorage si le fichier n'est pas accessible
-                    if (localStorage.getItem('portfolioPhotos')) {
-                        console.log('Utilisation du cache local');
-                        const photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
-                        updateGallery(photos);
-                    } else {
-                        console.error('Aucune donnée de sauvegarde disponible dans le cache local');
-                        
-                        // Afficher un message d'erreur dans la galerie
-                        const galleryContainer = document.querySelector('.gallery');
-                        if (galleryContainer) {
-                            galleryContainer.innerHTML = `
-                                <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                                    <h3>Impossible de charger les images</h3>
-                                    <p>Veuillez vérifier votre connexion internet et réessayer.</p>
-                                    <button id="retryBtn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Réessayer</button>
-                                </div>
-                            `;
-                            
-                            document.getElementById('retryBtn')?.addEventListener('click', loadPhotosFromFile);
-                        }
-                    }
-                }
+        
+        // Fonctionnalité d'accès admin
+        const adminBtn = document.getElementById('adminBtn');
+        const adminModal = document.getElementById('adminModal');
+        const closeModal = document.querySelector('.close-modal');
+        const adminForm = document.getElementById('adminForm');
+        const passwordError = document.getElementById('passwordError');
+        
+        // Ouvrir la fenêtre modale
+        adminBtn?.addEventListener('click', () => {
+            adminModal.style.display = 'flex';
+        });
+        
+        // Fermer la fenêtre modale
+        closeModal?.addEventListener('click', () => {
+            adminModal.style.display = 'none';
+            passwordError.textContent = '';
+            adminForm.reset();
+        });
+        
+        // Fermer en cliquant à l'extérieur
+        window.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+                adminModal.style.display = 'none';
+                passwordError.textContent = '';
+                adminForm.reset();
             }
+        });
+        
+        // Gérer la connexion
+        adminForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
             
-            // Fonction pour mettre à jour la galerie avec les photos
-            function updateGallery(photos) {
-                const galleryContainer = document.querySelector('.gallery');
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                passwordError.textContent = 'Mot de passe incorrect';
+            }
+        });
+        
+        // Charger les photos depuis le fichier JSON
+        async function loadPhotosFromFile() {
+            try {
+                const timestamp = new Date().getTime();
+                const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
                 
-                if (galleryContainer && photos.length > 0) {
-                    // Disconnect ScrollTrigger to prevent memory leaks
-                    ScrollTrigger.getAll().forEach(trigger => {
-                        if (trigger.vars.trigger && trigger.vars.trigger.closest('.gallery')) {
-                            trigger.kill();
-                        }
-                    });
+                let url;
+                if (isLocalDev) {
+                    url = `data/photos.json?t=${timestamp}`;
+                } else {
+                    const repoName = 'portfolio';
+                    const username = 'Nael-Basset';
+                    url = `https://${username}.github.io/${repoName}/data/photos.json?t=${timestamp}`;
+                }
+                
+                console.log(`Tentative de chargement depuis: ${url}`);
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Impossible de charger les données (statut: ${response.status})`);
+                }
+                
+                const photos = await response.json();
+                console.log(`Photos chargées avec succès: ${photos.length} éléments trouvés`);
+                
+                localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
+                updateGallery(photos);
+                
+            } catch (error) {
+                console.error('Erreur lors du chargement des photos:', error);
+                
+                if (localStorage.getItem('portfolioPhotos')) {
+                    console.log('Utilisation du cache local');
+                    const photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
+                    updateGallery(photos);
+                } else {
+                    console.error('Aucune donnée de sauvegarde disponible');
                     
-                    galleryContainer.innerHTML = ''; // Vider la galerie actuelle
-                    
-                    // Create a document fragment for better performance
-                    const fragment = document.createDocumentFragment();
-                    
-                    photos.forEach((photo, index) => {
-                        // Vérifier si l'URL de l'image est valide
-                        let imgSrc = photo.imageUrl;
-                        if (imgSrc === "/api/placeholder/600/400" || !imgSrc) {
-                            imgSrc = `https://picsum.photos/600/400?random=${index+1}`;
-                        }
-                        
-                        const galleryItem = document.createElement('div');
-                        galleryItem.className = 'gallery-item';
-                        galleryItem.innerHTML = `
-                            <span class="category">${photo.category || 'Sans catégorie'}</span>
-                            <img src="${imgSrc}" alt="${photo.title || ''}">
-                            <div class="overlay">
-                                <h3>${photo.title || 'Sans titre'}</h3>
-                                <p>${photo.description || ''}</p>
+                    const galleryContainer = document.querySelector('.gallery');
+                    if (galleryContainer) {
+                        galleryContainer.innerHTML = `
+                            <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                                <h3>Impossible de charger les images</h3>
+                                <p>Veuillez vérifier votre connexion internet et réessayer.</p>
+                                <button id="retryBtn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Réessayer</button>
                             </div>
                         `;
-                        fragment.appendChild(galleryItem);
-                    });
-                    
-                    // Add all items at once for better performance
-                    galleryContainer.appendChild(fragment);
-                    
-                    // Batch animations for better performance
-                    gsap.set('.gallery-item', { opacity: 0, y: 50 });
-                    
-                    gsap.to('.gallery-item', {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.6,
-                        stagger: 0.08,
-                        ease: "power2.out",
-                        scrollTrigger: {
-                            trigger: '.gallery',
-                            start: "top 90%"
-                        }
-                    });
-                    
-                    // Add hover animations once all items are added
-                    addGalleryItemAnimations();
+                        
+                        document.getElementById('retryBtn')?.addEventListener('click', loadPhotosFromFile);
+                    }
                 }
             }
+        }
+        
+        // Mettre à jour la galerie avec les photos
+        function updateGallery(photos) {
+            const galleryContainer = document.querySelector('.gallery');
             
-            // Charger les photos au chargement de la page
+            if (galleryContainer && photos.length > 0) {
+                galleryContainer.innerHTML = '';
+                
+                photos.forEach((photo, index) => {
+                    let imgSrc = photo.imageUrl;
+                    
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    
+                    galleryItem.innerHTML = `
+                        <span class="category">${photo.category || 'Sans catégorie'}</span>
+                        <div class="image-container">
+                            <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
+                                <div class="loader"></div>
+                            </div>
+                            <img src="${imgSrc}" alt="${photo.title || ''}" style="display: none;">
+                        </div>
+                        <div class="overlay">
+                            <h3>${photo.title || 'Sans titre'}</h3>
+                            <p>${photo.description || ''}</p>
+                        </div>
+                    `;
+                    
+                    galleryContainer.appendChild(galleryItem);
+                    
+                    const img = galleryItem.querySelector('img');
+                    const placeholder = galleryItem.querySelector('.image-placeholder');
+                    
+                    img.onload = function() {
+                        placeholder.style.display = 'none';
+                        img.style.display = 'block';
+                    };
+                    
+                    img.onerror = function() {
+                        console.warn(`Impossible de charger l'image: ${imgSrc}`);
+                        img.src = `https://picsum.photos/600/400?random=${index+1}`;
+                    };
+                });
+            }
+        }
+        
+        // Charger les photos au chargement initial
+        loadPhotosFromFile();
+        
+        // Gestionnaire pour le bouton de rafraîchissement
+        document.getElementById('refreshGalleryBtn')?.addEventListener('click', function() {
             loadPhotosFromFile();
- 
-            // Admin access functionality
-            const adminBtn = document.getElementById('adminBtn');
-            const adminModal = document.getElementById('adminModal');
-            const closeModal = document.querySelector('.close-modal');
-            const adminForm = document.getElementById('adminForm');
-            const passwordError = document.getElementById('passwordError');
-            const adminModalContent = document.querySelector('.admin-modal-content');
-            
-            // Open modal avec animation GSAP
-            adminBtn.addEventListener('click', () => {
-                adminModal.style.display = 'flex';
-                gsap.fromTo(adminModal, 
-                    { opacity: 0 }, 
-                    { opacity: 1, duration: 0.3, ease: "power2.in" }
-                );
-                gsap.fromTo(adminModalContent, 
-                    { opacity: 0, y: 50, scale: 0.9 }, 
-                    { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
-                );
-            });
-            
-            // Close modal avec animation GSAP
-            closeModal.addEventListener('click', () => {
-                gsap.to(adminModalContent, {
-                    opacity: 0, 
-                    y: 30, 
-                    scale: 0.9, 
-                    duration: 0.3, 
-                    ease: "power2.in",
-                    onComplete: () => { 
-                        adminModal.style.display = 'none';
-                        passwordError.textContent = '';
-                        adminForm.reset();
-                    }
-                });
-                gsap.to(adminModal, { opacity: 0, duration: 0.3, ease: "power2.in" });
-            });
-            
-            // Close when clicking outside avec animation GSAP
-            window.addEventListener('click', (e) => {
-                if (e.target === adminModal) {
-                    gsap.to(adminModalContent, {
-                        opacity: 0, 
-                        y: 30, 
-                        scale: 0.9, 
-                        duration: 0.3, 
-                        ease: "power2.in",
-                        onComplete: () => { 
-                            adminModal.style.display = 'none';
-                            passwordError.textContent = '';
-                            adminForm.reset();
-                        }
-                    });
-                    gsap.to(adminModal, { opacity: 0, duration: 0.3, ease: "power2.in" });
-                }
-            });
-            
-            // Handle login
-            adminForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const password = document.getElementById('adminPassword').value;
-                
-                if (password === 'admin') {
-                    // In a real implementation, redirect to admin page or load admin interface
-                    window.location.href = 'admin.html'; // You'll need to create this page
-                    // Or alternatively, show admin interface in the current page
-                } else {
-                    passwordError.textContent = 'Mot de passe incorrect';
-                }
-            });
-
-            // NOUVELLES ANIMATIONS
-            
-            // 1. Animation de scroll fluide
-            document.querySelector('.scroll-down').addEventListener('click', () => {
-                gsap.to(window, {
-                    duration: 1.2, 
-                    scrollTo: ".gallery-container",
-                    ease: "power3.inOut"
-                });
-            });
-            
-            // 2. Animation du fond avec effet parallaxe
-            gsap.to(".background-circle", {
-                scrollTrigger: {
-                    trigger: "body",
-                    start: "top top",
-                    end: "bottom bottom",
-                    scrub: 1
-                },
-                y: "-15vh", // Valeur fixe au lieu d'une fonction qui peut causer des erreurs
-                ease: "none"
-            });
-            
-            // 3. Animation des items de la galerie au survol - effet amélioré
-            document.querySelectorAll('.gallery-item').forEach((item) => {
-                item.addEventListener('mouseenter', () => {
-                    gsap.to(item.querySelector('img'), {
-                        scale: 1.1,
-                        duration: 0.6,
-                        ease: "power2.out"
-                    });
-                    gsap.to(item.querySelector('.overlay'), {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.4,
-                        ease: "power2.out"
-                    });
-                    gsap.to(item.querySelector('.category'), {
-                        scale: 1.1,
-                        y: -5,
-                        duration: 0.3,
-                        ease: "back.out(1.7)"
-                    });
-                });
-                
-                item.addEventListener('mouseleave', () => {
-                    gsap.to(item.querySelector('img'), {
-                        scale: 1,
-                        duration: 0.6,
-                        ease: "power2.out"
-                    });
-                    gsap.to(item.querySelector('.overlay'), {
-                        y: 80,
-                        opacity: 0.8,
-                        duration: 0.4,
-                        ease: "power2.in"
-                    });
-                    gsap.to(item.querySelector('.category'), {
-                        scale: 1,
-                        y: 0,
-                        duration: 0.3,
-                        ease: "back.out"
-                    });
-                });
-            });
-            
-            // 4. Effet de texte animé pour le titre principal
-            const title = document.querySelector('.title');
-            const text = title.textContent;
-            title.textContent = '';
-            
-            for (let i = 0; i < text.length; i++) {
-                const span = document.createElement('span');
-                span.textContent = text[i];
-                span.style.display = 'inline-block';
-                span.style.opacity = 0;
-                title.appendChild(span);
-                
-                gsap.to(span, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    delay: 0.05 * i,
-                    ease: "back.out"
-                });
-            }
-            
-            // 5. Animation du bouton de contact
-            const contactBtn = document.querySelector('.contact-btn');
-            contactBtn.addEventListener('mouseenter', () => {
-                gsap.to(contactBtn, {
-                    scale: 1.05,
-                    duration: 0.3,
-                    ease: "power1.out",
-                    boxShadow: "0 7px 20px rgba(255, 51, 102, 0.6)"
-                });
-            });
-            
-            contactBtn.addEventListener('mouseleave', () => {
-                gsap.to(contactBtn, {
-                    scale: 1,
-                    duration: 0.3,
-                    ease: "power1.in",
-                    boxShadow: "0 4px 15px rgba(255, 51, 102, 0.3)"
-                });
-            });
-            
-            // 6. Animation des icônes de réseaux sociaux 
-            document.querySelectorAll('.social-btn').forEach((btn, index) => {
-                gsap.fromTo(btn, 
-                    { opacity: 0, y: 20 }, 
-                    { 
-                        opacity: 1, 
-                        y: 0, 
-                        duration: 0.5, 
-                        delay: 0.1 * index,
-                        ease: "back.out(1.7)",
-                        scrollTrigger: {
-                            trigger: '.social-links',
-                            start: "top 90%"
-                        }
-                    }
-                );
-                
-                btn.addEventListener('mouseenter', () => {
-                    gsap.to(btn, {
-                        y: -8,
-                        rotation: 5,
-                        duration: 0.3,
-                        ease: "back.out(2)"
-                    });
-                    gsap.to(btn.querySelector('svg'), {
-                        scale: 1.2,
-                        rotation: -5,
-                        duration: 0.4,
-                        ease: "power1.out"
-                    });
-                });
-                
-                btn.addEventListener('mouseleave', () => {
-                    gsap.to(btn, {
-                        y: 0,
-                        rotation: 0,
-                        duration: 0.3,
-                        ease: "power3.out"
-                    });
-                    gsap.to(btn.querySelector('svg'), {
-                        scale: 1,
-                        rotation: 0,
-                        duration: 0.3,
-                        ease: "power3.out"
-                    });
-                });
-            });
-            
-            // 7. Animation du modal d'administration
-            // The modal animation is already handled above
-            
-            // 8. Animation des transitions entre sections avec effet de parallaxe
-            gsap.utils.toArray("section").forEach((section, i) => {
-                gsap.fromTo(section, 
-                    { backgroundPositionY: '-50px' }, 
-                    {
-                        backgroundPositionY: '50px',
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: section,
-                            start: "top bottom",
-                            end: "bottom top",
-                            scrub: true
-                        }
-                    }
-                );
-            });
-            
-            // 9. Animation du fond "noise" pour un effet de mouvement subtil
-            gsap.to(".noise-bg", {
-                backgroundPosition: '100% 100%',
-                duration: 20,
-                repeat: -1,
-                ease: "linear"
-            });
-            
-            // Appliquer les animations aux nouveaux éléments
-            const newGalleryItems = document.querySelectorAll('.gallery-item');
-            newGalleryItems.forEach((item, index) => {
-                gsap.to(item, {
-                    scrollTrigger: {
-                        trigger: item,
-                        start: "top 90%"
-                    },
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    delay: index * 0.1,
-                    ease: "power3.out"
-                });
-                
-                // Ajouter les gestionnaires d'événements pour les animations au survol
-                item.addEventListener('mouseenter', () => {
-                    gsap.to(item.querySelector('img'), {
-                        scale: 1.1,
-                        duration: 0.6,
-                        ease: "power2.out"
-                    });
-                    gsap.to(item.querySelector('.overlay'), {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.4,
-                        ease: "power2.out"
-                    });
-                    gsap.to(item.querySelector('.category'), {
-                        scale: 1.1,
-                        y: -5,
-                        duration: 0.3,
-                        ease: "back.out(1.7)"
-                    });
-                });
-                
-                item.addEventListener('mouseleave', () => {
-                    gsap.to(item.querySelector('img'), {
-                        scale: 1,
-                        duration: 0.6,
-                        ease: "power2.out"
-                    });
-                    gsap.to(item.querySelector('.overlay'), {
-                        y: 80,
-                        opacity: 0.8,
-                        duration: 0.4,
-                        ease: "power2.in"
-                    });
-                    gsap.to(item.querySelector('.category'), {
-                        scale: 1,
-                        y: 0,
-                        duration: 0.3,
-                        ease: "back.out"
-                    });
-                });
-            });
-
-            document.getElementById('refreshGalleryBtn').addEventListener('click', function() {
-                // Animation de rotation
-                this.style.transition = 'transform 1s';
-                this.style.transform = 'rotate(360deg)';
-                
-                // Recharger les photos depuis le fichier JSON
-                loadPhotosFromFile();
-                
-                // Réinitialiser la rotation après l'animation
-                setTimeout(() => {
-                    this.style.transition = 'none';
-                    this.style.transform = 'rotate(0deg)';
-                }, 1000);
-            });
-
-            function addGalleryItemAnimations() {
-                // First, remove any existing event listeners to prevent duplicates
-                document.querySelectorAll('.gallery-item').forEach((item) => {
-                    item.replaceWith(item.cloneNode(true));
-                });
-                
-                // Then add fresh event listeners with optimized animations
-                document.querySelectorAll('.gallery-item').forEach((item) => {
-                    // Create animation timelines once instead of multiple gsap calls
-                    const enterTimeline = gsap.timeline({ paused: true });
-                    enterTimeline
-                        .to(item.querySelector('img'), {
-                            scale: 1.1,
-                            duration: 0.4,
-                            ease: "power2.out"
-                        }, 0)
-                        .to(item.querySelector('.overlay'), {
-                            y: 0,
-                            opacity: 1,
-                            duration: 0.3,
-                            ease: "power2.out"
-                        }, 0)
-                        .to(item.querySelector('.category'), {
-                            scale: 1.1,
-                            y: -5,
-                            duration: 0.3,
-                            ease: "back.out(1.7)"
-                        }, 0);
-                        
-                    const leaveTimeline = gsap.timeline({ paused: true });
-                    leaveTimeline
-                        .to(item.querySelector('img'), {
-                            scale: 1,
-                            duration: 0.4,
-                            ease: "power2.out"
-                        }, 0)
-                        .to(item.querySelector('.overlay'), {
-                            y: 80,
-                            opacity: 0.8,
-                            duration: 0.3,
-                            ease: "power2.in"
-                        }, 0)
-                        .to(item.querySelector('.category'), {
-                            scale: 1,
-                            y: 0,
-                            duration: 0.3,
-                            ease: "back.out"
-                        }, 0);
-                        
-                    // Use the pre-built timelines for better performance
-                    item.addEventListener('mouseenter', () => enterTimeline.play());
-                    item.addEventListener('mouseleave', () => leaveTimeline.play());
-                });
-            }
-            addGalleryItemAnimations();
         });
-    </script>
+    });
+</script>
 </body>
 </html>

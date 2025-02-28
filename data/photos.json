@@ -4,34 +4,34 @@
     "title": "Sérénité sauvage",
     "description": "La beauté intacte des grands espaces",
     "category": "Nature",
-    "imageUrl": "https://picsum.photos/600/400?random=1"
+    "imageUrl": "data/images/nature1.jpg"
   },
-    {
+  {
     "id": 3,
     "title": "Jungle de béton",
     "description": "L'architecture moderne sous un nouveau jour",
     "category": "Urbain",
-    "imageUrl": "https://picsum.photos/600/400?random=3"
+    "imageUrl": "data/images/urban1.jpg"
   },
   {
     "id": 4,
     "title": "Horizons lointains",
     "description": "Aventures et découvertes au bout du monde",
     "category": "Voyage",
-    "imageUrl": "https://picsum.photos/600/400?random=4"
+    "imageUrl": "data/images/travel1.jpg"
   },
   {
     "id": 5,
     "title": "Univers miniature",
     "description": "Explorer l'infiniment petit",
     "category": "Macro",
-    "imageUrl": "https://picsum.photos/600/400?random=5"
+    "imageUrl": "data/images/macro1.jpg"
   },
   {
     "id": 6,
     "title": "Visions chromatiques",
     "description": "Quand la réalité devient art",
     "category": "Abstrait",
-    "imageUrl": "https://picsum.photos/600/400?random=6"
+    "imageUrl": "data/images/abstract1.jpg"
   }
 ]
