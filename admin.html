@@ -760,7 +760,17 @@
                 
                 // Paramètres GitHub
                 const githubToken = localStorage.getItem('githubToken');
-                const githubRepo = localStorage.getItem('githubRepo');
+                // Modifier uniquement cette partie dans la fonction savePhotos
+
+                // Lorsque vous récupérez le nom du dépôt, nettoyez le format
+                const githubRepo = localStorage.getItem('githubRepo').trim().replace(/\/+$/, '');
+
+                // Validation du format avant de faire les requêtes
+                if (!githubRepo || !githubRepo.includes('/') || githubRepo.split('/').length !== 2) {
+                    alert('Format du nom de dépôt incorrect. Utilisez le format "utilisateur/nom-du-repo".');
+                    showExportButton();
+                    return false;
+                }
                 
                 // Si les paramètres GitHub ne sont pas disponibles, juste afficher le bouton d'export
                 if (!githubToken || !githubRepo) {
@@ -768,96 +778,192 @@
                     return false;
                 }
                 
+                // Message de chargement simple
+                const statusMsg = document.createElement('div');
+                statusMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:#333;color:white;padding:10px;border-radius:4px;z-index:1000;';
+                statusMsg.textContent = 'Sauvegarde en cours...';
+                document.body.appendChild(statusMsg);
+                
                 try {
-                    // Message de chargement simple
-                    const statusMsg = document.createElement('div');
-                    statusMsg.style.cssText = 'position:fixed;top:20px;right:20px;background:#333;color:white;padding:10px;border-radius:4px;z-index:1000;';
-                    statusMsg.textContent = 'Sauvegarde en cours...';
-                    document.body.appendChild(statusMsg);
-                    
                     const branch = localStorage.getItem('githubBranch') || 'main';
                     const path = localStorage.getItem('githubPath') || 'data/photos.json';
                     
-                    // Requête simplifiée pour obtenir le SHA
-                    const infoResp = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${path}`, {
-                        headers: { 'Authorization': `Bearer ${githubToken}` }
-                    });
+                    console.log(`Tentative de mise à jour du fichier dans ${githubRepo}, branche ${branch}, chemin ${path}`);
                     
-                    let sha = '';
-                    if (infoResp.ok) {
-                        const fileInfo = await infoResp.json();
-                        sha = fileInfo.sha;
+                    // 1. Vérifier que le dépôt existe
+                    try {
+                        const repoResp = await fetch(`https://api.github.com/repos/${githubRepo}`, {
+                            headers: { 
+                                'Authorization': `token ${githubToken}`
+                            }
+                        });
+                        
+                        if (!repoResp.ok) {
+                            throw new Error(`Le dépôt "${githubRepo}" n'existe pas ou n'est pas accessible avec ce token`);
+                        }
+                        
+                        console.log("Dépôt vérifié avec succès");
+                    } catch (error) {
+                        throw new Error(`Erreur d'accès au dépôt: ${error.message}`);
                     }
                     
-                    // Encodage du contenu
+                    // 2. Préparation du contenu
                     const content = JSON.stringify(photos, null, 2);
                     const encodedContent = btoa(unescape(encodeURIComponent(content)));
                     
-                    // Mise à jour du fichier
+                    // 3. Vérifier si le fichier existe déjà
+                    let sha = '';
+                    try {
+                        const fileResp = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${path}?ref=${branch}`, {
+                            headers: { 
+                                'Authorization': `token ${githubToken}`
+                            }
+                        });
+                        
+                        if (fileResp.ok) {
+                            // Le fichier existe, récupérer son SHA
+                            const fileInfo = await fileResp.json();
+                            sha = fileInfo.sha;
+                            console.log(`Fichier trouvé, SHA: ${sha.substring(0, 7)}`);
+                        } else if (fileResp.status === 404) {
+                            // Le fichier n'existe pas, pas de problème car nous allons le créer
+                            console.log("Fichier non trouvé, il sera créé");
+                            
+                            // Vérifier si le chemin contient des dossiers
+                            if (path.includes('/')) {
+                                // Extraire le nom du dossier (première partie du chemin)
+                                const folderName = path.split('/')[0];
+                                
+                                // Afficher un avertissement si le dossier n'existe probablement pas
+                                console.warn(`ATTENTION: Assurez-vous que le dossier "${folderName}" existe dans votre dépôt GitHub avant de continuer.`);
+                                
+                                // Demander confirmation à l'utilisateur
+                                if (!confirm(`Le fichier "${path}" n'existe pas encore. Assurez-vous que le dossier "${folderName}" existe déjà dans votre dépôt GitHub.\n\nVoulez-vous continuer?`)) {
+                                    throw new Error("Opération annulée par l'utilisateur");
+                                }
+                            }
+                        } else {
+                            throw new Error(`Erreur lors de la vérification du fichier: ${fileResp.status}`);
+                        }
+                    } catch (error) {
+                        if (!error.message.includes("Opération annulée")) {
+                            console.error("Erreur lors de la vérification du fichier:", error);
+                        }
+                        throw error;
+                    }
+                    
+                    // 4. Envoi de la requête pour créer/mettre à jour le fichier
+                    const payload = {
+                        message: 'Mise à jour des photos via interface admin',
+                        content: encodedContent,
+                        branch: branch
+                    };
+                    
+                    // Ajouter le SHA si on met à jour un fichier existant
+                    if (sha) {
+                        payload.sha = sha;
+                    }
+                    
+                    console.log("Envoi de la requête de mise à jour...");
+                    
+                    // Envoi de la requête
                     const updateResp = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${path}`, {
                         method: 'PUT',
                         headers: {
-                            'Authorization': `Bearer ${githubToken}`,
+                            'Authorization': `token ${githubToken}`,
+                            'Accept': 'application/vnd.github.v3+json',
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({
-                            message: 'Mise à jour des photos',
-                            content: encodedContent,
-                            sha: sha || undefined,
-                            branch: branch
-                        })
+                        body: JSON.stringify(payload)
                     });
                     
+                    // Analyse de la réponse
+                    const responseData = await updateResp.json();
+                    
                     // Supprimer le message de statut
-                    document.body.removeChild(statusMsg);
+                    if (statusMsg.parentNode) {
+                        document.body.removeChild(statusMsg);
+                    }
                     
                     if (updateResp.ok) {
-                        // Message de succès simple
-                        alert('Sauvegarde réussie sur GitHub!');
+                        // Message de succès
+                        alert(`Sauvegarde réussie sur GitHub!`);
                         return true;
                     } else {
-                        throw new Error('Échec de la mise à jour sur GitHub');
+                        throw new Error(`Échec (${updateResp.status}): ${responseData.message || 'Erreur inconnue'}`);
                     }
                 } catch (error) {
-                    // ...existing code...
-                    function renderGallery() {
-                        const photos = loadPhotos();
-                        const galleryGrid = document.querySelector('.gallery-grid');
-                        galleryGrid.innerHTML = ''; // Clear existing content
-                
-                        photos.forEach(photo => {
-                            const item = document.createElement('div');
-                            item.className = 'gallery-item';
-                            item.innerHTML = `
-                                <img src="${photo.imageUrl}" alt="${photo.title}">
-                                <div class="item-actions">
-                                    <button class="action-btn edit-btn" data-id="${photo.id}">
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </button>
-                                    <button class="action-btn delete-btn" data-id="${photo.id}">
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="item-overlay">
-                                    <span class="item-category">${photo.category}</span>
-                                    <h3 class="item-title">${photo.title}</h3>
-                                </div>
-                            `;
-                            galleryGrid.appendChild(item);
-                        });
-
-                        // Reattach event listeners after DOM updates
-                        attachEventListeners();
-                        updateStats();
+                    console.error('Erreur GitHub détaillée:', error);
+                    
+                    // Supprimer le message de statut
+                    if (statusMsg.parentNode) {
+                        document.body.removeChild(statusMsg);
                     }
-                    // ...existing code...                    console.error('Erreur GitHub:', error);
-                    alert('Erreur lors de la sauvegarde sur GitHub. Utilisez le bouton d\'exportation.');
-                    showExportButton();
-                    return false;
+                    
+                    // Gérer spécifiquement l'erreur 409 (conflit)
+                    if (error.message.includes('409')) {
+                        const tryAgain = confirm("Le fichier sur GitHub a été modifié entre temps. Voulez-vous essayer à nouveau avec les dernières modifications?");
+                        
+                        if (tryAgain) {
+                            try {
+                                // Récupérer le dernier SHA
+                                const refreshResp = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${path}?ref=${branch}`, {
+                                    headers: { 
+                                        'Authorization': `token ${githubToken}`
+                                    }
+                                });
+                                
+                                if (refreshResp.ok) {
+                                    const fileInfo = await refreshResp.json();
+                                    const latestSha = fileInfo.sha;
+                                    
+                                    // Refaire la requête avec le SHA mis à jour
+                                    const updatedPayload = {
+                                        message: 'Mise à jour des photos via interface admin (résolution de conflit)',
+                                        content: encodedContent,
+                                        branch: branch,
+                                        sha: latestSha
+                                    };
+                                    
+                                    const retryResp = await fetch(`https://api.github.com/repos/${githubRepo}/contents/${path}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Authorization': `token ${githubToken}`,
+                                            'Accept': 'application/vnd.github.v3+json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(updatedPayload)
+                                    });
+                                    
+                                    if (retryResp.ok) {
+                                        alert('Sauvegarde réussie sur GitHub après résolution du conflit!');
+                                        return true;
+                                    } else {
+                                        throw new Error(`Échec lors de la seconde tentative: ${(await retryResp.json()).message}`);
+                                    }
+                                }
+                            } catch (retryError) {
+                                alert(`Erreur lors de la résolution du conflit: ${retryError.message}`);
+                                showExportButton();
+                                return false;
+                            }
+                        } else {
+                            showExportButton();
+                            return false;
+                        }
+                    } else {
+                        // Message d'erreur avec instructions pour les autres types d'erreurs
+                        let errorMessage = `Erreur lors de la sauvegarde sur GitHub: ${error.message}`;
+                        
+                        // Ajouter des recommandations selon le type d'erreur
+                        if (error.message.includes('404')) {
+                            errorMessage += "\n\nRecommandations:\n1. Créez d'abord manuellement le dossier 'data' dans votre dépôt GitHub\n2. Vérifiez que le nom du dépôt est au format 'username/repository'\n3. Vérifiez que le token a les permissions 'repo' ou 'public_repo'";
+                        }
+                        
+                        alert(errorMessage);
+                        showExportButton();
+                        return false;
+                    }
                 }
             }
             

@@ -594,6 +594,14 @@
         </div>
     </div>
     
+    <!-- Ajouter ce bouton dans le header ou un autre emplacement approprié -->
+
+    <button id="refreshGalleryBtn" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;" title="Rafraîchir la galerie">
+        <svg width="24" height="24" stroke="white" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+    </button>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Header animations
@@ -691,11 +699,22 @@
             // Charger les photos depuis le fichier JSON
             async function loadPhotosFromFile() {
                 try {
-                    const response = await fetch('/data/photos.json');
+                    // Ajout d'un timestamp pour éviter les problèmes de cache
+                    const timestamp = new Date().getTime();
+                    // Si votre site est sur GitHub Pages:
+                    const repoName = 'portfolio'; // Remplacer par le nom de votre dépôt si différent
+                    const username = 'Nael-Basset'; // Remplacer par votre nom d'utilisateur GitHub
+                    const response = await fetch(`https://${username}.github.io/${repoName}/data/photos.json?t=${timestamp}`);
+                    
                     if (!response.ok) {
                         throw new Error('Impossible de charger les données');
                     }
+                    
                     const photos = await response.json();
+                    
+                    // Sauvegarder une copie dans localStorage pour avoir une version à jour
+                    localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
+                    
                     updateGallery(photos);
                 } catch (error) {
                     console.error('Erreur lors du chargement des photos:', error);
@@ -1068,6 +1087,21 @@
                     ease: "back.out"
                 });
             });
+        });
+
+        document.getElementById('refreshGalleryBtn').addEventListener('click', function() {
+            // Animation de rotation
+            this.style.transition = 'transform 1s';
+            this.style.transform = 'rotate(360deg)';
+            
+            // Recharger les photos depuis le fichier JSON
+            loadPhotosFromFile();
+            
+            // Réinitialiser la rotation après l'animation
+            setTimeout(() => {
+                this.style.transition = 'none';
+                this.style.transform = 'rotate(0deg)';
+            }, 1000);
         });
     </script>
 </body>
