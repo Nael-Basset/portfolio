@@ -460,7 +460,10 @@
             
             // Fonction auxiliaire pour télécharger le fichier JSON
             const downloadPhotosJson = () => {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photos, null, 2));
+                // Utiliser JSON.stringify avec null, 2 pour un formatage propre et préserver l'encodage
+                const jsonContent = JSON.stringify(photos, null, 2);
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonContent);
+                
                 const downloadAnchorNode = document.createElement('a');
                 downloadAnchorNode.setAttribute("href", dataStr);
                 downloadAnchorNode.setAttribute("download", "photos.json");

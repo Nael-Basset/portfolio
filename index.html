@@ -771,21 +771,25 @@
                 
                 photos.forEach((photo, index) => {
                     let imgSrc = photo.imageUrl;
+                    // Décoder les caractères spéciaux si nécessaire
+                    const title = photo.title ? decodeURIComponent(encodeURIComponent(photo.title)) : 'Sans titre';
+                    const description = photo.description ? decodeURIComponent(encodeURIComponent(photo.description)) : '';
+                    const category = photo.category ? decodeURIComponent(encodeURIComponent(photo.category)) : 'Sans catégorie';
                     
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
                     
                     galleryItem.innerHTML = `
-                        <span class="category">${photo.category || 'Sans catégorie'}</span>
+                        <span class="category">${category}</span>
                         <div class="image-container">
                             <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
                                 <div class="loader"></div>
                             </div>
-                            <img src="${imgSrc}" alt="${photo.title || ''}" style="display: none;">
+                            <img src="${imgSrc}" alt="${title}" style="display: none;">
                         </div>
                         <div class="overlay">
-                            <h3>${photo.title || 'Sans titre'}</h3>
-                            <p>${photo.description || ''}</p>
+                            <h3>${title}</h3>
+                            <p>${description}</p>
                         </div>
                     `;
                     
