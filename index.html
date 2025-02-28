@@ -603,6 +603,11 @@
     </button>
 
     <script>
+        gsap.config({ 
+            force3D: true,
+            autoSleep: 60
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             // Header animations
             gsap.to(".title", {
@@ -701,16 +706,32 @@
                 try {
                     // Ajout d'un timestamp pour éviter les problèmes de cache
                     const timestamp = new Date().getTime();
-                    // Si votre site est sur GitHub Pages:
-                    const repoName = 'portfolio'; // Remplacer par le nom de votre dépôt si différent
-                    const username = 'Nael-Basset'; // Remplacer par votre nom d'utilisateur GitHub
-                    const response = await fetch(`https://${username}.github.io/${repoName}/data/photos.json?t=${timestamp}`);
+                    
+                    // Déterminer si on est en développement local ou en production
+                    const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                    
+                    let url;
+                    if (isLocalDev) {
+                        // En développement local
+                        url = `data/photos.json?t=${timestamp}`;
+                    } else {
+                        // En production (GitHub Pages)
+                        const repoName = 'portfolio'; // Remplacer si nécessaire
+                        const username = 'Nael-Basset'; // Remplacer par votre nom d'utilisateur GitHub
+                        url = `https://${username}.github.io/${repoName}/data/photos.json?t=${timestamp}`;
+                    }
+                    
+                    // Afficher un message de débogage
+                    console.log(`Tentative de chargement depuis: ${url}`);
+                    
+                    const response = await fetch(url);
                     
                     if (!response.ok) {
-                        throw new Error('Impossible de charger les données');
+                        throw new Error(`Impossible de charger les données (statut: ${response.status})`);
                     }
                     
                     const photos = await response.json();
+                    console.log(`Photos chargées avec succès: ${photos.length} éléments trouvés`);
                     
                     // Sauvegarder une copie dans localStorage pour avoir une version à jour
                     localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
@@ -721,8 +742,25 @@
                     
                     // Fallback vers localStorage si le fichier n'est pas accessible
                     if (localStorage.getItem('portfolioPhotos')) {
+                        console.log('Utilisation du cache local');
                         const photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
                         updateGallery(photos);
+                    } else {
+                        console.error('Aucune donnée de sauvegarde disponible dans le cache local');
+                        
+                        // Afficher un message d'erreur dans la galerie
+                        const galleryContainer = document.querySelector('.gallery');
+                        if (galleryContainer) {
+                            galleryContainer.innerHTML = `
+                                <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                                    <h3>Impossible de charger les images</h3>
+                                    <p>Veuillez vérifier votre connexion internet et réessayer.</p>
+                                    <button id="retryBtn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Réessayer</button>
+                                </div>
+                            `;
+                            
+                            document.getElementById('retryBtn')?.addEventListener('click', loadPhotosFromFile);
+                        }
                     }
                 }
             }
@@ -732,7 +770,17 @@
                 const galleryContainer = document.querySelector('.gallery');
                 
                 if (galleryContainer && photos.length > 0) {
+                    // Disconnect ScrollTrigger to prevent memory leaks
+                    ScrollTrigger.getAll().forEach(trigger => {
+                        if (trigger.vars.trigger && trigger.vars.trigger.closest('.gallery')) {
+                            trigger.kill();
+                        }
+                    });
+                    
                     galleryContainer.innerHTML = ''; // Vider la galerie actuelle
+                    
+                    // Create a document fragment for better performance
+                    const fragment = document.createDocumentFragment();
                     
                     photos.forEach((photo, index) => {
                         // Vérifier si l'URL de l'image est valide
@@ -751,24 +799,28 @@
                                 <p>${photo.description || ''}</p>
                             </div>
                         `;
-                        galleryContainer.appendChild(galleryItem);
+                        fragment.appendChild(galleryItem);
                     });
                     
-                    // Appliquer les animations
-                    const galleryItems = document.querySelectorAll('.gallery-item');
-                    galleryItems.forEach((item, index) => {
-                        gsap.to(item, {
-                            scrollTrigger: {
-                                trigger: item,
-                                start: "top 90%"
-                            },
-                            opacity: 1,
-                            y: 0,
-                            duration: 0.8,
-                            delay: index * 0.1,
-                            ease: "power3.out"
-                        });
+                    // Add all items at once for better performance
+                    galleryContainer.appendChild(fragment);
+                    
+                    // Batch animations for better performance
+                    gsap.set('.gallery-item', { opacity: 0, y: 50 });
+                    
+                    gsap.to('.gallery-item', {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.6,
+                        stagger: 0.08,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: '.gallery',
+                            start: "top 90%"
+                        }
                     });
+                    
+                    // Add hover animations once all items are added
                     addGalleryItemAnimations();
                 }
             }
@@ -1104,46 +1156,57 @@
             });
 
             function addGalleryItemAnimations() {
+                // First, remove any existing event listeners to prevent duplicates
                 document.querySelectorAll('.gallery-item').forEach((item) => {
-                    item.addEventListener('mouseenter', () => {
-                        gsap.to(item.querySelector('img'), {
+                    item.replaceWith(item.cloneNode(true));
+                });
+                
+                // Then add fresh event listeners with optimized animations
+                document.querySelectorAll('.gallery-item').forEach((item) => {
+                    // Create animation timelines once instead of multiple gsap calls
+                    const enterTimeline = gsap.timeline({ paused: true });
+                    enterTimeline
+                        .to(item.querySelector('img'), {
                             scale: 1.1,
-                            duration: 0.6,
-                            ease: "power2.out"
-                        });
-                        gsap.to(item.querySelector('.overlay'), {
-                            y: 0,
-                            opacity: 1,
                             duration: 0.4,
                             ease: "power2.out"
-                        });
-                        gsap.to(item.querySelector('.category'), {
+                        }, 0)
+                        .to(item.querySelector('.overlay'), {
+                            y: 0,
+                            opacity: 1,
+                            duration: 0.3,
+                            ease: "power2.out"
+                        }, 0)
+                        .to(item.querySelector('.category'), {
                             scale: 1.1,
                             y: -5,
                             duration: 0.3,
                             ease: "back.out(1.7)"
-                        });
-                    });
-                    
-                    item.addEventListener('mouseleave', () => {
-                        gsap.to(item.querySelector('img'), {
+                        }, 0);
+                        
+                    const leaveTimeline = gsap.timeline({ paused: true });
+                    leaveTimeline
+                        .to(item.querySelector('img'), {
                             scale: 1,
-                            duration: 0.6,
+                            duration: 0.4,
                             ease: "power2.out"
-                        });
-                        gsap.to(item.querySelector('.overlay'), {
+                        }, 0)
+                        .to(item.querySelector('.overlay'), {
                             y: 80,
                             opacity: 0.8,
-                            duration: 0.4,
+                            duration: 0.3,
                             ease: "power2.in"
-                        });
-                        gsap.to(item.querySelector('.category'), {
+                        }, 0)
+                        .to(item.querySelector('.category'), {
                             scale: 1,
                             y: 0,
                             duration: 0.3,
                             ease: "back.out"
-                        });
-                    });
+                        }, 0);
+                        
+                    // Use the pre-built timelines for better performance
+                    item.addEventListener('mouseenter', () => enterTimeline.play());
+                    item.addEventListener('mouseleave', () => leaveTimeline.play());
                 });
             }
             addGalleryItemAnimations();
