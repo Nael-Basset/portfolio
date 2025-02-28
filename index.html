@@ -612,9 +612,86 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Configuration de base de GSAP
+        gsap.registerPlugin(ScrollTrigger);
+        
         gsap.config({ 
             force3D: true,
             autoSleep: 60
+        });
+        
+        // Animation des éléments du header
+        gsap.to(".title", {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: "power3.out",
+            delay: 0.5
+        });
+        
+        gsap.to(".tagline", {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: "power3.out",
+            delay: 0.7
+        });
+        
+        gsap.to(".scroll-down", {
+            opacity: 1,
+            duration: 1,
+            delay: 1.2
+        });
+        
+        // Animations de défilement pour la galerie
+        gsap.utils.toArray('.section-title').forEach(title => {
+            gsap.to(title, {
+                scrollTrigger: {
+                    trigger: title,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8
+            });
+        });
+        
+        // Animation des éléments de la galerie
+        function setupGalleryAnimations() {
+            gsap.utils.toArray('.gallery-item').forEach((item, i) => {
+                gsap.to(item, {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top 90%"
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    delay: i * 0.1
+                });
+            });
+        }
+        
+        // Animation de la section À propos
+        gsap.to(".about-image", {
+            scrollTrigger: {
+                trigger: ".about-section",
+                start: "top 70%"
+            },
+            opacity: 1,
+            x: 0,
+            duration: 1
+        });
+        
+        gsap.to(".about-text", {
+            scrollTrigger: {
+                trigger: ".about-section",
+                start: "top 70%"
+            },
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            delay: 0.3
         });
         
         // Fonctionnalité d'accès admin
@@ -696,22 +773,7 @@
             } catch (error) {
                 console.error('Erreur lors du chargement des photos:', error);
                 
-                // Vérifier le localStorage
-                const cachedData = localStorage.getItem('portfolioPhotos');
-                if (cachedData) {
-                    console.log('Utilisation du cache local');
-                    try {
-                        const photos = JSON.parse(cachedData);
-                        if (Array.isArray(photos) && photos.length > 0) {
-                            updateGallery(photos);
-                            return;
-                        }
-                    } catch (e) {
-                        console.error('Erreur avec les données en cache:', e);
-                    }
-                }
-                
-                // Utiliser des données de secours si rien d'autre ne fonctionne
+                // Utiliser des données de secours
                 console.log('Utilisation des données statiques de secours');
                 const fallbackPhotos = [
                     {
@@ -747,45 +809,18 @@
             
             if (!galleryContainer) {
                 console.error("Conteneur de galerie introuvable dans le DOM!");
-                
-                // Créer la galerie si elle n'existe pas
-                const gallerySection = document.querySelector('.gallery-container .container');
-                if (gallerySection) {
-                    const newGallery = document.createElement('div');
-                    newGallery.className = 'gallery';
-                    gallerySection.appendChild(newGallery);
-                    console.log("Conteneur de galerie créé");
-                    
-                    // Continuer avec le nouveau conteneur
-                    updateGallery(photos);
-                    return;
-                }
                 return;
             }
             
-            if (!photos || !Array.isArray(photos) || photos.length === 0) {
-                console.error("Aucune photo à afficher ou format de données invalide");
-                galleryContainer.innerHTML = `
-                    <div class="error-message" style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                        <h3>Aucune photo disponible</h3>
-                        <p>Essayez de rafraîchir la galerie.</p>
-                        <button id="retryBtn" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Réessayer</button>
-                    </div>
-                `;
-                
-                document.getElementById('retryBtn')?.addEventListener('click', loadPhotosFromFile);
-                return;
-            }
-            
-            // Le reste du code pour afficher les photos reste inchangé
+            console.log(`Mise à jour de la galerie avec ${photos.length} photos`);
             galleryContainer.innerHTML = '';
             
             photos.forEach((photo, index) => {
                 let imgSrc = photo.imageUrl;
                 // Décoder les caractères spéciaux si nécessaire
-                const title = photo.title ? decodeURIComponent(encodeURIComponent(photo.title)) : 'Sans titre';
-                const description = photo.description ? decodeURIComponent(encodeURIComponent(photo.description)) : '';
-                const category = photo.category ? decodeURIComponent(encodeURIComponent(photo.category)) : 'Sans catégorie';
+                const title = photo.title ? photo.title : 'Sans titre';
+                const description = photo.description ? photo.description : '';
+                const category = photo.category ? photo.category : 'Sans catégorie';
                 
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item';
@@ -819,6 +854,9 @@
                     img.src = `https://picsum.photos/600/400?random=${index+1}`;
                 };
             });
+            
+            // Setup animations for newly added gallery items
+            setupGalleryAnimations();
         }
         
         // Charger les photos au chargement initial
@@ -829,6 +867,6 @@
             loadPhotosFromFile();
         });
     });
-</script>
+    </script>
 </body>
 </html>
