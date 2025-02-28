@@ -758,13 +758,12 @@
                 localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
                 photosData = photos;
                 
-                // Paramètres GitHub
+                // Paramètres GitHub - définir ces variables en dehors des blocs try/catch
                 const githubToken = localStorage.getItem('githubToken');
-                // Modifier uniquement cette partie dans la fonction savePhotos
-
-                // Lorsque vous récupérez le nom du dépôt, nettoyez le format
                 const githubRepo = localStorage.getItem('githubRepo').trim().replace(/\/+$/, '');
-
+                const branch = localStorage.getItem('githubBranch') || 'main';
+                const path = localStorage.getItem('githubPath') || 'data/photos.json';
+                
                 // Validation du format avant de faire les requêtes
                 if (!githubRepo || !githubRepo.includes('/') || githubRepo.split('/').length !== 2) {
                     alert('Format du nom de dépôt incorrect. Utilisez le format "utilisateur/nom-du-repo".');
@@ -785,9 +784,6 @@
                 document.body.appendChild(statusMsg);
                 
                 try {
-                    const branch = localStorage.getItem('githubBranch') || 'main';
-                    const path = localStorage.getItem('githubPath') || 'data/photos.json';
-                    
                     console.log(`Tentative de mise à jour du fichier dans ${githubRepo}, branche ${branch}, chemin ${path}`);
                     
                     // 1. Vérifier que le dépôt existe
@@ -917,10 +913,14 @@
                                     const fileInfo = await refreshResp.json();
                                     const latestSha = fileInfo.sha;
                                     
+                                    // Recréer le contenu encodé - c'est ce qui manquait!
+                                    const content = JSON.stringify(photos, null, 2);
+                                    const newEncodedContent = btoa(unescape(encodeURIComponent(content)));
+                                    
                                     // Refaire la requête avec le SHA mis à jour
                                     const updatedPayload = {
                                         message: 'Mise à jour des photos via interface admin (résolution de conflit)',
-                                        content: encodedContent,
+                                        content: newEncodedContent, // Utiliser le nouveau contenu encodé
                                         branch: branch,
                                         sha: latestSha
                                     };
@@ -952,15 +952,8 @@
                             return false;
                         }
                     } else {
-                        // Message d'erreur avec instructions pour les autres types d'erreurs
-                        let errorMessage = `Erreur lors de la sauvegarde sur GitHub: ${error.message}`;
-                        
-                        // Ajouter des recommandations selon le type d'erreur
-                        if (error.message.includes('404')) {
-                            errorMessage += "\n\nRecommandations:\n1. Créez d'abord manuellement le dossier 'data' dans votre dépôt GitHub\n2. Vérifiez que le nom du dépôt est au format 'username/repository'\n3. Vérifiez que le token a les permissions 'repo' ou 'public_repo'";
-                        }
-                        
-                        alert(errorMessage);
+                        // Autres types d'erreurs...
+                        alert(`Erreur lors de la sauvegarde sur GitHub: ${error.message}`);
                         showExportButton();
                         return false;
                     }
