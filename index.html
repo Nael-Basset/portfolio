@@ -813,6 +813,187 @@
         document.getElementById('refreshGalleryBtn')?.addEventListener('click', function() {
             loadPhotosFromFile();
         });
+
+        // Basic GSAP animations
+        // Existing code remains...
+    
+        // Add these new animation functions
+    
+        // Function to animate the header elements
+        function animateHeader() {
+            const tl = gsap.timeline();
+            
+            tl.to(".title", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            })
+            .to(".tagline", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            }, "-=0.5")
+            .to(".scroll-down", {
+                opacity: 1,
+                duration: 0.5
+            }, "-=0.5");
+            
+            // Subtle animation for background circles
+            gsap.to(".circle1", {
+                x: 50,
+                y: 30,
+                duration: 15,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+            
+            gsap.to(".circle2", {
+                x: -30,
+                y: 50,
+                duration: 18,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+        }
+        
+        // Function to add scroll animations
+        function setupScrollAnimations() {
+            // Section titles animation
+            gsap.utils.toArray(".section-title").forEach(title => {
+                gsap.to(title, {
+                    scrollTrigger: {
+                        trigger: title,
+                        start: "top 80%",
+                        once: true
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power3.out"
+                });
+            });
+            
+            // About section animation
+            const aboutContent = document.querySelector(".about-content");
+            if (aboutContent) {
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: aboutContent,
+                        start: "top 75%",
+                        once: true
+                    }
+                });
+                
+                tl.to(".about-image", {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1,
+                    ease: "power3.out"
+                })
+                .to(".about-text", {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1,
+                    ease: "power3.out"
+                }, "-=0.5");
+            }
+        }
+        
+        // Function to add smooth scroll for navigation
+        function setupSmoothScroll() {
+            document.querySelector('.scroll-down')?.addEventListener('click', () => {
+                gsap.to(window, {
+                    duration: 1,
+                    scrollTo: ".gallery-container",
+                    ease: "power3.inOut"
+                });
+            });
+        }
+        
+        // Function to animate gallery items when they become visible
+        function animateGalleryItems() {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            galleryItems.forEach((item, index) => {
+                gsap.set(item, { 
+                    opacity: 0, 
+                    y: 50 
+                });
+                
+                gsap.to(item, {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top 85%",
+                        once: true
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.7,
+                    delay: index * 0.1,
+                    ease: "power3.out"
+                });
+            });
+        }
+        
+        // Function to enhance refresh button with animation
+        function setupRefreshButtonAnimation() {
+            const refreshBtn = document.getElementById('refreshGalleryBtn');
+            if (refreshBtn) {
+                // Original click handler remains, just add this animation
+                const originalHandler = refreshBtn.onclick;
+                
+                refreshBtn.addEventListener('click', function(e) {
+                    // Animate the button
+                    gsap.to(this, {
+                        rotation: 360,
+                        duration: 0.8,
+                        ease: "power1.inOut",
+                        onComplete: function() {
+                            gsap.set(refreshBtn, { rotation: 0 });
+                        }
+                    });
+                });
+            }
+        }
+        
+        // Apply modular animations
+        function initAnimations() {
+            animateHeader();
+            setupScrollAnimations();
+            setupSmoothScroll();
+            animateGalleryItems();
+            setupRefreshButtonAnimation();
+            
+            // Observe gallery changes to re-animate new items
+            const galleryObserver = new MutationObserver(() => {
+                animateGalleryItems();
+            });
+            
+            const galleryContainer = document.querySelector('.gallery');
+            if (galleryContainer) {
+                galleryObserver.observe(galleryContainer, { 
+                    childList: true 
+                });
+            }
+        }
+        
+        // Wait a short moment for everything to be ready
+        setTimeout(initAnimations, 100);
+        
+        // Enhanced gallery update function with animation support
+        const originalUpdateGallery = updateGallery;
+        updateGallery = function(photos) {
+            originalUpdateGallery(photos);
+            
+            // Wait for DOM updates to complete
+            setTimeout(() => {
+                animateGalleryItems();
+            }, 100);
+        };
     });
 </script>
 </body>
