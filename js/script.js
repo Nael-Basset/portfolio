@@ -8,16 +8,113 @@ let masonryInstance = null;
 
 // Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialiser les écouteurs d'événements
-    initEventListeners();
+    console.log("Document chargé, initialisation...");
     
-    // Charger les photos
+    // Initialiser les sélecteurs de portfolio
+    initPortfolioSelector();
+    
+    // Initialiser les sections "À propos"
+    initAboutSections();
+    
+    // Charger les photos pour la galerie
     loadPhotos();
+    
+    // Initialiser le lightbox
+    initLightbox();
 });
 
-// Fonction pour initialiser tous les écouteurs d'événements
-function initEventListeners() {
-    // Gestion du lightbox
+// Fonction pour initialiser les sections "À propos"
+function initAboutSections() {
+    console.log("Initialisation des sections À propos");
+    const activePortfolio = document.querySelector('.portfolio-section.active');
+    
+    if (activePortfolio) {
+        const portfolioId = activePortfolio.id;
+        
+        if (portfolioId === 'photo-portfolio') {
+            document.getElementById('about-photo').classList.add('active');
+            document.getElementById('about-physics').classList.remove('active');
+        } else if (portfolioId === 'physics-portfolio') {
+            document.getElementById('about-physics').classList.add('active');
+            document.getElementById('about-photo').classList.remove('active');
+        }
+    }
+}
+
+// Fonction pour initialiser le sélecteur de portfolio
+function initPortfolioSelector() {
+    console.log("Initialisation du sélecteur de portfolio");
+    const selectorBtns = document.querySelectorAll('.selector-btn');
+    const selectorHighlight = document.querySelector('.selector-highlight');
+    
+    if (!selectorBtns.length) {
+        console.error("Boutons de sélection non trouvés");
+        return;
+    }
+    
+    if (!selectorHighlight) {
+        console.error("Highlight du sélecteur non trouvé");
+        return;
+    }
+    
+    // Positionner le highlight sur le bouton actif au chargement
+    const activeBtn = document.querySelector('.selector-btn.active');
+    if (activeBtn) {
+        positionHighlight(activeBtn, selectorHighlight);
+    }
+    
+    selectorBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            console.log("Clic sur bouton sélecteur:", this.getAttribute('data-target'));
+            
+            const targetSection = this.getAttribute('data-target');
+            
+            // Mettre à jour les boutons sélecteurs
+            selectorBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Déplacer le highlight
+            positionHighlight(this, selectorHighlight);
+            
+            // Mettre à jour les en-têtes
+            document.querySelectorAll('.header-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            if (targetSection === 'photo-portfolio') {
+                document.getElementById('photo-header-content').classList.add('active');
+                document.getElementById('about-photo').classList.add('active');
+                document.getElementById('about-physics').classList.remove('active');
+            } else {
+                document.getElementById('physics-header-content').classList.add('active');
+                document.getElementById('about-physics').classList.add('active');
+                document.getElementById('about-photo').classList.remove('active');
+            }
+            
+            // Mettre à jour les sections de portfolio
+            document.querySelectorAll('.portfolio-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(targetSection).classList.add('active');
+        });
+    });
+}
+
+// Fonction pour positionner le highlight du sélecteur
+function positionHighlight(activeBtn, highlight) {
+    const btnRect = activeBtn.getBoundingClientRect();
+    const containerRect = activeBtn.parentElement.getBoundingClientRect();
+    
+    // Calculer la position relative par rapport au conteneur parent
+    const leftPosition = btnRect.left - containerRect.left;
+    
+    // Mettre à jour la position et la largeur du highlight
+    highlight.style.transform = `translateX(${leftPosition}px)`;
+    highlight.style.width = `${btnRect.width}px`;
+}
+
+// Fonction pour initialiser le lightbox
+function initLightbox() {
     const lightbox = document.getElementById('lightbox');
     if (lightbox) {
         document.querySelector('.close-lightbox').addEventListener('click', () => {
@@ -32,63 +129,27 @@ function initEventListeners() {
             }
         });
     }
-    
-    // Gestion des sélecteurs de portfolio
-    const selectorBtns = document.querySelectorAll('.selector-btn');
-    selectorBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const targetSection = this.getAttribute('data-target');
-            
-            // Mettre à jour les boutons sélecteurs
-            selectorBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Mettre à jour l'en-tête
-            document.querySelectorAll('.header-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            if (targetSection === 'photo-portfolio') {
-                document.getElementById('photo-header-content').classList.add('active');
-            } else {
-                document.getElementById('physics-header-content').classList.add('active');
-            }
-            
-            // Mettre à jour les sections de portfolio
-            document.querySelectorAll('.portfolio-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(targetSection).classList.add('active');
-        });
-    });
-    
-    // Écouteur pour le bouton d'affichage des filtres
-    const filtersToggle = document.getElementById('filters-toggle');
-    if (filtersToggle) {
-        filtersToggle.addEventListener('click', function() {
-            const filtersPanel = document.getElementById('filters-panel');
-            if (filtersPanel) {
-                filtersPanel.classList.toggle('active');
-            }
-        });
-    }
 }
 
-// Fonction pour charger les photos
+// Remplacez votre fonction loadPhotos par celle-ci
+
 async function loadPhotos() {
     try {
         console.log("Chargement des photos depuis Google Drive...");
         const galleryContainer = document.querySelector('.gallery');
         
-        // Afficher un loader pendant le chargement
-        if (galleryContainer) {
-            galleryContainer.innerHTML = `
-                <div class="loading-indicator">
-                    <div class="loader"></div>
-                    <p>Chargement des photos...</p>
-                </div>
-            `;
+        if (!galleryContainer) {
+            console.error("Conteneur de galerie non trouvé");
+            return;
         }
+        
+        // Afficher un loader pendant le chargement
+        galleryContainer.innerHTML = `
+            <div class="loading-indicator">
+                <div class="loader"></div>
+                <p>Chargement des photos...</p>
+            </div>
+        `;
         
         // Utiliser votre URL de déploiement Google Apps Script
         const apiUrl = 'https://script.google.com/macros/s/AKfycbxsfN5yl9SKfHyKgTKS4NxMZWQMVuiz3w3UrvqRSzUIMkvoKo7RePgcSP6q07hDgsD0oQ/exec';
@@ -107,13 +168,27 @@ async function loadPhotos() {
         }
         
         if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+            // Formater les dates si nécessaire
+            data.images.forEach(photo => {
+                if (photo.dateAdded) {
+                    const date = new Date(photo.dateAdded);
+                    if (!isNaN(date)) {
+                        photo.formattedDate = date.toLocaleDateString('fr-FR', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                    }
+                }
+            });
+            
             // Stocker toutes les photos
             allPhotos = data.images;
             
             // Initialiser les filtres de catégories
             initCategoryFilters();
             
-            // Afficher les photos avec les filtres actuels
+            // Appliquer les filtres par défaut
             applyFilters();
         } else {
             console.warn("Aucune image n'a été trouvée ou format de réponse invalide");
@@ -392,6 +467,140 @@ function useFallbackPhotos() {
     applyFilters();
 }
 
+// Fonction updateGallery corrigée
+function updateGallery(photos) {
+    console.log(`Mise à jour de la galerie avec ${photos.length} photos`);
+    
+    const galleryContainer = document.querySelector('.gallery');
+    if (!galleryContainer) {
+        console.error("Conteneur de galerie introuvable");
+        return;
+    }
+    
+    // Vider la galerie
+    galleryContainer.innerHTML = '';
+    
+    if (!photos || photos.length === 0) {
+        galleryContainer.innerHTML = `
+            <div class="empty-state">
+                <p>Aucune photo ne correspond aux filtres sélectionnés</p>
+                <button onclick="document.getElementById('reset-filters').click()">Réinitialiser les filtres</button>
+            </div>
+        `;
+        return;
+    }
+    
+    // Créer un fragment pour éviter les multiples reflows
+    const fragment = document.createDocumentFragment();
+    
+    // Ajouter les éléments pour contrôler la mise en page Masonry
+    const sizer = document.createElement('div');
+    sizer.className = 'gallery-sizer';
+    fragment.appendChild(sizer);
+    
+    const gutter = document.createElement('div');
+    gutter.className = 'gallery-gutter';
+    fragment.appendChild(gutter);
+    
+    // Créer tous les éléments de la galerie
+    photos.forEach((photo, index) => {
+        const galleryItem = document.createElement('div');
+        galleryItem.className = 'gallery-item';
+        galleryItem.setAttribute('data-id', photo.id);
+        galleryItem.style.setProperty('--order', index);
+        
+        if (!photo.imageUrl) {
+            console.error(`Photo #${index} n'a pas d'URL d'image`);
+            return;
+        }
+        
+        // Préparation des données
+        const dateInfo = photo.formattedDate ? 
+            `<span class="photo-date">${photo.formattedDate}</span>` : '';
+        
+        // Traitement de l'URL de l'image
+        let imageSrc = photo.imageUrl;
+        if (imageSrc.includes('drive.google.com')) {
+            try {
+                const fileId = extractFileId(imageSrc);
+                if (fileId) {
+                    console.log(`ID de fichier extrait: ${fileId} pour l'image ${index}`);
+                    imageSrc = `https://lh3.googleusercontent.com/d/${fileId}`;
+                }
+            } catch (e) {
+                console.error("Erreur lors de l'extraction de l'ID:", e);
+            }
+        }
+        
+        console.log(`URL de l'image ${index}:`, imageSrc);
+
+        galleryItem.innerHTML = `
+            <span class="category">${photo.category || 'Non classé'}</span>
+            <div class="image-container">
+                <div class="image-placeholder" style="background-color: #2a2a2a; height: 200px; display: flex; align-items: center; justify-content: center;">
+                    <div class="loader"></div>
+                </div>
+                <img src="${imageSrc}" alt="${photo.title || 'Image sans titre'}" style="display: none;">
+            </div>
+            <div class="overlay">
+                <h3>${photo.title || 'Sans titre'}</h3>
+                ${dateInfo}
+            </div>
+        `;
+        
+        fragment.appendChild(galleryItem);
+        
+        // Gérer les événements d'image et la lightbox
+        const img = galleryItem.querySelector('img');
+        const placeholder = galleryItem.querySelector('.image-placeholder');
+        
+        img.onload = function() {
+            console.log(`Image chargée avec succès: ${photo.title || 'sans titre'}`);
+            placeholder.style.display = 'none';
+            img.style.display = 'block';
+        };
+        
+        img.onerror = function() {
+            console.error(`Erreur de chargement de l'image: ${imageSrc}`);
+            this.src = `https://picsum.photos/600/400?random=${index+1}`;
+        };
+        
+        galleryItem.addEventListener('click', () => {
+            openLightbox(photo);
+        });
+    });
+    
+    // Ajouter tous les éléments d'un coup
+    galleryContainer.appendChild(fragment);
+    
+    // Initialiser Masonry APRÈS le chargement des images
+    console.log("Initialisation de imagesLoaded et Masonry");
+    imagesLoaded(galleryContainer, function() {
+        console.log('Toutes les images sont chargées!');
+        
+        if (masonryInstance) {
+            masonryInstance.destroy();
+        }
+        
+        masonryInstance = new Masonry(galleryContainer, {
+            itemSelector: '.gallery-item',
+            columnWidth: '.gallery-sizer',
+            gutter: '.gallery-gutter',
+            percentPosition: true,
+            transitionDuration: '0.4s',
+            horizontalOrder: true
+        });
+        
+        // Exécuter layout une seconde fois après un court délai
+        setTimeout(() => {
+            if (masonryInstance) {
+                masonryInstance.layout();
+            }
+            galleryContainer.classList.add('loaded');
+        }, 100);
+    });
+}
+
 // Fonction pour extraire l'ID du fichier d'une URL Google Drive
 function extractFileId(url) {
     if (!url) return null;
@@ -409,6 +618,36 @@ function extractFileId(url) {
     // Format: déjà un lien uc?export=view
     else if (url.includes('uc?export=view&id=')) {
         fileId = url.split('id=')[1].split('&')[0];
+    }
+    
+    return fileId;
+}
+
+// Fonction extractFileId améliorée
+function extractFileId(url) {
+    if (!url) return null;
+    
+    let fileId = null;
+    
+    try {
+        // Format: https://drive.google.com/file/d/FILE_ID/view
+        if (url.includes('/file/d/')) {
+            fileId = url.split('/file/d/')[1].split('/')[0];
+        } 
+        // Format: https://drive.google.com/open?id=FILE_ID
+        else if (url.includes('id=')) {
+            fileId = url.split('id=')[1].split('&')[0];
+        }
+        // Format: déjà un lien uc?export=view
+        else if (url.includes('uc?export=view&id=')) {
+            fileId = url.split('id=')[1].split('&')[0];
+        }
+        // Déjà un lien vers lh3.googleusercontent.com
+        else if (url.includes('lh3.googleusercontent.com/d/')) {
+            fileId = url.split('/d/')[1].split('/')[0];
+        }
+    } catch (e) {
+        console.error("Erreur lors de l'extraction de l'ID du fichier:", e);
     }
     
     return fileId;
@@ -482,7 +721,6 @@ function updateGallery(photos) {
             </div>
             <div class="overlay">
                 <h3>${photo.title || 'Sans titre'}</h3>
-                <p>${photo.description || 'Aucune description'}</p>
                 ${dateInfo}
             </div>
         `;
@@ -557,11 +795,11 @@ function openLightbox(photo) {
     lightboxImage.src = imageSrc;
     lightboxTitle.textContent = photo.title || 'Sans titre';
     
-    // Ajouter la date à la description si disponible
+    // Modification: Ne pas afficher la description, uniquement la date si disponible
     if (photo.formattedDate) {
-        lightboxDescription.innerHTML = `${photo.description || ''}<br><small>Prise le ${photo.formattedDate}</small>`;
+        lightboxDescription.innerHTML = `<small>Prise le ${photo.formattedDate}</small>`;
     } else {
-        lightboxDescription.textContent = photo.description || '';
+        lightboxDescription.innerHTML = ''; // Vider la description
     }
     
     lightboxCategory.textContent = photo.category || 'Non classé';

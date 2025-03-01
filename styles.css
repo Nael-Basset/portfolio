@@ -126,6 +126,9 @@ header {
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .gallery.loaded {
@@ -437,8 +440,15 @@ footer {
 }
 
 .lightbox-info h3 {
-    margin-bottom: 10px;
-    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.lightbox-info h3 {
+    margin-bottom: 0.5rem;
+}
+
+.lightbox-description small {
+    margin-top: 0;
 }
 
 .watermark {
@@ -743,6 +753,76 @@ footer {
 }
 
 .portfolio-selector {
+    display: flex;
+    justify-content: center;
+    margin: 0 15px;
+}
+
+.selector-container {
+    position: relative;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 30px;
+    padding: 5px;
+}
+
+.selector-btn {
+    position: relative;
+    z-index: 2;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.selector-icon {
+    font-size: 1.2rem;
+}
+
+.selector-highlight {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    bottom: 5px;
+    border-radius: 25px;
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    transition: transform 0.3s ease, width 0.3s ease;
+    z-index: 1;
+    width: calc(50% - 10px);
+    height: calc(100% - 10px);
+}
+
+/* Style pour le bouton actif */
+.selector-btn.active {
+    color: white;
+    font-weight: 600;
+}
+
+/* Media query pour mobile */
+@media (max-width: 768px) {
+    .selector-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        min-width: 120px;
+    }
+    
+    .selector-icon {
+        font-size: 1rem;
+    }
+}
+
+.portfolio-selector {
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
     border-radius: 30px;
@@ -824,14 +904,14 @@ footer {
     font-size: 0.8rem;
     opacity: 0.7;
     font-style: italic;
-    margin-top: 5px;
+    margin-top: 0;
     display: block;
 }
 
 /* Dans la lightbox */
 .lightbox-description small {
     display: block;
-    margin-top: 8px;
+    margin-top: 0;
     font-size: 0.85rem;
     opacity: 0.8;
     font-style: italic;
@@ -1110,4 +1190,88 @@ footer {
     border-top-color: var(--color-primary);
     animation: spin 1s ease infinite;
     margin-bottom: 15px;
+}
+
+/* Ajoutez ces styles pour ajuster l'apparence après suppression des descriptions */
+
+.overlay h3 {
+    margin-bottom: 0.5rem; /* Réduit l'espace après le titre */
+}
+
+.photo-date {
+    margin-top: 0; /* Élimine l'espace avant la date */
+}
+
+.lightbox-info h3 {
+    margin-bottom: 0.5rem;
+}
+
+/* Si vous avez gardé l'élément lightbox-description pour la date */
+.lightbox-description small {
+    margin-top: 0;
+}
+
+/* Ajoutez ces styles pour gérer les sections À propos */
+
+.about-section {
+    display: none;
+    padding: 80px 0;
+    background: linear-gradient(rgba(10, 10, 12, 0.7), rgba(10, 10, 12, 0.9));
+    transition: opacity 0.4s ease;
+}
+
+.about-section.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Styles spécifiques pour chaque section si nécessaire */
+#about-photo .about-image {
+    border: 3px solid var(--color-primary);
+}
+
+#about-physics .about-image {
+    border: 3px solid var(--color-accent);
+}
+
+/* Styles pour distinguer visuellement les deux sections À propos */
+
+#about-photo .contact-btn {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+}
+
+#about-physics .contact-btn {
+    background: linear-gradient(45deg, var(--color-accent), #9c4dcc);
+}
+
+#about-photo h2 {
+    color: var(--color-primary);
+}
+
+#about-physics h2 {
+    color: var(--color-accent);
+}
+
+/* Animation pour le changement de section */
+.about-section {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.about-section:not(.active) {
+    opacity: 0;
+    transform: translateY(20px);
+    position: absolute;
+    pointer-events: none;
+}
+
+.about-section.active {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+    pointer-events: auto;
 }
