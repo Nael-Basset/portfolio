@@ -345,8 +345,24 @@
                         </div>
                         
                         <div class="form-group">
+                            <label for="photoImageSource">Source de l'image</label>
+                            <select id="photoImageSource" onchange="toggleImageSourceFields()">
+                                <option value="local">Image locale</option>
+                                <option value="url">URL externe</option>
+                            </select>
+                        </div>
+
+                        <div id="localImageField" class="form-group">
+                            <label for="photoLocalImage">Nom du fichier</label>
+                            <div class="input-with-help">
+                                <input type="text" id="photoLocalImage" placeholder="exemple.jpg">
+                                <p class="help-text">Placez votre image dans le dossier "images/gallery/" et entrez son nom ici</p>
+                            </div>
+                        </div>
+
+                        <div id="urlImageField" class="form-group" style="display:none;">
                             <label for="photoImageUrl">URL de l'image</label>
-                            <input type="text" id="photoImageUrl" required>
+                            <input type="text" id="photoImageUrl" placeholder="https://...">
                         </div>
                         
                         <div id="imagePreviewContainer" style="display: none;">
@@ -576,11 +592,21 @@
             photoForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 
+                const sourceType = document.getElementById('photoImageSource').value;
+                let imageUrl;
+                
+                if (sourceType === 'local') {
+                    const filename = document.getElementById('photoLocalImage').value.trim();
+                    imageUrl = `images/gallery/${filename}`;
+                } else {
+                    imageUrl = document.getElementById('photoImageUrl').value.trim();
+                }
+                
                 const photo = {
                     title: photoTitle.value,
                     description: photoDescription.value,
                     category: photoCategory.value,
-                    imageUrl: photoImageUrl.value
+                    imageUrl: imageUrl
                 };
                 
                 if (photoId.value) {
@@ -618,6 +644,20 @@
             // Vérifier l'authentification au chargement
             checkAuth();
         });
+
+        function toggleImageSourceFields() {
+            const sourceType = document.getElementById('photoImageSource').value;
+            const localField = document.getElementById('localImageField');
+            const urlField = document.getElementById('urlImageField');
+            
+            if (sourceType === 'local') {
+                localField.style.display = 'block';
+                urlField.style.display = 'none';
+            } else {
+                localField.style.display = 'none';
+                urlField.style.display = 'block';
+            }
+        }
     </script>
 </body>
 </html>

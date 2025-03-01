@@ -382,6 +382,97 @@
             transform: translateX(-50%);
             animation: bounce 2s infinite;
         }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-content {
+            position: relative;
+            margin: auto;
+            max-width: 90%;
+            max-height: 90vh;
+            margin-top: 50px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .lightbox-image-container {
+            position: relative;
+            text-align: center;
+        }
+
+        #lightbox-image {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: -40px;
+            right: -10px;
+            font-size: 35px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease;
+            z-index: 1001;
+        }
+
+        .close-lightbox:hover {
+            color: var(--color-primary);
+            transform: scale(1.2);
+        }
+
+        .lightbox-info {
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .lightbox-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0.8;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -492,6 +583,21 @@
         </div>
     </footer>
 
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <span class="close-lightbox">&times;</span>
+            <div class="lightbox-image-container">
+                <img id="lightbox-image" src="" alt="">
+                <div class="watermark">Naël Basset © 2025</div>
+            </div>
+            <div class="lightbox-info">
+                <h3 id="lightbox-title"></h3>
+                <p id="lightbox-description"></p>
+                <span id="lightbox-category" class="category"></span>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Charger les photos depuis le fichier JSON
@@ -553,6 +659,14 @@
                 photos.forEach((photo, index) => {
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
+                    galleryItem.setAttribute('data-id', photo.id);
+                    
+                    // Construire le chemin de l'image avec le préfixe si nécessaire
+                    const isGitHubPages = window.location.hostname.includes('github.io');
+                    const baseUrl = isGitHubPages ? '/portfolio/' : '/';
+                    const imagePath = photo.imageUrl.startsWith('http') 
+                        ? photo.imageUrl 
+                        : `${baseUrl}${photo.imageUrl}`;
                     
                     galleryItem.innerHTML = `
                         <span class="category">${photo.category}</span>
@@ -560,7 +674,7 @@
                             <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
                                 <div class="loader"></div>
                             </div>
-                            <img src="${photo.imageUrl}" alt="${photo.title}" style="display: none;">
+                            <img src="${imagePath}" alt="${photo.title}" style="display: none;">
                         </div>
                         <div class="overlay">
                             <h3>${photo.title}</h3>
@@ -582,6 +696,53 @@
                         console.error(`Erreur de chargement de l'image: ${photo.imageUrl}`);
                         img.src = `https://picsum.photos/600/400?random=${index+1}`;
                     };
+                    
+                    // Ajouter un gestionnaire d'événement pour l'ouverture de la lightbox
+                    galleryItem.addEventListener('click', () => {
+                        openLightbox(photo);
+                    });
+                });
+            }
+            
+            // Ajouter ces nouvelles fonctions pour gérer la lightbox
+            function openLightbox(photo) {
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImage = document.getElementById('lightbox-image');
+                const lightboxTitle = document.getElementById('lightbox-title');
+                const lightboxDescription = document.getElementById('lightbox-description');
+                const lightboxCategory = document.getElementById('lightbox-category');
+                
+                // Définir les informations de la photo
+                lightboxImage.src = photo.imageUrl;
+                lightboxTitle.textContent = photo.title;
+                lightboxDescription.textContent = photo.description;
+                lightboxCategory.textContent = photo.category;
+                
+                // Afficher la lightbox avec une animation
+                lightbox.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Empêcher le défilement du corps
+                
+                // Ajouter un événement de clic pour fermer la lightbox
+                const closeLightbox = document.querySelector('.close-lightbox');
+                closeLightbox.addEventListener('click', () => {
+                    lightbox.style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Réactiver le défilement du corps
+                });
+                
+                // Fermer la lightbox en cliquant à l'extérieur de l'image
+                lightbox.addEventListener('click', (e) => {
+                    if (e.target === lightbox) {
+                        lightbox.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+                
+                // Fermer la lightbox en appuyant sur la touche Échap
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && lightbox.style.display === 'block') {
+                        lightbox.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
                 });
             }
             
