@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Administration | Portfolio Photographique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --color-primary: #ff3366;
             --color-secondary: #7d3c98;
+            --color-accent: #3498db;
             --color-dark: #222;
             --color-light: #f8f9fa;
+            --color-danger: #e74c3c;
+            --color-success: #2ecc71;
         }
         
         * {
@@ -21,8 +24,9 @@
         
         body {
             font-family: 'Montserrat', sans-serif;
-            background: #222;
+            background: linear-gradient(135deg, #111, #333);
             color: var(--color-light);
+            min-height: 100vh;
             padding: 20px;
         }
         
@@ -31,473 +35,597 @@
             margin: 0 auto;
         }
         
-        header {
+        .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #444;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         
-        h1 {
+        .admin-title {
             font-size: 2rem;
-            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            background: linear-gradient(to right, var(--color-primary), var(--color-accent));
             -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
         }
         
-        .btn {
-            display: inline-block;
-            padding: 8px 20px;
-            background: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--color-primary);
+            color: var(--color-light);
+            padding: 8px 15px;
+            border-radius: 20px;
             cursor: pointer;
-            font-family: inherit;
-            font-weight: 500;
-            transition: all 0.3s;
-            text-decoration: none;
+            transition: all 0.3s ease;
         }
         
-        .btn:hover {
-            background: #e62958;
+        .logout-btn:hover {
+            background: var(--color-primary);
             transform: translateY(-2px);
         }
         
-        .gallery-manager {
-            margin-bottom: 40px;
+        .admin-panel {
+            display: none;
         }
         
-        .photo-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: rgba(34, 34, 34, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
         
-        .photo-item {
-            background: #333;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--color-light);
         }
         
-        .photo-item img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .photo-info {
-            padding: 15px;
-        }
-        
-        .photo-info h3 {
-            margin-bottom: 5px;
-            font-size: 1.2rem;
-        }
-        
-        .photo-info p {
-            font-size: 0.9rem;
-            color: #ccc;
-            margin-bottom: 15px;
-        }
-        
-        .photo-actions {
+        .login-form {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
         }
         
-        .form-container {
-            background: #333;
-            border-radius: 8px;
+        .login-form input {
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-light);
+            font-family: inherit;
+        }
+        
+        .login-form button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: var(--color-primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .login-form button:hover {
+            background: #e6254d;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            color: var(--color-danger);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .photo-form {
+            background: rgba(34, 34, 34, 0.8);
             padding: 20px;
+            border-radius: 10px;
+            height: fit-content;
         }
         
         .form-group {
             margin-bottom: 15px;
         }
         
-        label {
+        .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: 500;
         }
         
-        input[type="text"],
-        textarea,
-        select {
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
             width: 100%;
             padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #444;
-            background: #222;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
             color: white;
             font-family: inherit;
         }
         
-        .btn-edit {
-            background: var(--color-secondary);
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
         
-        .btn-delete {
-            background: #e74c3c;
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         
-        .btn-back {
-            background: #555;
-            margin-right: 10px;
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
         }
         
-        .hidden {
-            display: none;
+        .btn-secondary {
+            background: var(--color-accent);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--color-danger);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gallery-list {
+            background: rgba(34, 34, 34, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .gallery-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gallery-item:last-child {
+            border-bottom: none;
+        }
+        
+        .gallery-item-image {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+        
+        .gallery-item-content {
+            flex: 1;
+        }
+        
+        .gallery-item-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .gallery-item-category {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--color-primary);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .gallery-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn-edit {
+            background: var(--color-accent);
+            color: white;
+        }
+        
+        .action-btn-delete {
+            background: var(--color-danger);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.success {
+            background: var(--color-success);
+        }
+        
+        .notification.error {
+            background: var(--color-danger);
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Administration du portfolio</h1>
-            <div>
-                <button id="saveChanges" class="btn">Enregistrer les modifications</button>
-                <a href="index.html" class="btn btn-back">Retour au site</a>
-            </div>
-        </header>
+        <div id="loginSection" class="login-container">
+            <h2>Accès Administration</h2>
+            <p id="errorMessage" class="error-message"></p>
+            <form id="loginForm" class="login-form">
+                <input type="password" id="password" placeholder="Mot de passe" required>
+                <button type="submit">Se connecter</button>
+            </form>
+        </div>
         
-        <div class="gallery-manager">
-            <h2>Gestionnaire de photos</h2>
-            <button id="addPhotoBtn" class="btn" style="margin-top: 15px;">Ajouter une photo</button>
-            
-            <div id="addPhotoForm" class="form-container hidden" style="margin-top: 20px;">
-                <h3>Ajouter une nouvelle photo</h3>
-                <form id="photoForm">
-                    <div class="form-group">
-                        <label for="photoTitle">Titre</label>
-                        <input type="text" id="photoTitle" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="photoDescription">Description</label>
-                        <textarea id="photoDescription" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="photoCategory">Catégorie</label>
-                        <input type="text" id="photoCategory" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="photoImage">Image</label>
-                        <input type="file" id="photoImageUpload" accept="image/*">
-                        <p style="font-size: 0.8rem; color: #999; margin-top: 5px;">
-                            Téléchargez une image ou laissez vide pour utiliser une image temporaire
-                        </p>
-                    </div>
-                    <button type="submit" class="btn">Ajouter</button>
-                    <button type="button" class="btn btn-back" id="cancelAdd">Annuler</button>
-                </form>
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h1 class="admin-title">Gestion de la Galerie</h1>
+                <button id="logoutBtn" class="logout-btn">Déconnexion</button>
             </div>
             
-            <div id="photoList" class="photo-list">
-                <!-- Les photos seront ajoutées ici dynamiquement -->
+            <div class="grid-container">
+                <div class="photo-form">
+                    <h2>Ajouter / Modifier Photo</h2>
+                    <form id="photoForm">
+                        <input type="hidden" id="photoId">
+                        
+                        <div class="form-group">
+                            <label for="photoTitle">Titre</label>
+                            <input type="text" id="photoTitle" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photoDescription">Description</label>
+                            <textarea id="photoDescription" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photoCategory">Catégorie</label>
+                            <select id="photoCategory" required>
+                                <option value="Nature">Nature</option>
+                                <option value="Portrait">Portrait</option>
+                                <option value="Urbain">Urbain</option>
+                                <option value="Voyage">Voyage</option>
+                                <option value="Architecture">Architecture</option>
+                                <option value="Évènement">Évènement</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photoImageUrl">URL de l'image</label>
+                            <input type="text" id="photoImageUrl" required>
+                        </div>
+                        
+                        <div id="imagePreviewContainer" style="display: none;">
+                            <p>Aperçu :</p>
+                            <img id="imagePreview" class="preview-image" src="">
+                        </div>
+                        
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary" id="saveBtn">Ajouter</button>
+                            <button type="button" class="btn btn-secondary" id="resetBtn">Réinitialiser</button>
+                            <button type="button" class="btn btn-danger" id="deleteBtn" style="display: none;">Supprimer</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="gallery-list">
+                    <h2>Photos existantes</h2>
+                    <div id="photoList"></div>
+                </div>
             </div>
         </div>
     </div>
     
+    <div id="notification" class="notification"></div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const photoList = document.getElementById('photoList');
-            const addPhotoBtn = document.getElementById('addPhotoBtn');
-            const addPhotoForm = document.getElementById('addPhotoForm');
+            const loginSection = document.getElementById('loginSection');
+            const adminPanel = document.getElementById('adminPanel');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const logoutBtn = document.getElementById('logoutBtn');
             const photoForm = document.getElementById('photoForm');
-            const cancelAddBtn = document.getElementById('cancelAdd');
-            const saveChangesBtn = document.getElementById('saveChanges');
+            const photoId = document.getElementById('photoId');
+            const photoTitle = document.getElementById('photoTitle');
+            const photoDescription = document.getElementById('photoDescription');
+            const photoCategory = document.getElementById('photoCategory');
+            const photoImageUrl = document.getElementById('photoImageUrl');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+            const saveBtn = document.getElementById('saveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const photoList = document.getElementById('photoList');
+            const notification = document.getElementById('notification');
             
             let photos = [];
+            const ADMIN_PASSWORD = "admin"; // Mot de passe simple pour l'exemple
             
-            // Charger les photos depuis localStorage ou le fichier JSON
-            const loadPhotos = async () => {
+            // Vérifier si l'utilisateur est connecté
+            function checkAuth() {
+                const isLoggedIn = sessionStorage.getItem('adminLoggedIn') === 'true';
+                loginSection.style.display = isLoggedIn ? 'none' : 'block';
+                adminPanel.style.display = isLoggedIn ? 'block' : 'none';
+                
+                if (isLoggedIn) {
+                    loadPhotos();
+                }
+            }
+            
+            // Gestion de la connexion
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const password = document.getElementById('password').value;
+                
+                if (password === ADMIN_PASSWORD) {
+                    sessionStorage.setItem('adminLoggedIn', 'true');
+                    checkAuth();
+                    showNotification('Connexion réussie!', 'success');
+                } else {
+                    errorMessage.textContent = 'Mot de passe incorrect';
+                }
+            });
+            
+            // Gestion de la déconnexion
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('adminLoggedIn');
+                checkAuth();
+            });
+            
+            // Charger les photos depuis le fichier JSON
+            async function loadPhotos() {
                 try {
-                    // D'abord, essayer de charger depuis localStorage
-                    if (localStorage.getItem('portfolioPhotos')) {
-                        photos = JSON.parse(localStorage.getItem('portfolioPhotos'));
-                        renderPhotoList();
-                        return;
-                    }
+                    const timestamp = new Date().getTime();
+                    const response = await fetch(`data/photos.json?t=${timestamp}`);
                     
-                    // Si pas dans localStorage, charger depuis le fichier
-                    const response = await fetch('data/photos.json');
                     if (!response.ok) {
-                        throw new Error('Impossible de charger les données');
+                        throw new Error(`Erreur HTTP: ${response.status}`);
                     }
                     
                     photos = await response.json();
                     renderPhotoList();
                     
-                    // Sauvegarder dans localStorage
-                    localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
                 } catch (error) {
                     console.error('Erreur lors du chargement des photos:', error);
-                    alert('Impossible de charger les photos. Veuillez réessayer plus tard.');
+                    showNotification('Erreur lors du chargement des photos', 'error');
+                    photos = []; // Initialiser avec un tableau vide en cas d'erreur
                 }
-            };
+            }
+            
+            // Enregistrer les photos dans le fichier JSON
+            async function savePhotosToFile() {
+                try {
+                    const response = await fetch('data/photos.json', {
+                        method: 'PUT', // Note: Dans un environnement réel, vous auriez besoin d'un serveur backend pour cette opération
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(photos),
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+                    
+                    showNotification('Photos sauvegardées avec succès!', 'success');
+                    
+                } catch (error) {
+                    console.error('Erreur lors de la sauvegarde des photos:', error);
+                    showNotification('Erreur lors de la sauvegarde des photos. Vérifiez la console pour plus de détails.', 'error');
+                    
+                    // Solution alternative: téléchargement du fichier JSON
+                    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photos));
+                    const downloadAnchorNode = document.createElement('a');
+                    downloadAnchorNode.setAttribute("href", dataStr);
+                    downloadAnchorNode.setAttribute("download", "photos.json");
+                    document.body.appendChild(downloadAnchorNode);
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+                    
+                    showNotification('Le fichier photos.json a été téléchargé. Veuillez le placer dans le dossier "data".', 'success');
+                }
+            }
             
             // Afficher la liste des photos
-            const renderPhotoList = () => {
+            function renderPhotoList() {
                 photoList.innerHTML = '';
                 
-                photos.forEach((photo, index) => {
-                    const photoItem = document.createElement('div');
-                    photoItem.className = 'photo-item';
-                    photoItem.innerHTML = `
-                        <img src="${photo.imageUrl || `https://picsum.photos/600/400?random=${index + 1}`}" alt="${photo.title}">
-                        <div class="photo-info">
-                            <h3>${photo.title}</h3>
-                            <p>${photo.description || ''}</p>
-                            <div class="photo-actions">
-                                <button class="btn btn-edit" data-id="${index}">Modifier</button>
-                                <button class="btn btn-delete" data-id="${index}">Supprimer</button>
+                photos.forEach(photo => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `
+                        <img class="gallery-item-image" src="${photo.imageUrl}" alt="${photo.title}" onerror="this.src='https://picsum.photos/120/80?random=${photo.id || Math.random()}'">
+                        <div class="gallery-item-content">
+                            <h3 class="gallery-item-title">${photo.title}</h3>
+                            <span class="gallery-item-category">${photo.category}</span>
+                            <p>${photo.description}</p>
+                            <div class="gallery-item-actions">
+                                <button class="action-btn action-btn-edit" data-id="${photo.id}">Modifier</button>
+                                <button class="action-btn action-btn-delete" data-id="${photo.id}">Supprimer</button>
                             </div>
                         </div>
                     `;
-                    photoList.appendChild(photoItem);
+                    
+                    photoList.appendChild(item);
                 });
                 
-                // Ajouter les gestionnaires d'événements pour les boutons
-                document.querySelectorAll('.btn-edit').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = parseInt(e.target.dataset.id);
-                        editPhoto(id);
-                    });
+                // Ajouter des écouteurs d'événements aux boutons
+                document.querySelectorAll('.action-btn-edit').forEach(button => {
+                    button.addEventListener('click', () => editPhoto(button.dataset.id));
                 });
                 
-                document.querySelectorAll('.btn-delete').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const id = parseInt(e.target.dataset.id);
-                        deletePhoto(id);
-                    });
-                });
-            };
-            
-            // Ajouter une nouvelle photo
-            const addPhoto = async (e) => {
-                e.preventDefault();
-                
-                const processImage = async () => {
-                    const fileInput = document.getElementById('photoImageUpload');
-                    
-                    if (fileInput.files && fileInput.files[0]) {
-                        const file = fileInput.files[0];
-                        const fileName = `${Date.now()}_${file.name}`;
-                        
-                        // Dans une application réelle, vous utiliseriez un service de stockage
-                        // Comme ça n'est pas possible avec une page statique GitHub Pages,
-                        // nous allons créer une URL temporaire pour démonstration
-                        const imageUrl = URL.createObjectURL(file);
-                        
-                        // Note: Dans une application réelle, vous téléchargeriez le fichier sur un serveur
-                        // et obtiendriez une URL permanente
-                        return `data/images/${fileName}`;
-                    }
-                    
-                    return `https://picsum.photos/600/400?random=${photos.length + 1}`;
-                };
-                
-                const imageUrl = await processImage();
-                
-                const newPhoto = {
-                    id: photos.length + 1,
-                    title: document.getElementById('photoTitle').value,
-                    description: document.getElementById('photoDescription').value,
-                    category: document.getElementById('photoCategory').value,
-                    imageUrl: imageUrl
-                };
-                
-                photos.push(newPhoto);
-                localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                renderPhotoList();
-                
-                // Réinitialiser le formulaire et le cacher
-                photoForm.reset();
-                addPhotoForm.classList.add('hidden');
-            };
-            
-            // Modifier une photo
-            const editPhoto = (id) => {
-                const photo = photos[id];
-                
-                // Créer un formulaire de modification
-                const formHTML = `
-                    <div class="form-container" id="editForm">
-                        <h3>Modifier la photo</h3>
-                        <form>
-                            <div class="form-group">
-                                <label for="editTitle">Titre</label>
-                                <input type="text" id="editTitle" value="${photo.title}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="editDescription">Description</label>
-                                <textarea id="editDescription" rows="3">${photo.description || ''}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="editCategory">Catégorie</label>
-                                <input type="text" id="editCategory" value="${photo.category}" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="editImage">URL de l'image</label>
-                                <input type="text" id="editImage" value="${photo.imageUrl || ''}">
-                            </div>
-                            <button type="button" class="btn" id="saveEdit" data-id="${id}">Enregistrer</button>
-                            <button type="button" class="btn btn-back" id="cancelEdit">Annuler</button>
-                        </form>
-                    </div>
-                `;
-                
-                // Remplacer temporairement l'élément de liste par le formulaire
-                photoList.children[id].outerHTML = formHTML;
-                
-                // Ajouter les gestionnaires d'événements
-                document.getElementById('saveEdit').addEventListener('click', (e) => {
-                    const photoId = parseInt(e.target.dataset.id);
-                    
-                    // Mettre à jour les données
-                    photos[photoId].title = document.getElementById('editTitle').value;
-                    photos[photoId].description = document.getElementById('editDescription').value;
-                    photos[photoId].category = document.getElementById('editCategory').value;
-                    photos[photoId].imageUrl = document.getElementById('editImage').value;
-                    
-                    // Enregistrer dans localStorage
-                    localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                    
-                    // Mettre à jour l'affichage
-                    renderPhotoList();
-                });
-                
-                document.getElementById('cancelEdit').addEventListener('click', () => {
-                    renderPhotoList();
-                });
-            };
-            
-            // Supprimer une photo
-            const deletePhoto = (id) => {
-                if (confirm('Êtes-vous sûr de vouloir supprimer cette photo ?')) {
-                    photos.splice(id, 1);
-                    localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                    renderPhotoList();
-                }
-            };
-            
-            // Enregistrer toutes les modifications
-            const saveAllChanges = async () => {
-                try {
-                    // Enregistrer dans localStorage
-                    localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                    
-                    // Configuration pour l'API GitHub
-                    const githubToken = prompt("Pour sauvegarder automatiquement, entrez votre token GitHub avec accès 'repo'. Laissez vide pour télécharger manuellement.");
-                    
-                    if (!githubToken) {
-                        // Téléchargement manuel si pas de token
-                        downloadPhotosJson();
-                        return;
-                    }
-                    
-                    const username = 'Nael-Basset'; // Remplacez par votre nom d'utilisateur
-                    const repo = 'portfolio';  // Nom de votre dépôt
-                    const path = 'data/photos.json';
-                    const message = 'Mise à jour des photos depuis l\'interface admin';
-                    
-                    // Récupérer d'abord le fichier actuel pour connaître le SHA
-                    const getFileResponse = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
-                        headers: {
-                            'Authorization': `token ${githubToken}`,
-                            'Accept': 'application/vnd.github.v3+json'
+                document.querySelectorAll('.action-btn-delete').forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (confirm('Êtes-vous sûr de vouloir supprimer cette photo ?')) {
+                            deletePhoto(button.dataset.id);
                         }
                     });
+                });
+            }
+            
+            // Modifier une photo
+            function editPhoto(id) {
+                const photo = photos.find(p => p.id == id);
+                
+                if (photo) {
+                    photoId.value = photo.id;
+                    photoTitle.value = photo.title;
+                    photoDescription.value = photo.description;
+                    photoCategory.value = photo.category;
+                    photoImageUrl.value = photo.imageUrl;
                     
-                    if (!getFileResponse.ok && getFileResponse.status !== 404) {
-                        throw new Error('Erreur lors de la récupération du fichier');
-                    }
+                    // Afficher l'aperçu de l'image
+                    imagePreview.src = photo.imageUrl;
+                    imagePreviewContainer.style.display = 'block';
                     
-                    const fileData = getFileResponse.ok ? await getFileResponse.json() : null;
-                    const sha = fileData ? fileData.sha : null;
+                    // Changer le texte du bouton et afficher le bouton de suppression
+                    saveBtn.textContent = 'Mettre à jour';
+                    deleteBtn.style.display = 'block';
                     
-                    // Préparer le contenu encodé en base64
-                    const content = btoa(JSON.stringify(photos, null, 2));
-                    
-                    const requestBody = {
-                        message,
-                        content,
-                        sha: sha || undefined  // Le SHA est nécessaire uniquement si le fichier existe déjà
-                    };
-                    
-                    // Mettre à jour le fichier sur GitHub
-                    const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${path}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${githubToken}`,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/vnd.github.v3+json'
-                        },
-                        body: JSON.stringify(requestBody)
-                    });
-                    
-                    if (response.ok) {
-                        alert('Les modifications ont été enregistrées avec succès sur GitHub!');
-                    } else {
-                        const error = await response.json();
-                        throw new Error(`Erreur GitHub: ${error.message}`);
-                    }
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    alert(`Erreur lors de la sauvegarde automatique: ${error.message}\n\nUn fichier photos.json va être téléchargé, veuillez le placer manuellement dans le dossier "data/" de votre projet.`);
-                    
-                    // Téléchargement de secours
-                    downloadPhotosJson();
+                    // Scroll vers le haut du formulaire
+                    photoForm.scrollIntoView({ behavior: 'smooth' });
                 }
-            };
+            }
             
-            // Fonction auxiliaire pour télécharger le fichier JSON
-            const downloadPhotosJson = () => {
-                // Utiliser JSON.stringify avec null, 2 pour un formatage propre et préserver l'encodage
-                const jsonContent = JSON.stringify(photos, null, 2);
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonContent);
+            // Supprimer une photo
+            function deletePhoto(id) {
+                photos = photos.filter(photo => photo.id != id);
                 
-                const downloadAnchorNode = document.createElement('a');
-                downloadAnchorNode.setAttribute("href", dataStr);
-                downloadAnchorNode.setAttribute("download", "photos.json");
-                
-                const message = 
-                    "Les modifications ont été enregistrées localement dans votre navigateur.\n\n" +
-                    "Pour rendre ces changements permanents :\n" +
-                    "1. Un fichier photos.json va être téléchargé\n" +
-                    "2. Remplacez le fichier existant dans le dossier 'data/' de votre projet\n" +
-                    "3. Validez et poussez les modifications vers votre dépôt GitHub\n\n" +
-                    "Note : Sans ces étapes, les modifications ne seront visibles que sur cet appareil.";
-                
-                alert(message);
-                
-                document.body.appendChild(downloadAnchorNode);
-                downloadAnchorNode.click();
-                downloadAnchorNode.remove();
-            };
+                renderPhotoList();
+                resetForm();
+                savePhotosToFile();
+                showNotification('Photo supprimée avec succès!', 'success');
+            }
             
-            // Gestionnaires d'événements
-            addPhotoBtn.addEventListener('click', () => {
-                addPhotoForm.classList.toggle('hidden');
-            });
-            
-            cancelAddBtn.addEventListener('click', () => {
-                addPhotoForm.classList.add('hidden');
+            // Réinitialiser le formulaire
+            function resetForm() {
                 photoForm.reset();
+                photoId.value = '';
+                saveBtn.textContent = 'Ajouter';
+                deleteBtn.style.display = 'none';
+                imagePreviewContainer.style.display = 'none';
+            }
+            
+            // Gérer l'aperçu de l'image
+            photoImageUrl.addEventListener('blur', () => {
+                if (photoImageUrl.value) {
+                    imagePreview.src = photoImageUrl.value;
+                    imagePreviewContainer.style.display = 'block';
+                } else {
+                    imagePreviewContainer.style.display = 'none';
+                }
             });
             
-            photoForm.addEventListener('submit', addPhoto);
-            saveChangesBtn.addEventListener('click', saveAllChanges);
+            // Gérer le bouton réinitialiser
+            resetBtn.addEventListener('click', resetForm);
             
-            // Charger les photos au démarrage
-            loadPhotos();
+            // Gérer le bouton supprimer
+            deleteBtn.addEventListener('click', () => {
+                if (photoId.value && confirm('Êtes-vous sûr de vouloir supprimer cette photo ?')) {
+                    deletePhoto(photoId.value);
+                }
+            });
+            
+            // Gérer la soumission du formulaire
+            photoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const photo = {
+                    title: photoTitle.value,
+                    description: photoDescription.value,
+                    category: photoCategory.value,
+                    imageUrl: photoImageUrl.value
+                };
+                
+                if (photoId.value) {
+                    // Mise à jour d'une photo existante
+                    photo.id = parseInt(photoId.value);
+                    const index = photos.findIndex(p => p.id == photo.id);
+                    
+                    if (index !== -1) {
+                        photos[index] = photo;
+                        showNotification('Photo mise à jour avec succès!', 'success');
+                    }
+                } else {
+                    // Nouvelle photo
+                    photo.id = photos.length > 0 ? Math.max(...photos.map(p => p.id)) + 1 : 1;
+                    photos.push(photo);
+                    showNotification('Photo ajoutée avec succès!', 'success');
+                }
+                
+                renderPhotoList();
+                resetForm();
+                savePhotosToFile();
+            });
+            
+            // Afficher une notification
+            function showNotification(message, type) {
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Vérifier l'authentification au chargement
+            checkAuth();
         });
     </script>
 </body>

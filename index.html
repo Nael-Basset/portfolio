@@ -5,9 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Créatif | Photographie</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollToPlugin.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -64,20 +61,6 @@
             z-index: 1;
         }
         
-        h1 {
-            opacity: 0;
-            transform: translateY(50px);
-        }
-        
-        .tagline {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        
-        .scroll-down {
-            opacity: 0;
-        }
-        
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% {
                 transform: translateY(0) translateX(-50%);
@@ -121,8 +104,8 @@
         .section-title {
             position: relative;
             display: inline-block;
-            opacity: 0;
-            transform: translateY(30px);
+            font-size: 2.5rem;
+            margin-bottom: 50px;
         }
         
         .section-title::after {
@@ -142,11 +125,11 @@
         }
         
         .gallery-item {
-            transform: translateY(50px);
-            opacity: 0;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            transform: perspective(1000px);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
         .gallery-item:hover {
@@ -158,7 +141,6 @@
             height: 300px;
             object-fit: cover;
             display: block;
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
                     filter 0.4s ease;
         }
@@ -175,8 +157,6 @@
             right: 0;
             background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
             padding: 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
             transform: translateY(80px);
             opacity: 0.8;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -226,8 +206,7 @@
         }
         
         .about-image {
-            opacity: 0;
-            transform: translateX(-50px);
+            flex: 1;
         }
         
         .about-image img {
@@ -239,8 +218,7 @@
         }
         
         .about-text {
-            opacity: 0;
-            transform: translateX(50px);
+            flex: 1;
         }
         
         .about-text h2 {
@@ -337,7 +315,6 @@
             }
         }
 
-        /* Admin button styles */
         .admin-link {
             margin-top: 15px;
         }
@@ -358,76 +335,6 @@
             transform: scale(1.2);
         }
         
-        /* Modal styles */
-        .admin-modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .admin-modal-content {
-            background: #222;
-            border-radius: 8px;
-            padding: 30px;
-            width: 350px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-            position: relative;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            color: #aaa;
-            font-size: 24px;
-            cursor: pointer;
-        }
-        
-        .admin-modal-content h3 {
-            margin-top: 0;
-            color: var(--color-light);
-            margin-bottom: 20px;
-        }
-        
-        #adminForm input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background: #333;
-            border: 1px solid #444;
-            border-radius: 4px;
-            color: white;
-        }
-        
-        #adminForm button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .error-message {
-            color: #ff3366;
-            font-size: 14px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .title span {
-            transform: translateY(50px);
-        }
-
         .loader {
             width: 48px;
             height: 48px;
@@ -449,13 +356,6 @@
             overflow: hidden;
         }
 
-        .gallery-item img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
         .title {
             font-size: 5rem;
             font-weight: 900;
@@ -466,8 +366,8 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
-            display: inline-block; /* Important for proper gradient application */
-            position: relative; /* Ensures proper stacking context */
+            display: inline-block;
+            position: relative;
         }
 
         .tagline {
@@ -481,34 +381,6 @@
             left: 50%;
             transform: translateX(-50%);
             animation: bounce 2s infinite;
-        }
-
-        .gallery-item {
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-10px) scale(1.02);
-            z-index: 2;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 50px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .about-image {
-            flex: 1;
-        }
-
-        .about-text {
-            flex: 1;
         }
     </style>
 </head>
@@ -538,7 +410,39 @@
             <h2 class="section-title">Galerie</h2>
             
             <div class="gallery">
-                <!-- Les éléments de la galerie seront ajoutés ici dynamiquement -->
+                <!-- Example gallery items for visual structure -->
+                <div class="gallery-item">
+                    <span class="category">Nature</span>
+                    <div class="image-container">
+                        <img src="https://picsum.photos/600/400?random=1" alt="Sérénité sauvage">
+                    </div>
+                    <div class="overlay">
+                        <h3>Sérénité sauvage</h3>
+                        <p>La beauté intacte des grands espaces</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <span class="category">Portrait</span>
+                    <div class="image-container">
+                        <img src="https://picsum.photos/600/400?random=2" alt="Regard profond">
+                    </div>
+                    <div class="overlay">
+                        <h3>Regard profond</h3>
+                        <p>L'émotion à l'état pur</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item">
+                    <span class="category">Urbain</span>
+                    <div class="image-container">
+                        <img src="https://picsum.photos/600/400?random=3" alt="Jungle de béton">
+                    </div>
+                    <div class="overlay">
+                        <h3>Jungle de béton</h3>
+                        <p>L'architecture moderne sous un nouveau jour</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -547,7 +451,7 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="/api/placeholder/600/800" alt="Photographe">
+                    <img src="https://picsum.photos/600/800?random=4" alt="Photographe">
                 </div>
                 
                 <div class="about-text">
@@ -584,289 +488,101 @@
             </div>
             
             <p class="copyright">&copy; 2025 | Naël Basset Photographie | Tous droits réservés</p>
-            <div class="admin-link"><button id="adminBtn" aria-label="Admin access">⋮</button></div>
+            <div class="admin-link"><button id="adminBtn" aria-label="Admin access" onclick="window.location.href='admin.html'">⋮</button></div>
         </div>
     </footer>
-    
-    <!-- Admin Login Modal -->
-    <div id="adminModal" class="admin-modal">
-        <div class="admin-modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Accès administrateur</h3>
-            <form id="adminForm">
-                <input type="password" id="adminPassword" placeholder="Mot de passe">
-                <button type="submit">Connexion</button>
-            </form>
-            <p id="passwordError" class="error-message"></p>
-        </div>
-    </div>
-    
-    <!-- Ajouter ce bouton dans le header ou un autre emplacement approprié -->
-
-    <button id="refreshGalleryBtn" class="btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 100; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;" title="Rafraîchir la galerie">
-        <svg width="24" height="24" stroke="white" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-        </svg>
-    </button>
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Configuration de base de GSAP
-        gsap.registerPlugin(ScrollTrigger);
-        
-        gsap.config({ 
-            force3D: true,
-            autoSleep: 60
-        });
-        
-        // Animation des éléments du header
-        gsap.to(".title", {
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: "power3.out",
-            delay: 0.5
-        });
-        
-        gsap.to(".tagline", {
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: "power3.out",
-            delay: 0.7
-        });
-        
-        gsap.to(".scroll-down", {
-            opacity: 1,
-            duration: 1,
-            delay: 1.2
-        });
-        
-        // Animations de défilement pour la galerie
-        gsap.utils.toArray('.section-title').forEach(title => {
-            gsap.to(title, {
-                scrollTrigger: {
-                    trigger: title,
-                    start: "top 80%",
-                    toggleActions: "play none none none"
-                },
-                opacity: 1,
-                y: 0,
-                duration: 0.8
-            });
-        });
-        
-        // Animation des éléments de la galerie
-        function setupGalleryAnimations() {
-            gsap.utils.toArray('.gallery-item').forEach((item, i) => {
-                gsap.to(item, {
-                    scrollTrigger: {
-                        trigger: item,
-                        start: "top 90%"
-                    },
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.6,
-                    delay: i * 0.1
-                });
-            });
-        }
-        
-        // Animation de la section À propos
-        gsap.to(".about-image", {
-            scrollTrigger: {
-                trigger: ".about-section",
-                start: "top 70%"
-            },
-            opacity: 1,
-            x: 0,
-            duration: 1
-        });
-        
-        gsap.to(".about-text", {
-            scrollTrigger: {
-                trigger: ".about-section",
-                start: "top 70%"
-            },
-            opacity: 1,
-            x: 0,
-            duration: 1,
-            delay: 0.3
-        });
-        
-        // Fonctionnalité d'accès admin
-        const adminBtn = document.getElementById('adminBtn');
-        const adminModal = document.getElementById('adminModal');
-        const closeModal = document.querySelector('.close-modal');
-        const adminForm = document.getElementById('adminForm');
-        const passwordError = document.getElementById('passwordError');
-        
-        // Ouvrir la fenêtre modale
-        adminBtn?.addEventListener('click', () => {
-            adminModal.style.display = 'flex';
-        });
-        
-        // Fermer la fenêtre modale
-        closeModal?.addEventListener('click', () => {
-            adminModal.style.display = 'none';
-            passwordError.textContent = '';
-            adminForm.reset();
-        });
-        
-        // Fermer en cliquant à l'extérieur
-        window.addEventListener('click', (e) => {
-            if (e.target === adminModal) {
-                adminModal.style.display = 'none';
-                passwordError.textContent = '';
-                adminForm.reset();
-            }
-        });
-        
-        // Gérer la connexion
-        adminForm?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const password = document.getElementById('adminPassword').value;
-            
-            if (password === 'admin') {
-                window.location.href = 'admin.html';
-            } else {
-                passwordError.textContent = 'Mot de passe incorrect';
-            }
-        });
-        
-        // Charger les photos depuis le fichier JSON
-        async function loadPhotosFromFile() {
-            try {
-                const timestamp = new Date().getTime();
-                const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                
-                let url;
-                if (isLocalDev) {
-                    url = `data/photos.json?t=${timestamp}`;
-                } else {
-                    const repoName = 'portfolio';
-                    const username = 'Nael-Basset';
-                    url = `https://${username}.github.io/${repoName}/data/photos.json?t=${timestamp}`;
-                }
-                
-                console.log(`Tentative de chargement depuis: ${url}`);
-                
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`Impossible de charger les données (statut: ${response.status})`);
-                }
-                
-                const photos = await response.json();
-                console.log(`Photos chargées avec succès: ${photos.length} éléments trouvés`);
-                
-                // Assurez-vous que photos est un tableau
-                if (!Array.isArray(photos)) {
-                    console.error('Les données chargées ne sont pas un tableau:', photos);
-                    throw new Error('Format de données invalide');
-                }
-                
-                localStorage.setItem('portfolioPhotos', JSON.stringify(photos));
-                updateGallery(photos);
-                
-            } catch (error) {
-                console.error('Erreur lors du chargement des photos:', error);
-                
-                // Utiliser des données de secours
-                console.log('Utilisation des données statiques de secours');
-                const fallbackPhotos = [
-                    {
-                        id: 1,
-                        title: "Sérénité sauvage",
-                        description: "La beauté intacte des grands espaces", 
-                        category: "Nature",
-                        imageUrl: "https://picsum.photos/600/400?random=1"
-                    },
-                    {
-                        id: 2,
-                        title: "Regard profond",
-                        description: "L'émotion à l'état pur",
-                        category: "Portrait",
-                        imageUrl: "https://picsum.photos/600/400?random=2"
-                    },
-                    {
-                        id: 3,
-                        title: "Jungle de béton",
-                        description: "L'architecture moderne sous un nouveau jour",
-                        category: "Urbain",
-                        imageUrl: "https://picsum.photos/600/400?random=3"
+        document.addEventListener('DOMContentLoaded', () => {
+            // Charger les photos depuis le fichier JSON
+            async function loadPhotos() {
+                try {
+                    // Ajouter un timestamp pour éviter la mise en cache
+                    const timestamp = new Date().getTime();
+                    const response = await fetch(`data/photos.json?t=${timestamp}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP! statut: ${response.status}`);
                     }
-                ];
-                
-                updateGallery(fallbackPhotos);
+                    
+                    const photos = await response.json();
+                    updateGallery(photos);
+                    
+                } catch (error) {
+                    console.error("Erreur lors du chargement des photos:", error);
+                    
+                    // Fallback en cas d'erreur, utiliser des données statiques
+                    // const fallbackPhotos = [
+                    //     {
+                    //         id: 1,
+                    //         title: "Sérénité sauvage",
+                    //         description: "La beauté intacte des grands espaces", 
+                    //         category: "Nature",
+                    //         imageUrl: "https://picsum.photos/600/400?random=1"
+                    //     },
+                    //     {
+                    //         id: 2,
+                    //         title: "Regard profond",
+                    //         description: "L'émotion à l'état pur",
+                    //         category: "Portrait",
+                    //         imageUrl: "https://picsum.photos/600/400?random=2"
+                    //     },
+                    //     {
+                    //         id: 3,
+                    //         title: "Jungle de béton",
+                    //         description: "L'architecture moderne sous un nouveau jour",
+                    //         category: "Urbain",
+                    //         imageUrl: "https://picsum.photos/600/400?random=3"
+                    //     }
+                    // ];
+                    
+                    updateGallery(fallbackPhotos);
+                }
             }
-        }
-        
-        // Mettre à jour la galerie avec les photos
-        function updateGallery(photos) {
-            const galleryContainer = document.querySelector('.gallery');
             
-            if (!galleryContainer) {
-                console.error("Conteneur de galerie introuvable dans le DOM!");
-                return;
-            }
-            
-            console.log(`Mise à jour de la galerie avec ${photos.length} photos`);
-            galleryContainer.innerHTML = '';
-            
-            photos.forEach((photo, index) => {
-                let imgSrc = photo.imageUrl;
-                // Décoder les caractères spéciaux si nécessaire
-                const title = photo.title ? photo.title : 'Sans titre';
-                const description = photo.description ? photo.description : '';
-                const category = photo.category ? photo.category : 'Sans catégorie';
+            // Mettre à jour la galerie avec les photos
+            function updateGallery(photos) {
+                const galleryContainer = document.querySelector('.gallery');
+                galleryContainer.innerHTML = '';
                 
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item';
-                
-                galleryItem.innerHTML = `
-                    <span class="category">${category}</span>
-                    <div class="image-container">
-                        <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
-                            <div class="loader"></div>
+                photos.forEach((photo, index) => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    
+                    galleryItem.innerHTML = `
+                        <span class="category">${photo.category}</span>
+                        <div class="image-container">
+                            <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
+                                <div class="loader"></div>
+                            </div>
+                            <img src="${photo.imageUrl}" alt="${photo.title}" style="display: none;">
                         </div>
-                        <img src="${imgSrc}" alt="${title}" style="display: none;">
-                    </div>
-                    <div class="overlay">
-                        <h3>${title}</h3>
-                        <p>${description}</p>
-                    </div>
-                `;
-                
-                galleryContainer.appendChild(galleryItem);
-                
-                const img = galleryItem.querySelector('img');
-                const placeholder = galleryItem.querySelector('.image-placeholder');
-                
-                img.onload = function() {
-                    placeholder.style.display = 'none';
-                    img.style.display = 'block';
-                };
-                
-                img.onerror = function() {
-                    console.warn(`Impossible de charger l'image: ${imgSrc}`);
-                    img.src = `https://picsum.photos/600/400?random=${index+1}`;
-                };
-            });
+                        <div class="overlay">
+                            <h3>${photo.title}</h3>
+                            <p>${photo.description}</p>
+                        </div>
+                    `;
+                    
+                    galleryContainer.appendChild(galleryItem);
+                    
+                    const img = galleryItem.querySelector('img');
+                    const placeholder = galleryItem.querySelector('.image-placeholder');
+                    
+                    img.onload = function() {
+                        placeholder.style.display = 'none';
+                        img.style.display = 'block';
+                    };
+                    
+                    img.onerror = function() {
+                        console.error(`Erreur de chargement de l'image: ${photo.imageUrl}`);
+                        img.src = `https://picsum.photos/600/400?random=${index+1}`;
+                    };
+                });
+            }
             
-            // Setup animations for newly added gallery items
-            setupGalleryAnimations();
-        }
-        
-        // Charger les photos au chargement initial
-        loadPhotosFromFile();
-        
-        // Gestionnaire pour le bouton de rafraîchissement
-        document.getElementById('refreshGalleryBtn')?.addEventListener('click', function() {
-            loadPhotosFromFile();
+            // Charger les photos au chargement initial
+            loadPhotos();
         });
-    });
     </script>
 </body>
 </html>

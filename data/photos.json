@@ -1,37 +1,37 @@
 [
   {
     "id": 1,
-    "title": "SÈrÈn",
-    "description": "La beautÈ intacte des grands espaces",
+    "title": "S√©r√©nit√© sauvage",
+    "description": "La beaut√© intacte des grands espaces",
     "category": "Nature",
-    "imageUrl": "data/images/nature1.jpg"
+    "imageUrl": "https://picsum.photos/600/400?random=10"
+  },
+  {
+    "id": 2,
+    "title": "Regard profond",
+    "description": "L'√©motion √† l'√©tat pur",
+    "category": "Portrait",
+    "imageUrl": "https://picsum.photos/600/400?random=11"
   },
   {
     "id": 3,
-    "title": "Jungle de bÈton",
+    "title": "Jungle de b√©ton",
     "description": "L'architecture moderne sous un nouveau jour",
     "category": "Urbain",
-    "imageUrl": "data/images/urban1.jpg"
+    "imageUrl": "https://picsum.photos/600/400?random=12"
   },
   {
     "id": 4,
-    "title": "Horizons lointains",
-    "description": "Aventures et dÈcouvertes au bout du monde",
-    "category": "Voyage",
-    "imageUrl": "data/images/travel1.jpg"
+    "title": "Lumi√®re dor√©e",
+    "description": "La magie des derniers rayons du soleil",
+    "category": "Paysage",
+    "imageUrl": "https://picsum.photos/600/400?random=13"
   },
   {
     "id": 5,
-    "title": "Univers miniature",
-    "description": "Explorer l'infiniment petit",
-    "category": "Macro",
-    "imageUrl": "data/images/macro1.jpg"
-  },
-  {
-    "id": 6,
-    "title": "Visions chromatiques",
-    "description": "Quand la rÈalitÈ devient art",
-    "category": "Abstrait",
-    "imageUrl": "data/images/abstract1.jpg"
+    "title": "Instant fig√©",
+    "description": "Le temps suspendu dans l'objectif",
+    "category": "Action",
+    "imageUrl": "https://picsum.photos/600/400?random=14"
   }
 ]
