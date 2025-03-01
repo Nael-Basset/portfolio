@@ -348,6 +348,7 @@
                             <label for="photoImageSource">Source de l'image</label>
                             <select id="photoImageSource" onchange="toggleImageSourceFields()">
                                 <option value="local">Image locale</option>
+                                <option value="google-drive">Google Drive</option>
                                 <option value="url">URL externe</option>
                             </select>
                         </div>
@@ -358,6 +359,11 @@
                                 <input type="text" id="photoLocalImage" placeholder="exemple.jpg">
                                 <p class="help-text">Placez votre image dans le dossier "images/gallery/" et entrez son nom ici</p>
                             </div>
+                        </div>
+
+                        <div id="googleDriveField" class="form-group" style="display:none;">
+                            <label for="photoDriveUrl">URL Google Drive</label>
+                            <input type="text" id="photoDriveUrl" placeholder="https://drive.google.com/...">
                         </div>
 
                         <div id="urlImageField" class="form-group" style="display:none;">
@@ -598,6 +604,8 @@
                 if (sourceType === 'local') {
                     const filename = document.getElementById('photoLocalImage').value.trim();
                     imageUrl = `images/gallery/${filename}`;
+                } else if (sourceType === 'google-drive') {
+                    imageUrl = document.getElementById('photoDriveUrl').value.trim();
                 } else {
                     imageUrl = document.getElementById('photoImageUrl').value.trim();
                 }
@@ -648,13 +656,20 @@
         function toggleImageSourceFields() {
             const sourceType = document.getElementById('photoImageSource').value;
             const localField = document.getElementById('localImageField');
+            const driveField = document.getElementById('googleDriveField');
             const urlField = document.getElementById('urlImageField');
             
+            // Cacher tous les champs
+            localField.style.display = 'none';
+            driveField.style.display = 'none';
+            urlField.style.display = 'none';
+            
+            // Afficher le champ approprié
             if (sourceType === 'local') {
                 localField.style.display = 'block';
-                urlField.style.display = 'none';
+            } else if (sourceType === 'google-drive') {
+                driveField.style.display = 'block';
             } else {
-                localField.style.display = 'none';
                 urlField.style.display = 'block';
             }
         }

@@ -15,9 +15,35 @@
         <div class="background-circle circle1"></div>
         <div class="background-circle circle2"></div>
         
-        <div class="header-content">
+        <nav class="main-nav">
+            <div class="logo">
+                <span>Naël Basset</span>
+            </div>
+            <div class="portfolio-selector">
+                <div class="selector-container">
+                    <button class="selector-btn active" data-target="photo-portfolio">
+                        <span class="selector-icon">📸</span>
+                        <span class="selector-text">Photographie</span>
+                    </button>
+                    <button class="selector-btn" data-target="physics-portfolio">
+                        <span class="selector-icon">🔬</span>
+                        <span class="selector-text">Mesures Physiques</span>
+                    </button>
+                    <div class="selector-highlight"></div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Contenu spécifique pour la section photo -->
+        <div id="photo-header-content" class="header-content active">
             <h1 class="title">OBJECTIF</h1>
             <p class="tagline">Capturant l'âme du monde à travers mon regard</p>
+        </div>
+        
+        <!-- Contenu spécifique pour la section mesures physiques -->
+        <div id="physics-header-content" class="header-content">
+            <h1 class="title">MESURER L'INVISIBLE</h1>
+            <p class="tagline">Quantifier le monde pour mieux le comprendre</p>
         </div>
         
         <div class="scroll-down">
@@ -29,27 +55,55 @@
         </div>
     </header>
 
-    <nav class="portfolio-nav">
-        <div class="container">
-            <ul class="nav-tabs">
-                <li class="nav-item active" data-target="photo-portfolio">
-                    <span class="nav-icon">📸</span>
-                    Photographie
-                </li>
-                <li class="nav-item" data-target="physics-portfolio">
-                    <span class="nav-icon">🔬</span>
-                    Mesures Physiques
-                </li>
-            </ul>
-        </div>
-    </nav>
-
     <div id="portfolio-sections">
         <section id="photo-portfolio" class="portfolio-section active">
             <!-- Votre contenu de photographie existant reste ici -->
             <section class="gallery-container">
                 <div class="container">
                     <h2 class="section-title">Galerie</h2>
+                    
+                    <div class="gallery-controls">
+                        <button id="filters-toggle" class="filter-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="4" y1="21" x2="4" y2="14"></line>
+                                <line x1="4" y1="10" x2="4" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12" y2="3"></line>
+                                <line x1="20" y1="21" x2="20" y2="16"></line>
+                                <line x1="20" y1="12" x2="20" y2="3"></line>
+                                <line x1="1" y1="14" x2="7" y2="14"></line>
+                                <line x1="9" y1="8" x2="15" y2="8"></line>
+                                <line x1="17" y1="16" x2="23" y2="16"></line>
+                            </svg>
+                            Filtres & Tri
+                        </button>
+                        
+                        <div id="filters-panel" class="filters-panel">
+                            <div class="filter-section">
+                                <h3>Catégories</h3>
+                                <div class="filter-options" id="category-filters">
+                                    <!-- Les options seront générées dynamiquement -->
+                                    <button class="filter-option active" data-category="all">Toutes</button>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-section">
+                                <h3>Trier par</h3>
+                                <div class="filter-options" id="sort-options">
+                                    <button class="filter-option active" data-sort="date-desc">Plus récentes</button>
+                                    <button class="filter-option" data-sort="date-asc">Plus anciennes</button>
+                                    <button class="filter-option" data-sort="name-asc">Nom A-Z</button>
+                                    <button class="filter-option" data-sort="name-desc">Nom Z-A</button>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-actions">
+                                <button id="apply-filters" class="primary-btn">Appliquer</button>
+                                <button id="reset-filters" class="secondary-btn">Réinitialiser</button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="gallery">
                         <!-- Le contenu sera rempli par JavaScript -->
                     </div>
@@ -150,7 +204,7 @@
                                 <p class="timeline-place">IUT de Blois - Université de Tours</p>
                                 <p>Formation axée sur la métrologie, l'instrumentation et les techniques d'analyse physico-chimiques. Développement de compétences en analyse de données et en gestion de projets techniques.</p>
                             </div>
-                            <div class="timeline-date">2023 - 2026</div>
+                            <div class="timeline-date">2024 - 2027</div>
                         </div>
                     </div>
                 </div>
@@ -219,220 +273,9 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Navigation entre les portfolios
-            const navItems = document.querySelectorAll('.nav-item');
-            const portfolioSections = document.querySelectorAll('.portfolio-section');
-
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const target = item.getAttribute('data-target');
-                    
-                    // Mettre à jour les classes actives dans la navigation
-                    navItems.forEach(navItem => navItem.classList.remove('active'));
-                    item.classList.add('active');
-                    
-                    // Afficher la section correspondante
-                    portfolioSections.forEach(section => {
-                        if (section.id === target) {
-                            section.classList.add('active');
-                        } else {
-                            section.classList.remove('active');
-                        }
-                    });
-                });
-            });
-
-            // Animation au défilement pour les éléments du portfolio Mesures Physiques
-            function animateOnScroll() {
-                const elements = document.querySelectorAll('.skill-card, .project-item, .timeline-item');
-                
-                elements.forEach(element => {
-                    const position = element.getBoundingClientRect();
-                    
-                    // Si l'élément est visible dans la fenêtre
-                    if (position.top < window.innerHeight - 100) {
-                        element.style.opacity = '1';
-                        element.style.transform = element.classList.contains('project-item') 
-                            ? 'translateX(0)' 
-                            : 'translateY(0)';
-                    }
-                });
-            }
-
-            // Initialiser les animations
-            document.querySelectorAll('.skill-card, .project-item, .timeline-item').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                
-                if (el.classList.contains('project-item')) {
-                    el.style.transform = 'translateX(-30px)';
-                } else {
-                    el.style.transform = 'translateY(30px)';
-                }
-            });
-
-            // Écouter le défilement pour déclencher les animations
-            window.addEventListener('scroll', animateOnScroll);
-            // Lancer une première fois pour les éléments déjà visibles
-            setTimeout(animateOnScroll, 300);
-
-            // Charger les photos depuis le fichier JSON
-            async function loadPhotos() {
-                try {
-                    // Ajouter un timestamp pour éviter la mise en cache
-                    const timestamp = new Date().getTime();
-                    
-                    // Détecter si nous sommes en local ou sur GitHub Pages
-                    const isGitHubPages = window.location.hostname.includes('github.io');
-                    const baseUrl = isGitHubPages ? '/portfolio' : '';
-                    
-                    const response = await fetch(`${baseUrl}/data/photos.json?t=${timestamp}`);
-                    
-                    if (!response.ok) {
-                        throw new Error(`Erreur HTTP! statut: ${response.status}`);
-                    }
-                    
-                    const photos = await response.json();
-                    updateGallery(photos);
-                    
-                } catch (error) {
-                    console.error("Erreur lors du chargement des photos:", error);
-                    
-                    // Fallback en cas d'erreur, utiliser des données statiques
-                    const fallbackPhotos = [
-                        {
-                            id: 1,
-                            title: "Sérénité sauvage",
-                            description: "La beauté intacte des grands espaces", 
-                            category: "Nature",
-                            imageUrl: "https://picsum.photos/600/400?random=1"
-                        },
-                        {
-                            id: 2,
-                            title: "Regard profond",
-                            description: "L'émotion à l'état pur",
-                            category: "Portrait",
-                            imageUrl: "https://picsum.photos/600/400?random=2"
-                        },
-                        {
-                            id: 3,
-                            title: "Jungle de béton",
-                            description: "L'architecture moderne sous un nouveau jour",
-                            category: "Urbain",
-                            imageUrl: "https://picsum.photos/600/400?random=3"
-                        }
-                    ];
-                    
-                    updateGallery(fallbackPhotos);
-                }
-            }
-            
-            // Mettre à jour la galerie avec les photos
-            function updateGallery(photos) {
-                const galleryContainer = document.querySelector('.gallery');
-                galleryContainer.innerHTML = '';
-                
-                photos.forEach((photo, index) => {
-                    const galleryItem = document.createElement('div');
-                    galleryItem.className = 'gallery-item';
-                    galleryItem.setAttribute('data-id', photo.id);
-                    
-                    // Construire le chemin de l'image avec le préfixe si nécessaire
-                    const isGitHubPages = window.location.hostname.includes('github.io');
-                    const baseUrl = isGitHubPages ? '/portfolio/' : '/';
-                    const imagePath = photo.imageUrl.startsWith('http') 
-                        ? photo.imageUrl 
-                        : `${baseUrl}${photo.imageUrl}`;
-                    
-                    galleryItem.innerHTML = `
-                        <span class="category">${photo.category}</span>
-                        <div class="image-container">
-                            <div class="image-placeholder" style="background-color: #2a2a2a; height: 300px; display: flex; align-items: center; justify-content: center;">
-                                <div class="loader"></div>
-                            </div>
-                            <img src="${imagePath}" alt="${photo.title}" style="display: none;">
-                        </div>
-                        <div class="overlay">
-                            <h3>${photo.title}</h3>
-                            <p>${photo.description}</p>
-                        </div>
-                    `;
-                    
-                    galleryContainer.appendChild(galleryItem);
-                    
-                    const img = galleryItem.querySelector('img');
-                    const placeholder = galleryItem.querySelector('.image-placeholder');
-                    
-                    img.onload = function() {
-                        placeholder.style.display = 'none';
-                        img.style.display = 'block';
-                    };
-                    
-                    img.onerror = function() {
-                        console.error(`Erreur de chargement de l'image: ${imagePath}`);
-                        img.src = `https://picsum.photos/600/400?random=${index+1}`;
-                    };
-                    
-                    // Ajouter un gestionnaire d'événement pour l'ouverture de la lightbox
-                    galleryItem.addEventListener('click', () => {
-                        openLightbox(photo);
-                    });
-                });
-            }
-
-            // Fonction pour ouvrir la lightbox
-            function openLightbox(photo) {
-                const lightbox = document.getElementById('lightbox');
-                const lightboxImage = document.getElementById('lightbox-image');
-                const lightboxTitle = document.getElementById('lightbox-title');
-                const lightboxDescription = document.getElementById('lightbox-description');
-                const lightboxCategory = document.getElementById('lightbox-category');
-                
-                // Définir les informations de la photo
-                const isGitHubPages = window.location.hostname.includes('github.io');
-                const baseUrl = isGitHubPages ? '/portfolio/' : '/';
-                const imagePath = photo.imageUrl.startsWith('http') 
-                    ? photo.imageUrl 
-                    : `${baseUrl}${photo.imageUrl}`;
-                
-                lightboxImage.src = imagePath;
-                lightboxTitle.textContent = photo.title;
-                lightboxDescription.textContent = photo.description;
-                lightboxCategory.textContent = photo.category;
-                
-                // Afficher la lightbox avec une animation
-                lightbox.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Empêcher le défilement du corps
-                
-                // Ajouter un événement de clic pour fermer la lightbox
-                const closeLightbox = document.querySelector('.close-lightbox');
-                closeLightbox.addEventListener('click', () => {
-                    lightbox.style.display = 'none';
-                    document.body.style.overflow = 'auto'; // Réactiver le défilement du corps
-                });
-                
-                // Fermer la lightbox en cliquant à l'extérieur de l'image
-                lightbox.addEventListener('click', (e) => {
-                    if (e.target === lightbox) {
-                        lightbox.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-                
-                // Fermer la lightbox en appuyant sur la touche Échap
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && lightbox.style.display === 'block') {
-                        lightbox.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-            }
-            
-            // Charger les photos au chargement initial
-            loadPhotos();
-        });
-    </script>
+    <!-- Ajoutez cette ligne juste avant Masonry -->
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

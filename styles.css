@@ -50,6 +50,16 @@ header {
 .header-content {
     text-align: center;
     z-index: 1;
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.header-content.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 @keyframes bounce {
@@ -109,80 +119,80 @@ header {
     left: 0;
 }
 
+/* Mettez à jour les styles de la galerie */
+
 .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    grid-gap: 30px;
-}
-
-.gallery-item {
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.gallery-item:hover {
-    transform: perspective(1000px) translateY(-10px) rotateX(2deg);
-}
-
-.gallery-item img {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
-            filter 0.4s ease;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.gallery-item:hover img {
-    transform: scale(1.1);
-    filter: brightness(1.1);
-}
-
-.overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    padding: 20px;
-    transform: translateY(80px);
-    opacity: 0.8;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            opacity 0.4s ease;
-}
-
-.gallery-item:hover .overlay {
+.gallery.loaded {
+    opacity: 1;
     transform: translateY(0);
 }
 
-.overlay h3 {
-    margin: 0 0 10px 0;
-    font-size: 1.5rem;
-    color: #fff;
+.gallery-sizer,
+.gallery-gutter {
+    width: 0;
 }
 
-.overlay p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+.gallery-item {
+    width: calc(33.333% - 20px); /* Exactement 3 colonnes */
+    margin: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #1a1a1a;
+    position: relative;
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    animation-delay: calc(var(--order) * 0.1s);
 }
 
-.category {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: var(--color-primary);
-    color: white;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* S'assurer que les images restent dans leur conteneur */
+.image-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    vertical-align: bottom; /* Éviter l'espace sous l'image */
+}
+
+/* Régler la marge autour de la galerie */
+.gallery-container .container {
+    max-width: 1400px; /* Augmenter la largeur maximale pour avoir plus d'espace */
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .gallery-container .container {
+        padding: 0 15px;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .about-section {
@@ -327,24 +337,16 @@ footer {
 }
 
 .loader {
-    width: 48px;
-    height: 48px;
-    border: 5px solid rgba(255, 51, 102, 0.3);
-    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
     border-top-color: var(--color-primary);
-    animation: spin 1s linear infinite;
+    border-radius: 50%;
+    animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.image-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
+    to { transform: rotate(360deg); }
 }
 
 .title {
@@ -707,4 +709,405 @@ footer {
         margin-left: 50px;
         width: calc(100% - 50px);
     }
+}
+
+/* Styles pour la navigation principale */
+
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    z-index: 100;
+    transition: all 0.4s ease;
+}
+
+.main-nav.scrolled {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 15px 40px;
+}
+
+.logo {
+    font-weight: 700;
+    font-size: 1.6rem;
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.portfolio-selector {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.selector-container {
+    display: flex;
+    position: relative;
+}
+
+.selector-btn {
+    border: none;
+    background: transparent;
+    padding: 10px 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    border-radius: 25px;
+}
+
+.selector-btn.active {
+    color: white;
+}
+
+.selector-icon {
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+.selector-highlight {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+    border-radius: 25px;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 1;
+}
+
+/* Responsive pour la navigation */
+@media (max-width: 768px) {
+    .main-nav {
+        padding: 15px 20px;
+    }
+    
+    .selector-text {
+        display: none;
+    }
+    
+    .selector-btn {
+        padding: 10px 15px;
+    }
+    
+    .selector-icon {
+        margin-right: 0;
+        font-size: 1.3em;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+}
+
+/* Ajouter ces styles pour la date */
+
+.photo-date {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    font-style: italic;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Dans la lightbox */
+.lightbox-description small {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.error-message {
+    text-align: center;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.error-message p {
+    margin-bottom: 15px;
+    color: #ff6b6b;
+}
+
+.error-message button {
+    padding: 10px 20px;
+    background: var(--color-primary);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Restauration/amélioration du style des catégories */
+.category {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--color-primary);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 2;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Vérification du responsive */
+@media (max-width: 1200px) {
+    .gallery-item {
+        width: calc(50% - 20px); /* 2 colonnes sur tablette */
+    }
+}
+
+@media (max-width: 768px) {
+    .gallery-item {
+        width: calc(100% - 20px); /* 1 colonne sur mobile */
+    }
+}
+
+/* Styles pour les filtres et le tri */
+
+.gallery-controls {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    align-self: flex-start;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.filter-btn svg {
+    margin-right: 5px;
+}
+
+.filters-panel {
+    display: none;
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 600px;
+    z-index: 100;
+}
+
+.filters-panel.active {
+    display: block;
+    animation: fadeInDown 0.3s ease forwards;
+}
+
+.filter-section {
+    margin-bottom: 15px;
+}
+
+.filter-section h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-option {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.filter-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-option.active {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    border-color: transparent;
+    color: white;
+    font-weight: 500;
+}
+
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.primary-btn {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Style pour indiquer quand les filtres sont actifs */
+.filter-btn.filtering {
+    background: white;
+    color: var(--color-primary);
+}
+
+.filter-btn.filtering:hover {
+    background: #f0f0f0;
+}
+
+/* Style responsive pour les filtres */
+@media (max-width: 768px) {
+    .filters-panel {
+        padding: 15px;
+    }
+    
+    .filter-options {
+        gap: 6px;
+    }
+    
+    .filter-option {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Style pour l'état vide */
+
+.empty-state {
+    width: 100%;
+    padding: 60px 20px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.empty-state button {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.empty-state button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Ajoutez ce code à votre fichier CSS */
+
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 0;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.loading-indicator .loader {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    border-top-color: var(--color-primary);
+    animation: spin 1s ease infinite;
+    margin-bottom: 15px;
 }
