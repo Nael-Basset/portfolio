@@ -247,16 +247,64 @@ header {
 }
 
 .contact-btn {
-    display: inline-block;
-    background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
     color: white;
-    padding: 12px 30px;
+    border: none;
+    padding: 14px 28px; /* Taille augmentée */
     border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+    font-size: 1rem; /* Taille du texte augmentée */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 25px; /* Espacement augmenté */
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.5px; /* Meilleure lisibilité */
+}
+
+.contact-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.contact-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Effet de brillance au survol */
+.contact-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.contact-btn:hover::before {
+    left: 100%;
+}
+
+/* Style spécifique pour chaque section */
+#about-photo .contact-btn {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+}
+
+#about-physics .contact-btn {
+    background: linear-gradient(45deg, var(--color-accent), #9c4dcc);
 }
 
 .contact-btn:hover {
@@ -1274,4 +1322,482 @@ footer {
     transform: translateY(0);
     position: relative;
     pointer-events: auto;
+}
+
+/* Correction de l'alignement des images dans les sections À propos */
+.about-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 0;
+    padding-bottom: 125%; /* Ratio 4:5 pour un bon rendu */
+}
+
+.about-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+    transition: transform 0.5s ease;
+}
+
+.about-image:hover img {
+    transform: scale(1.05);
+}
+
+/* Styles spécifiques pour les différentes sections */
+#about-photo .about-image {
+    border: 3px solid var(--color-primary);
+}
+
+#about-physics .about-image {
+    border: 3px solid var(--color-accent);
+}
+
+/* Ajustement du layout */
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .about-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-image {
+        padding-bottom: 75%; /* Ratio différent sur mobile */
+        margin-bottom: 20px;
+    }
+}
+
+/* Styles pour la fenêtre modale de contact */
+
+.contact-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.contact-modal.show {
+    opacity: 1;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transform: translateY(30px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.contact-modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.close-modal:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: white;
+    font-size: 1.8rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.modal-content h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    border-radius: 3px;
+}
+
+.contact-info {
+    margin-bottom: 25px;
+}
+
+.contact-method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.contact-method:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.contact-icon {
+    font-size: 24px;
+    margin-right: 15px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-details {
+    flex-grow: 1;
+}
+
+.contact-details h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.contact-details p {
+    margin: 0 0 10px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+}
+
+.copy-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.copy-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.copy-btn.success {
+    background: #4CAF50;
+}
+
+.contact-socials h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.social-icon-btn {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.social-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.social-icon-btn svg {
+    margin-right: 8px;
+}
+
+.contact-message {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Media query pour mobile */
+@media (max-width: 576px) {
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .contact-method {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .contact-icon {
+        margin: 0 0 15px 0;
+    }
+    
+    .social-icons {
+        justify-content: center;
+    }
+}
+
+/* 2. Ajoutez ces styles CSS pour harmoniser l'apparence des boutons */
+
+/* Style amélioré et cohérent pour les boutons de contact */
+.contact-btn {
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.contact-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.contact-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--color-accent), var(--color-primary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.contact-btn:hover::after {
+    opacity: 1;
+}
+
+/* Styles pour la fenêtre modale de contact */
+.contact-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.contact-modal.show {
+    opacity: 1;
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #121212 0%, #1e1e1e 100%);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    transform: translateY(30px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.contact-modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Styles pour les boutons dans la modale */
+.social-icon-btn {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+    border-radius: 30px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: white;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.social-icon-btn:hover {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+    transform: translateY(-2px);
+}
+
+.copy-btn {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.copy-btn:hover {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+    transform: translateY(-2px);
+}
+
+.copy-btn.success {
+    background: linear-gradient(45deg, #43a047, #66bb6a);
+}
+
+/* Ajustements additionnels pour le footer */
+footer {
+    padding: 30px 0;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: 60px;
+}
+
+.copyright {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+/* Styles pour le bouton flottant de navigation */
+.scroll-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--color-primary), var(--color-accent));
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 99;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+}
+
+.scroll-button.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.scroll-button .scroll-down-icon,
+.scroll-button .scroll-up-icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-button .scroll-up-icon {
+    opacity: 0;
+    transform: translateY(5px);
+}
+
+.scroll-button.scrolled .scroll-down-icon {
+    opacity: 0;
+    transform: translateY(-5px);
+}
+
+.scroll-button.scrolled .scroll-up-icon {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .scroll-button {
+        width: 45px;
+        height: 45px;
+        bottom: 20px;
+        right: 20px;
+    }
 }

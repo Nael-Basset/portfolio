@@ -21,6 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialiser le lightbox
     initLightbox();
+
+    // Initialiser la fenêtre modale de contact
+    initContactModal();
+
+    // Initialiser la navigation de défilement
+    initScrollNavigation();
 });
 
 // Fonction pour initialiser les sections "À propos"
@@ -826,4 +832,163 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
+}
+
+// Fonction pour initialiser la fenêtre modale de contact
+function initContactModal() {
+    // Sélectionner les éléments nécessaires
+    const modal = document.getElementById('contact-modal');
+    const photoBtn = document.getElementById('contact-photo-btn');
+    const physicsBtn = document.getElementById('contact-physics-btn');
+    const closeBtn = document.querySelector('.close-modal');
+    const copyEmailBtn = document.getElementById('copy-email');
+    
+    if (!modal) {
+        console.error("Modale de contact non trouvée");
+        return;
+    }
+    
+    // Fonction pour ouvrir la fenêtre modale
+    function openModal() {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // Fonction pour fermer la fenêtre modale
+    function closeModal() {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            if (!modal.classList.contains('show')) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }, 300);
+    }
+    
+    // Ajouter les écouteurs d'événements
+    if (photoBtn) photoBtn.addEventListener('click', openModal);
+    if (physicsBtn) physicsBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    
+    // Fermer la modale en cliquant à l'extérieur
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    
+    // Bouton pour copier l'email
+    if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', () => {
+            const emailText = document.querySelector('.contact-details p').textContent;
+            navigator.clipboard.writeText(emailText)
+                .then(() => {
+                    copyEmailBtn.textContent = 'Copié!';
+                    copyEmailBtn.classList.add('success');
+                    
+                    setTimeout(() => {
+                        copyEmailBtn.textContent = 'Copier';
+                        copyEmailBtn.classList.remove('success');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Erreur lors de la copie: ', err);
+                });
+        });
+    }
+}
+
+// Fonction pour gérer le bouton de défilement et la flèche d'en-tête
+function initScrollNavigation() {
+    // Sélectionner les éléments
+    const scrollButton = document.getElementById('scroll-button');
+    const headerScrollDown = document.querySelector('.scroll-down');
+    
+    // Variables pour le seuil et l'état
+    const scrollThreshold = 300; // seuil en pixels
+    let isScrolled = false;
+    let isBottom = false;
+    
+    // Fonction pour vérifier si on est au bas de la page
+    function isAtBottom() {
+        return window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+    }
+    
+    // Fonction pour faire défiler vers le haut ou le bas
+    function handleScrollButtonClick() {
+        if (isBottom) {
+            // Défiler vers le haut
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        } else {
+            // Défiler vers le bas
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }
+    
+    // Fonction pour gérer la flèche header vers la galerie
+    function handleHeaderScrollDown(e) {
+        e.preventDefault();
+        
+        // Trouver la section galerie active
+        let targetSection;
+        
+        if (document.getElementById('photo-portfolio').classList.contains('active')) {
+            targetSection = document.querySelector('#photo-portfolio .gallery-container');
+        } else {
+            targetSection = document.querySelector('#physics-portfolio .gallery-container');
+        }
+        
+        if (targetSection) {
+            const offsetTop = targetSection.offsetTop;
+            window.scrollTo({
+                top: offsetTop - 80, // 80px de décalage pour la navigation
+                behavior: 'smooth'
+            });
+        }
+    }
+    
+    // Fonction pour mettre à jour l'état et l'apparence du bouton
+    function updateScrollButtonState() {
+        const scrollY = window.scrollY;
+        
+        // Mettre à jour la visibilité
+        if (scrollY > scrollThreshold && !scrollButton.classList.contains('visible')) {
+            scrollButton.classList.add('visible');
+        } else if (scrollY <= scrollThreshold && scrollButton.classList.contains('visible')) {
+            scrollButton.classList.remove('visible');
+        }
+        
+        // Vérifier si on est en bas de page
+        isBottom = isAtBottom();
+        
+        // Mettre à jour l'apparence du bouton
+        if (isBottom && !isScrolled) {
+            scrollButton.classList.add('scrolled');
+            isScrolled = true;
+        } else if (!isBottom && isScrolled) {
+            scrollButton.classList.remove('scrolled');
+            isScrolled = false;
+        }
+    }
+    
+    // Ajouter les écouteurs d'événements
+    if (scrollButton) {
+        scrollButton.addEventListener('click', handleScrollButtonClick);
+        window.addEventListener('scroll', updateScrollButtonState);
+        // Initialiser l'état au chargement
+        updateScrollButtonState();
+    }
+    
+    if (headerScrollDown) {
+        headerScrollDown.addEventListener('click', handleHeaderScrollDown);
+        // Rendre plus évident que c'est cliquable
+        headerScrollDown.style.cursor = 'pointer';
+    }
 }

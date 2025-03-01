@@ -221,11 +221,11 @@
                 </div>
                 
                 <div class="about-text">
-                    <h2>À propos de ma photographie</h2>
+                    <h2>Ma vision photographique</h2>
                     <p>Bonjour, je suis Naël Basset, un photographe passionné basé à Blois. Bien que récemment lancé dans l'aventure professionnelle, je capture des moments authentiques et des émotions pures à travers mon objectif avec un regard neuf et enthousiaste.</p>
                     <p>Ma philosophie photographique repose sur l'authenticité. Que ce soit pour immortaliser des paysages spectaculaires, raconter l'histoire d'une personne à travers un portrait ou documenter un événement important, mon objectif est toujours de créer des images qui évoquent des émotions vraies et racontent une histoire sincère. Je privilégie le naturel aux poses forcées, la lumière réelle aux effets artificiels.</p>
                     <p>Chaque projet est une nouvelle aventure, une opportunité de voir le monde sous un angle différent et de le partager avec vous.</p>
-                    <a href="#" class="contact-btn">Me contacter pour un shooting</a>
+                    <button class="contact-btn" id="contact-photo-btn">Me contacter pour un shooting</button>
                 </div>
             </div>
         </div>
@@ -240,11 +240,11 @@
                 </div>
                 
                 <div class="about-text">
-                    <h2>À propos de mon parcours scientifique</h2>
+                    <h2>Mon parcours scientifique</h2>
                     <p>Je suis Naël Basset, étudiant en BUT Mesures Physiques à l'IUT de Blois. Passionné par la compréhension des phénomènes physiques et leur quantification, je développe des compétences en instrumentation, métrologie et analyse de données.</p>
                     <p>Mon approche des sciences repose sur la rigueur et la curiosité intellectuelle. À travers mes études, je m'intéresse particulièrement à l'application des principes de mesure dans des contextes variés, de l'environnement à l'industrie, en passant par la recherche fondamentale. J'apprécie particulièrement le travail en laboratoire où précision et méthodologie sont essentielles.</p>
                     <p>L'exploration des limites de ce que nous pouvons mesurer, et donc comprendre, est ce qui me motive chaque jour dans mon parcours scientifique.</p>
-                    <a href="#" class="contact-btn">Me contacter pour un projet</a>
+                    <button class="contact-btn" id="contact-physics-btn">Me contacter pour un projet</button>
                 </div>
             </div>
         </div>
@@ -252,26 +252,6 @@
     
     <footer>
         <div class="container">
-            <div class="social-links">
-                <a href="#" class="social-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                    </svg>
-                </a>
-                <a href="#" class="social-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
-                </a>
-                <a href="#" class="social-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                    </svg>
-                </a>
-            </div>
-            
             <p class="copyright">&copy; 2025 | Naël Basset | Tous droits réservés</p>
             <div class="admin-link"><button id="adminBtn" aria-label="Admin access" onclick="window.location.href='admin.html'">⋮</button></div>
         </div>
@@ -292,6 +272,59 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de contact -->
+    <div id="contact-modal" class="contact-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Contactez-moi</h2>
+            
+            <div class="contact-info">
+                <div class="contact-method">
+                    <div class="contact-icon">✉️</div>
+                    <div class="contact-details">
+                        <h3>Email</h3>
+                        <p>nael.basset1@gmail.com</p>
+                        <button id="copy-email" class="copy-btn">Copier</button>
+                    </div>
+                </div>
+                
+                <div class="contact-socials">
+                    <h3>Réseaux sociaux</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="#" class="social-icon-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                            <span>Facebook</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-message">
+                <p>N'hésitez pas à me contacter pour toute demande de shooting photo, projet scientifique ou collaboration.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton flottant pour naviguer en haut/bas de page -->
+    <button id="scroll-button" class="scroll-button" aria-label="Défiler">
+        <svg class="scroll-down-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <svg class="scroll-up-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
 
     <!-- Ajoutez cette ligne juste avant Masonry -->
     <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
