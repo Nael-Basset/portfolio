@@ -9,326 +9,371 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="noise-bg"></div>
-    
-    <header>
-        <div class="background-circle circle1"></div>
-        <div class="background-circle circle2"></div>
-        
-        <nav class="main-nav">
-            <div class="logo">
-                <span>Naël Basset</span>
-            </div>
-            <div class="portfolio-selector">
-                <div class="selector-container">
-                    <button class="selector-btn active" data-target="photo-portfolio">
-                        <span class="selector-icon">📸</span>
-                        <span class="selector-text">Photographie</span>
-                    </button>
-                    <button class="selector-btn" data-target="physics-portfolio">
-                        <span class="selector-icon">🔬</span>
-                        <span class="selector-text">Mesures Physiques</span>
-                    </button>
-                    <div class="selector-highlight"></div>
+    <!-- Page d'accueil / Landing page -->
+    <section id="landing-page" class="active">
+        <div class="landing-container">
+            <div class="landing-content">
+                <h1 class="landing-title">Naël Basset</h1>
+                <p class="landing-subtitle">Portfolio</p>
+                
+                <div class="portfolio-choices">
+                    <div class="choice-card" data-target="photo-portfolio">
+                        <div class="choice-icon">📷</div>
+                        <h2>Photographie</h2>
+                        <p>Découvrez mon univers photographique</p>
+                        <button class="choice-btn">Explorer</button>
+                    </div>
+                    
+                    <div class="choice-card" data-target="physics-portfolio">
+                        <div class="choice-icon">📊</div>
+                        <h2>Mesures Physiques</h2>
+                        <p>Découvrez mon parcours scientifique</p>
+                        <button class="choice-btn">Explorer</button>
+                    </div>
                 </div>
             </div>
-        </nav>
-        
-        <!-- Contenu spécifique pour la section photo -->
-        <div id="photo-header-content" class="header-content active">
-            <h1 class="title">OBJECTIF</h1>
-            <p class="tagline">Capturant l'âme du monde à travers mon regard</p>
+            
+            <div class="landing-footer">
+                <p>&copy; 2025 - Naël Basset</p>
+            </div>
         </div>
-        
-        <!-- Contenu spécifique pour la section mesures physiques -->
-        <div id="physics-header-content" class="header-content">
-            <h1 class="title">MESURER L'INVISIBLE</h1>
-            <p class="tagline">Quantifier le monde pour mieux le comprendre</p>
+    </section>
+    
+    <!-- Ajoutez cette ligne pour indiquer où commence le reste du contenu -->
+    <div id="portfolio-content" class="hidden">
+        <div class="noise-bg"></div>
+    
+        <!-- Structure du fond avec parallaxe -->
+        <div class="parallax-bg">
+            <div class="parallax-layer bg-gradient"></div>
+            <div class="parallax-layer parallax-stars"></div>
+            <div class="parallax-layer bg-particles">
+                <!-- Les cercles colorés qui se déplacent lentement -->
+                <div class="bg-circle"></div>
+                <div class="bg-circle"></div>
+                <div class="bg-circle"></div>
+            </div>
         </div>
-        
-        <div class="scroll-down">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="8 12 12 16 16 12"></polyline>
-                <line x1="12" y1="8" x2="12" y2="16"></line>
-            </svg>
-        </div>
-    </header>
 
-    <div id="portfolio-sections">
-        <section id="photo-portfolio" class="portfolio-section active">
-            <!-- Votre contenu de photographie existant reste ici -->
-            <section class="gallery-container">
-                <div class="container">
-                    <h2 class="section-title">Galerie</h2>
-                    
-                    <div class="gallery-controls">
-                        <button id="filters-toggle" class="filter-btn">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="4" y1="21" x2="4" y2="14"></line>
-                                <line x1="4" y1="10" x2="4" y2="3"></line>
-                                <line x1="12" y1="21" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12" y2="3"></line>
-                                <line x1="20" y1="21" x2="20" y2="16"></line>
-                                <line x1="20" y1="12" x2="20" y2="3"></line>
-                                <line x1="1" y1="14" x2="7" y2="14"></line>
-                                <line x1="9" y1="8" x2="15" y2="8"></line>
-                                <line x1="17" y1="16" x2="23" y2="16"></line>
-                            </svg>
-                            Filtres & Tri
+        <header>
+            <div class="background-circle circle1"></div>
+            <div class="background-circle circle2"></div>
+            
+            <nav class="main-nav">
+                <div class="logo">
+                    <span>Naël Basset</span>
+                </div>
+                <div class="portfolio-selector">
+                    <div class="selector-container">
+                        <button class="selector-btn active" data-target="photo-portfolio">
+                            <span class="selector-icon">📸</span>
+                            <span class="selector-text">Photographie</span>
                         </button>
+                        <button class="selector-btn" data-target="physics-portfolio">
+                            <span class="selector-icon">🔬</span>
+                            <span class="selector-text">Mesures Physiques</span>
+                        </button>
+                        <div class="selector-highlight"></div>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Contenu spécifique pour la section photo -->
+            <div id="photo-header-content" class="header-content active">
+                <h1 class="title">OBJECTIF</h1>
+                <p class="tagline">Capturant l'âme du monde à travers mon regard</p>
+            </div>
+            
+            <!-- Contenu spécifique pour la section mesures physiques -->
+            <div id="physics-header-content" class="header-content">
+                <h1 class="title">MESURER L'INVISIBLE</h1>
+                <p class="tagline">Quantifier le monde pour mieux le comprendre</p>
+            </div>
+            
+            <div class="scroll-down">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="8 12 12 16 16 12"></polyline>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                </svg>
+            </div>
+        </header>
+
+        <div id="portfolio-sections">
+            <section id="photo-portfolio" class="portfolio-section active">
+                <!-- Votre contenu de photographie existant reste ici -->
+                <section class="gallery-container">
+                    <div class="container">
+                        <h2 class="section-title">Galerie</h2>
                         
-                        <div id="filters-panel" class="filters-panel">
-                            <div class="filter-section">
-                                <h3>Catégories</h3>
-                                <div class="filter-options" id="category-filters">
-                                    <!-- Les options seront générées dynamiquement -->
-                                    <button class="filter-option active" data-category="all">Toutes</button>
+                        <div class="gallery-controls">
+                            <button id="filters-toggle" class="filter-btn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                                </svg>
+                                Filtres & Tri
+                            </button>
+                            
+                            <div id="filters-panel" class="filters-panel">
+                                <div class="filter-section">
+                                    <h3>Catégories</h3>
+                                    <div class="filter-options" id="category-filters">
+                                        <!-- Les options seront générées dynamiquement -->
+                                        <button class="filter-option active" data-category="all">Toutes</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-section">
+                                    <h3>Trier par</h3>
+                                    <div class="filter-options" id="sort-options">
+                                        <button class="filter-option active" data-sort="date-desc">Plus récentes</button>
+                                        <button class="filter-option" data-sort="date-asc">Plus anciennes</button>
+                                        <button class="filter-option" data-sort="name-asc">Nom A-Z</button>
+                                        <button class="filter-option" data-sort="name-desc">Nom Z-A</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-actions">
+                                    <button id="apply-filters" class="primary-btn">Appliquer</button>
+                                    <button id="reset-filters" class="secondary-btn">Réinitialiser</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="gallery">
+                            <!-- Le contenu sera rempli par JavaScript -->
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section id="physics-portfolio" class="portfolio-section">
+                <!-- Nouveau contenu pour le portfolio Mesures Physiques -->
+                <section class="skills-container">
+                    <div class="container">
+                        <h2 class="section-title">Compétences techniques</h2>
+                        
+                        <div class="skills-grid">
+                            <div class="skill-card">
+                                <div class="skill-icon">📊</div>
+                                <h3>Analyse de données</h3>
+                                <p>Traitement et interprétation de données expérimentales, statistiques appliquées, logiciels d'analyse (Excel, Python, MATLAB)</p>
+                            </div>
+                            
+                            <div class="skill-card">
+                                <div class="skill-icon">🔧</div>
+                                <h3>Instrumentation</h3>
+                                <p>Utilisation et calibration d'instruments de mesure précis, systèmes d'acquisition, capteurs industriels</p>
+                            </div>
+                            
+                            <div class="skill-card">
+                                <div class="skill-icon">⚗️</div>
+                                <h3>Mesures physico-chimiques</h3>
+                                <p>Analyse chimique, spectroscopie, chromatographie, caractérisation des matériaux</p>
+                            </div>
+                            
+                            <div class="skill-card">
+                                <div class="skill-icon">💻</div>
+                                <h3>Simulation numérique</h3>
+                                <p>Modélisation de phénomènes physiques, résolution numérique d'équations, simulation de systèmes</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="projects-container">
+                    <div class="container">
+                        <h2 class="section-title">Projets académiques</h2>
+                        
+                        <div class="projects-list">
+                            <div class="project-item">
+                                <div class="project-header">
+                                    <h3>Caractérisation d'un nouveau matériau composite</h3>
+                                    <span class="project-tag">Matériaux</span>
+                                </div>
+                                <p>Étude des propriétés mécaniques et thermiques d'un composite innovant à base de fibres naturelles. Développement d'un protocole de test standardisé pour évaluer la résistance et la durabilité.</p>
+                                <div class="project-tools">
+                                    <span>Tests mécaniques</span>
+                                    <span>Analyse thermique</span>
+                                    <span>Microscopie</span>
                                 </div>
                             </div>
                             
-                            <div class="filter-section">
-                                <h3>Trier par</h3>
-                                <div class="filter-options" id="sort-options">
-                                    <button class="filter-option active" data-sort="date-desc">Plus récentes</button>
-                                    <button class="filter-option" data-sort="date-asc">Plus anciennes</button>
-                                    <button class="filter-option" data-sort="name-asc">Nom A-Z</button>
-                                    <button class="filter-option" data-sort="name-desc">Nom Z-A</button>
+                            <div class="project-item">
+                                <div class="project-header">
+                                    <h3>Système automatisé de mesures environnementales</h3>
+                                    <span class="project-tag">Électronique</span>
+                                </div>
+                                <p>Conception et réalisation d'un dispositif autonome de mesure de paramètres environnementaux (température, humidité, qualité de l'air) avec transmission sans fil des données.</p>
+                                <div class="project-tools">
+                                    <span>Arduino</span>
+                                    <span>Capteurs</span>
+                                    <span>IoT</span>
                                 </div>
                             </div>
                             
-                            <div class="filter-actions">
-                                <button id="apply-filters" class="primary-btn">Appliquer</button>
-                                <button id="reset-filters" class="secondary-btn">Réinitialiser</button>
+                            <div class="project-item">
+                                <div class="project-header">
+                                    <h3>Étalonnage d'instruments de précision</h3>
+                                    <span class="project-tag">Métrologie</span>
+                                </div>
+                                <p>Mise en place d'une procédure d'étalonnage pour des instruments de mesure industriels. Analyse des incertitudes et optimisation de la précision des mesures.</p>
+                                <div class="project-tools">
+                                    <span>Calibration</span>
+                                    <span>Normes ISO</span>
+                                    <span>Analyse d'incertitudes</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </section>
+                
+                <section class="education-container">
+                    <div class="container">
+                        <h2 class="section-title">Formation</h2>
+                        
+                        <div class="education-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <h3>BUT Mesures Physiques</h3>
+                                    <p class="timeline-place">IUT de Blois - Université de Tours</p>
+                                    <p>Formation axée sur la métrologie, l'instrumentation et les techniques d'analyse physico-chimiques. Développement de compétences en analyse de données et en gestion de projets techniques.</p>
+                                </div>
+                                <div class="timeline-date">2024 - 2027</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </div>
+        
+        <!-- Section À propos pour la photographie -->
+        <section id="about-photo" class="about-section active">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-image">
+                        <img src="images/about-me.jpg" alt="Photographe" onerror="this.src='https://picsum.photos/600/800?random=4'">
+                    </div>
                     
-                    <div class="gallery">
-                        <!-- Le contenu sera rempli par JavaScript -->
+                    <div class="about-text">
+                        <h2>Ma vision photographique</h2>
+                        <p>Bonjour, je suis Naël Basset, un photographe passionné basé à Blois. Bien que récemment lancé dans l'aventure professionnelle, je capture des moments authentiques et des émotions pures à travers mon objectif avec un regard neuf et enthousiaste.</p>
+                        <p>Ma philosophie photographique repose sur l'authenticité. Que ce soit pour immortaliser des paysages spectaculaires, raconter l'histoire d'une personne à travers un portrait ou documenter un événement important, mon objectif est toujours de créer des images qui évoquent des émotions vraies et racontent une histoire sincère. Je privilégie le naturel aux poses forcées, la lumière réelle aux effets artificiels.</p>
+                        <p>Chaque projet est une nouvelle aventure, une opportunité de voir le monde sous un angle différent et de le partager avec vous.</p>
+                        <button class="contact-btn" id="contact-photo-btn">Me contacter pour un shooting</button>
                     </div>
                 </div>
-            </section>
+            </div>
         </section>
 
-        <section id="physics-portfolio" class="portfolio-section">
-            <!-- Nouveau contenu pour le portfolio Mesures Physiques -->
-            <section class="skills-container">
-                <div class="container">
-                    <h2 class="section-title">Compétences techniques</h2>
+        <!-- Section À propos pour les mesures physiques -->
+        <section id="about-physics" class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-image">
+                        <img src="images/about-physics.jpg" alt="Étudiant en mesures physiques" onerror="this.src='https://picsum.photos/600/800?random=5'">
+                    </div>
                     
-                    <div class="skills-grid">
-                        <div class="skill-card">
-                            <div class="skill-icon">📊</div>
-                            <h3>Analyse de données</h3>
-                            <p>Traitement et interprétation de données expérimentales, statistiques appliquées, logiciels d'analyse (Excel, Python, MATLAB)</p>
-                        </div>
-                        
-                        <div class="skill-card">
-                            <div class="skill-icon">🔧</div>
-                            <h3>Instrumentation</h3>
-                            <p>Utilisation et calibration d'instruments de mesure précis, systèmes d'acquisition, capteurs industriels</p>
-                        </div>
-                        
-                        <div class="skill-card">
-                            <div class="skill-icon">⚗️</div>
-                            <h3>Mesures physico-chimiques</h3>
-                            <p>Analyse chimique, spectroscopie, chromatographie, caractérisation des matériaux</p>
-                        </div>
-                        
-                        <div class="skill-card">
-                            <div class="skill-icon">💻</div>
-                            <h3>Simulation numérique</h3>
-                            <p>Modélisation de phénomènes physiques, résolution numérique d'équations, simulation de systèmes</p>
-                        </div>
+                    <div class="about-text">
+                        <h2>Mon parcours scientifique</h2>
+                        <p>Je suis Naël Basset, étudiant en BUT Mesures Physiques à l'IUT de Blois. Passionné par la compréhension des phénomènes physiques et leur quantification, je développe des compétences en instrumentation, métrologie et analyse de données.</p>
+                        <p>Mon approche des sciences repose sur la rigueur et la curiosité intellectuelle. À travers mes études, je m'intéresse particulièrement à l'application des principes de mesure dans des contextes variés, de l'environnement à l'industrie, en passant par la recherche fondamentale. J'apprécie particulièrement le travail en laboratoire où précision et méthodologie sont essentielles.</p>
+                        <p>L'exploration des limites de ce que nous pouvons mesurer, et donc comprendre, est ce qui me motive chaque jour dans mon parcours scientifique.</p>
+                        <button class="contact-btn" id="contact-physics-btn">Me contacter pour un projet</button>
                     </div>
                 </div>
-            </section>
-            
-            <section class="projects-container">
-                <div class="container">
-                    <h2 class="section-title">Projets académiques</h2>
-                    
-                    <div class="projects-list">
-                        <div class="project-item">
-                            <div class="project-header">
-                                <h3>Caractérisation d'un nouveau matériau composite</h3>
-                                <span class="project-tag">Matériaux</span>
-                            </div>
-                            <p>Étude des propriétés mécaniques et thermiques d'un composite innovant à base de fibres naturelles. Développement d'un protocole de test standardisé pour évaluer la résistance et la durabilité.</p>
-                            <div class="project-tools">
-                                <span>Tests mécaniques</span>
-                                <span>Analyse thermique</span>
-                                <span>Microscopie</span>
-                            </div>
-                        </div>
-                        
-                        <div class="project-item">
-                            <div class="project-header">
-                                <h3>Système automatisé de mesures environnementales</h3>
-                                <span class="project-tag">Électronique</span>
-                            </div>
-                            <p>Conception et réalisation d'un dispositif autonome de mesure de paramètres environnementaux (température, humidité, qualité de l'air) avec transmission sans fil des données.</p>
-                            <div class="project-tools">
-                                <span>Arduino</span>
-                                <span>Capteurs</span>
-                                <span>IoT</span>
-                            </div>
-                        </div>
-                        
-                        <div class="project-item">
-                            <div class="project-header">
-                                <h3>Étalonnage d'instruments de précision</h3>
-                                <span class="project-tag">Métrologie</span>
-                            </div>
-                            <p>Mise en place d'une procédure d'étalonnage pour des instruments de mesure industriels. Analyse des incertitudes et optimisation de la précision des mesures.</p>
-                            <div class="project-tools">
-                                <span>Calibration</span>
-                                <span>Normes ISO</span>
-                                <span>Analyse d'incertitudes</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="education-container">
-                <div class="container">
-                    <h2 class="section-title">Formation</h2>
-                    
-                    <div class="education-timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-content">
-                                <h3>BUT Mesures Physiques</h3>
-                                <p class="timeline-place">IUT de Blois - Université de Tours</p>
-                                <p>Formation axée sur la métrologie, l'instrumentation et les techniques d'analyse physico-chimiques. Développement de compétences en analyse de données et en gestion de projets techniques.</p>
-                            </div>
-                            <div class="timeline-date">2024 - 2027</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            </div>
         </section>
-    </div>
-    
-    <!-- Section À propos pour la photographie -->
-    <section id="about-photo" class="about-section active">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-image">
-                    <img src="images/about-me.jpg" alt="Photographe" onerror="this.src='https://picsum.photos/600/800?random=4'">
+        
+        <footer>
+            <div class="container">
+                <p class="copyright">&copy; 2025 | Naël Basset | Tous droits réservés</p>
+                <div class="admin-link"><button id="adminBtn" aria-label="Admin access" onclick="window.location.href='admin.html'">⋮</button></div>
+            </div>
+        </footer>
+
+        <!-- Lightbox pour afficher les photos en grand -->
+        <div id="lightbox" class="lightbox">
+            <div class="lightbox-content">
+                <span class="close-lightbox">&times;</span>
+                <div class="lightbox-image-container">
+                    <img id="lightbox-image" src="" alt="">
+                    <div class="watermark">Naël Basset © 2025</div>
                 </div>
+                <div class="lightbox-info">
+                    <h3 id="lightbox-title"></h3>
+                    <span id="lightbox-category" class="category"></span>
+                    <small id="lightbox-date"></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de contact -->
+        <div id="contact-modal" class="contact-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Contactez-moi</h2>
                 
-                <div class="about-text">
-                    <h2>Ma vision photographique</h2>
-                    <p>Bonjour, je suis Naël Basset, un photographe passionné basé à Blois. Bien que récemment lancé dans l'aventure professionnelle, je capture des moments authentiques et des émotions pures à travers mon objectif avec un regard neuf et enthousiaste.</p>
-                    <p>Ma philosophie photographique repose sur l'authenticité. Que ce soit pour immortaliser des paysages spectaculaires, raconter l'histoire d'une personne à travers un portrait ou documenter un événement important, mon objectif est toujours de créer des images qui évoquent des émotions vraies et racontent une histoire sincère. Je privilégie le naturel aux poses forcées, la lumière réelle aux effets artificiels.</p>
-                    <p>Chaque projet est une nouvelle aventure, une opportunité de voir le monde sous un angle différent et de le partager avec vous.</p>
-                    <button class="contact-btn" id="contact-photo-btn">Me contacter pour un shooting</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section À propos pour les mesures physiques -->
-    <section id="about-physics" class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-image">
-                    <img src="images/about-physics.jpg" alt="Étudiant en mesures physiques" onerror="this.src='https://picsum.photos/600/800?random=5'">
-                </div>
-                
-                <div class="about-text">
-                    <h2>Mon parcours scientifique</h2>
-                    <p>Je suis Naël Basset, étudiant en BUT Mesures Physiques à l'IUT de Blois. Passionné par la compréhension des phénomènes physiques et leur quantification, je développe des compétences en instrumentation, métrologie et analyse de données.</p>
-                    <p>Mon approche des sciences repose sur la rigueur et la curiosité intellectuelle. À travers mes études, je m'intéresse particulièrement à l'application des principes de mesure dans des contextes variés, de l'environnement à l'industrie, en passant par la recherche fondamentale. J'apprécie particulièrement le travail en laboratoire où précision et méthodologie sont essentielles.</p>
-                    <p>L'exploration des limites de ce que nous pouvons mesurer, et donc comprendre, est ce qui me motive chaque jour dans mon parcours scientifique.</p>
-                    <button class="contact-btn" id="contact-physics-btn">Me contacter pour un projet</button>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <footer>
-        <div class="container">
-            <p class="copyright">&copy; 2025 | Naël Basset | Tous droits réservés</p>
-            <div class="admin-link"><button id="adminBtn" aria-label="Admin access" onclick="window.location.href='admin.html'">⋮</button></div>
-        </div>
-    </footer>
-
-    <!-- Lightbox pour afficher les photos en grand -->
-    <div id="lightbox" class="lightbox">
-        <div class="lightbox-content">
-            <span class="close-lightbox">&times;</span>
-            <div class="lightbox-image-container">
-                <img id="lightbox-image" src="" alt="">
-                <div class="watermark">Naël Basset © 2025</div>
-            </div>
-            <div class="lightbox-info">
-                <h3 id="lightbox-title"></h3>
-                <span id="lightbox-category" class="category"></span>
-                <small id="lightbox-date"></small>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de contact -->
-    <div id="contact-modal" class="contact-modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Contactez-moi</h2>
-            
-            <div class="contact-info">
-                <div class="contact-method">
-                    <div class="contact-icon">✉️</div>
-                    <div class="contact-details">
-                        <h3>Email</h3>
-                        <p>nael.basset1@gmail.com</p>
-                        <button id="copy-email" class="copy-btn">Copier</button>
+                <div class="contact-info">
+                    <div class="contact-method">
+                        <div class="contact-icon">✉️</div>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>nael.basset1@gmail.com</p>
+                            <button id="copy-email" class="copy-btn">Copier</button>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-socials">
+                        <h3>Réseaux sociaux</h3>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                </svg>
+                                <span>Instagram</span>
+                            </a>
+                            <a href="#" class="social-icon-btn">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                </svg>
+                                <span>Facebook</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="contact-socials">
-                    <h3>Réseaux sociaux</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon-btn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                            </svg>
-                            <span>Instagram</span>
-                        </a>
-                        <a href="#" class="social-icon-btn">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                            </svg>
-                            <span>Facebook</span>
-                        </a>
-                    </div>
+                <div class="contact-message">
+                    <p>N'hésitez pas à me contacter pour toute demande de shooting photo, projet scientifique ou collaboration.</p>
                 </div>
             </div>
-            
-            <div class="contact-message">
-                <p>N'hésitez pas à me contacter pour toute demande de shooting photo, projet scientifique ou collaboration.</p>
-            </div>
         </div>
+
+        <!-- Bouton flottant pour naviguer en haut/bas de page -->
+        <button id="scroll-button" class="scroll-button" aria-label="Défiler">
+            <svg class="scroll-down-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+            <svg class="scroll-up-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="18 15 12 9 6 15"></polyline>
+            </svg>
+        </button>
+
+        <!-- Ajoutez cette ligne juste avant Masonry -->
+        <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+        <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+        <script src="js/script.js"></script>
     </div>
-
-    <!-- Bouton flottant pour naviguer en haut/bas de page -->
-    <button id="scroll-button" class="scroll-button" aria-label="Défiler">
-        <svg class="scroll-down-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-        <svg class="scroll-up-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-    </button>
-
-    <!-- Ajoutez cette ligne juste avant Masonry -->
-    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
-    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
-    <script src="js/script.js"></script>
 </body>
 </html>

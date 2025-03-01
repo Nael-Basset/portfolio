@@ -10,23 +10,62 @@ let masonryInstance = null;
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Document chargé, initialisation...");
     
-    // Initialiser les sélecteurs de portfolio
+    // Initialiser la page d'accueil d'abord
+    initLandingPage();
+    
+    // Puis initialiser le reste
     initPortfolioSelector();
-    
-    // Initialiser les sections "À propos"
     initAboutSections();
-    
-    // Charger les photos pour la galerie
     loadPhotos();
-    
-    // Initialiser le lightbox
     initLightbox();
-
-    // Initialiser la fenêtre modale de contact
     initContactModal();
-
-    // Initialiser la navigation de défilement
     initScrollNavigation();
+    initGalleryAnimation();
+});
+
+// Ajouter une classe pour activer les animations parallaxes pendant le scroll
+document.addEventListener('DOMContentLoaded', function() {
+    // Détection de scroll pour l'effet parallaxe
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+            document.documentElement.classList.add('has-scroll');
+        } else {
+            document.documentElement.classList.remove('has-scroll');
+        }
+    });
+    
+    // Créer des particules aléatoires pour le fond
+    const bgParticles = document.querySelector('.bg-particles');
+    if (bgParticles) {
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Position aléatoire
+            const x = Math.random() * 100;
+            const y = Math.random() * 200;
+            
+            // Taille aléatoire
+            const size = Math.random() * 3 + 1;
+            
+            // Opacité aléatoire
+            const opacity = Math.random() * 0.5 + 0.2;
+            
+            // Animation avec délai aléatoire
+            const animationDuration = Math.random() * 10 + 10;
+            const animationDelay = Math.random() * 10;
+            
+            // Appliquer les styles
+            particle.style.left = `${x}%`;
+            particle.style.top = `${y}%`;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.opacity = opacity;
+            particle.style.animation = `float ${animationDuration}s ease-in-out ${animationDelay}s infinite`;
+            
+            bgParticles.appendChild(particle);
+        }
+    }
 });
 
 // Fonction pour initialiser les sections "À propos"
@@ -932,17 +971,19 @@ function initScrollNavigation() {
         }
     }
     
-    // Fonction pour gérer la flèche header vers la galerie
+    // Fonction pour gérer la flèche header vers la première section
     function handleHeaderScrollDown(e) {
         e.preventDefault();
         
-        // Trouver la section galerie active
+        // Trouver la première section selon le portfolio actif
         let targetSection;
         
         if (document.getElementById('photo-portfolio').classList.contains('active')) {
+            // Pour la photographie, aller à la galerie
             targetSection = document.querySelector('#photo-portfolio .gallery-container');
         } else {
-            targetSection = document.querySelector('#physics-portfolio .gallery-container');
+            // Pour les mesures physiques, aller aux compétences techniques (première section)
+            targetSection = document.querySelector('#physics-portfolio .skills-container');
         }
         
         if (targetSection) {
@@ -992,3 +1033,91 @@ function initScrollNavigation() {
         headerScrollDown.style.cursor = 'pointer';
     }
 }
+
+// Fonction pour initialiser la page d'accueil
+function initLandingPage() {
+    console.log("Initialisation de la page d'accueil");
+    
+    // Récupérer les éléments
+    const landingPage = document.getElementById('landing-page');
+    const portfolioContent = document.getElementById('portfolio-content');
+    const choiceCards = document.querySelectorAll('.choice-card');
+    
+    if (!landingPage || !portfolioContent) {
+        console.error("Éléments de la page d'accueil introuvables");
+        return;
+    }
+    
+    // Fonction pour naviguer vers une section du portfolio
+    function navigateToPortfolio(targetId) {
+        console.log(`Navigation vers ${targetId}`);
+        
+        // Masquer la landing page avec animation
+        landingPage.classList.add('hidden');
+        
+        // Afficher le contenu du portfolio
+        portfolioContent.classList.remove('hidden');
+        
+        // Attendre la fin de l'animation avant d'activer la bonne section
+        setTimeout(() => {
+            // Activer le bon bouton dans le sélecteur
+            const targetButton = document.querySelector(`.selector-btn[data-target="${targetId}"]`);
+            if (targetButton) {
+                targetButton.click();
+            } else {
+                console.error(`Bouton pour ${targetId} non trouvé`);
+                
+                // Fallback: activer directement la section
+                document.querySelectorAll('.portfolio-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            }
+        }, 800);
+    }
+    
+    // Ajouter les écouteurs d'événements aux cartes
+    choiceCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const target = this.getAttribute('data-target');
+            navigateToPortfolio(target);
+        });
+        
+        // Ajouter également l'écouteur au bouton à l'intérieur
+        const btn = card.querySelector('.choice-btn');
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // Empêcher le déclenchement de l'événement de la carte
+                const target = card.getAttribute('data-target');
+                navigateToPortfolio(target);
+            });
+        }
+    });
+}
+
+// Fonction pour animer l'apparition des images une fois qu'elles sont chargées
+function initGalleryAnimation() {
+    const gallery = document.querySelector('.gallery');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    if (!gallery) return;
+    
+    // Marquer la galerie comme chargée après un court délai
+    setTimeout(() => {
+        gallery.classList.add('loaded');
+        
+        // Ajouter un délai pour chaque élément
+        galleryItems.forEach((item, index) => {
+            item.style.setProperty('--order', index);
+            setTimeout(() => {
+                item.classList.add('loaded');
+            }, 100 * index);
+        });
+    }, 200);
+}
+
+// Appeler cette fonction après le chargement du DOM
+document.addEventListener('DOMContentLoaded', initGalleryAnimation);
