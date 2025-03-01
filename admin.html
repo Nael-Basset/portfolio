@@ -431,7 +431,12 @@
             async function loadPhotos() {
                 try {
                     const timestamp = new Date().getTime();
-                    const response = await fetch(`data/photos.json?t=${timestamp}`);
+                    
+                    // Détecter si nous sommes en local ou sur GitHub Pages
+                    const isGitHubPages = window.location.hostname.includes('github.io');
+                    const baseUrl = isGitHubPages ? '/portfolio' : '';
+                    
+                    const response = await fetch(`${baseUrl}/data/photos.json?t=${timestamp}`);
                     
                     if (!response.ok) {
                         throw new Error(`Erreur HTTP: ${response.status}`);
@@ -443,32 +448,15 @@
                 } catch (error) {
                     console.error('Erreur lors du chargement des photos:', error);
                     showNotification('Erreur lors du chargement des photos', 'error');
-                    photos = []; // Initialiser avec un tableau vide en cas d'erreur
+                    photos = [];
                 }
             }
             
             // Enregistrer les photos dans le fichier JSON
             async function savePhotosToFile() {
                 try {
-                    const response = await fetch('data/photos.json', {
-                        method: 'PUT', // Note: Dans un environnement réel, vous auriez besoin d'un serveur backend pour cette opération
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(photos),
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Erreur HTTP: ${response.status}`);
-                    }
-                    
-                    showNotification('Photos sauvegardées avec succès!', 'success');
-                    
-                } catch (error) {
-                    console.error('Erreur lors de la sauvegarde des photos:', error);
-                    showNotification('Erreur lors de la sauvegarde des photos. Vérifiez la console pour plus de détails.', 'error');
-                    
-                    // Solution alternative: téléchargement du fichier JSON
+                    // Sur GitHub Pages, l'API de sauvegarde ne fonctionnera pas
+                    // Proposer le téléchargement du fichier JSON
                     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(photos));
                     const downloadAnchorNode = document.createElement('a');
                     downloadAnchorNode.setAttribute("href", dataStr);
@@ -477,7 +465,10 @@
                     downloadAnchorNode.click();
                     downloadAnchorNode.remove();
                     
-                    showNotification('Le fichier photos.json a été téléchargé. Veuillez le placer dans le dossier "data".', 'success');
+                    showNotification('Le fichier photos.json a été téléchargé. Veuillez le mettre à jour dans le dépôt GitHub.', 'success');
+                } catch (error) {
+                    console.error('Erreur lors de la sauvegarde:', error);
+                    showNotification('Une erreur est survenue', 'error');
                 }
             }
             
