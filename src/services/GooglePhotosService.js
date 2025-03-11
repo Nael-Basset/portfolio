@@ -11,17 +11,36 @@ class GooglePhotosService {
   async initialize(credentialsPath, tokenPath) {
     try {
       const credentials = JSON.parse(await fs.readFile(credentialsPath));
-      const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
+      const { client_secret, client_id } = credentials.installed || credentials.web;
       
-      const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+      // Utilisation d'une redirection par défaut si non spécifiée
+      const redirectUri = ((credentials.installed || credentials.web).redirect_uris || [])[0] || 'http://localhost:3000';
+      
+      const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirectUri);
 
       try {
         const token = JSON.parse(await fs.readFile(tokenPath));
         oAuth2Client.setCredentials(token);
         this.auth = oAuth2Client;
-        this.photosClient = google.photoslibrary({ version: 'v1', auth: this.auth });
+        
+        // Configuration correcte pour l'API Google Photos
+        this.photosClient = {
+          albums: {
+            list: async () => {
+              return await this.makeRequest('/v1/albums', 'GET');
+            }
+          },
+          mediaItems: {
+            search: async (options) => {
+              return await this.makeRequest('/v1/mediaItems:search', 'POST', options.requestBody);
+            }
+          }
+        };
+        
         return true;
       } catch (error) {
+        // Si le token n'existe pas ou est invalide, on configure auth pour l'authentification
+        this.auth = oAuth2Client;
         console.error('Token invalide ou inexistant. Veuillez vous authentifier.');
         return false;
       }
@@ -30,8 +49,46 @@ class GooglePhotosService {
       return false;
     }
   }
+  
+  async makeRequest(endpoint, method, data) {
+    try {
+      const baseUrl = 'https://photoslibrary.googleapis.com';
+      const url = baseUrl + endpoint;
+      
+      const headers = {
+        'Authorization': `Bearer ${this.auth.credentials.access_token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      const fetchOptions = {
+        method,
+        headers
+      };
+      
+      if (data) {
+        fetchOptions.body = JSON.stringify(data);
+      }
+      
+      // Utilisation de fetch qui est disponible en Node.js récent
+      // S'assurer que Node.js >= 18 est utilisé
+      const response = await fetch(url, fetchOptions);
+      
+      if (!response.ok) {
+        throw new Error(`Erreur API Google Photos: ${response.status} ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      return { data: result };
+    } catch (error) {
+      console.error('Erreur lors de la requête à l\'API Google Photos:', error);
+      throw error;
+    }
+  }
 
   async getAuthUrl() {
+    if (!this.auth) {
+      throw new Error('OAuth client non initialisé. Appelez initialize() d\'abord.');
+    }
     const SCOPES = ['https://www.googleapis.com/auth/photoslibrary.readonly'];
     return this.auth.generateAuthUrl({
       access_type: 'offline',
@@ -40,10 +97,31 @@ class GooglePhotosService {
   }
 
   async setToken(code, tokenPath) {
-    const { tokens } = await this.auth.getToken(code);
-    this.auth.setCredentials(tokens);
-    await fs.writeFile(tokenPath, JSON.stringify(tokens));
-    this.photosClient = google.photoslibrary({ version: 'v1', auth: this.auth });
+    try {
+      const { tokens } = await this.auth.getToken(code);
+      this.auth.setCredentials(tokens);
+      await fs.writeFile(tokenPath, JSON.stringify(tokens));
+      
+      // Configuration correcte pour l'API Google Photos
+      this.photosClient = {
+        albums: {
+          list: async () => {
+            return await this.makeRequest('/v1/albums', 'GET');
+          }
+        },
+        mediaItems: {
+          search: async (options) => {
+            return await this.makeRequest('/v1/mediaItems:search', 'POST', options.requestBody);
+          }
+        }
+      };
+    } catch (error) {
+      if (error.message.includes('invalid_grant')) {
+        throw new Error('Code d\'autorisation invalide ou expiré. Veuillez obtenir un nouveau code en réessayant l\'authentification.');
+      } else {
+        throw error;
+      }
+    }
   }
 
   async getAlbumId(albumTitle) {
