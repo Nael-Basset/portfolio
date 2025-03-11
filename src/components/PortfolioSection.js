@@ -37,16 +37,22 @@ async function generatePortfolioHTML() {
         photo.date.toLocaleDateString() : 
         new Date().toLocaleDateString();
       
-      // Ajouter des paramètres pour s'assurer que l'image s'affiche correctement
-      // Google Photos nécessite parfois des paramètres pour l'affichage correct
-      const enhancedImageUrl = safeImgUrl.includes('googleusercontent.com') ? 
-        `${safeImgUrl}=w800-h600` : safeImgUrl;
+      // Améliorer le traitement des URLs de Google Photos
+      let enhancedImageUrl = safeImgUrl;
+      if (safeImgUrl.includes('googleusercontent.com')) {
+        // Essayer différents formats d'URL Google Photos
+        // '=d' pour télécharger l'image originale
+        // '=w1024' pour une largeur fixe de 1024px  
+        enhancedImageUrl = `${safeImgUrl}=w1024`;
+      }
+      
+      console.log(`Rendering photo: ${safeTitle} with URL: ${enhancedImageUrl.substring(0, 50)}...`);
       
       return `
         <div class="portfolio-item" data-id="${photo.id || ''}">
           <div class="portfolio-image">
             <img src="${enhancedImageUrl}" alt="${safeTitle}" 
-                onerror="this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Image+non+disponible';">
+                onerror="console.error('Erreur de chargement pour', this.src); this.onerror=null; this.src='https://via.placeholder.com/800x600?text=Image+non+disponible';">
           </div>
           <div class="portfolio-info">
             <h3>${safeTitle}</h3>

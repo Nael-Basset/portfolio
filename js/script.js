@@ -180,7 +180,7 @@ function initLightbox() {
 
 async function loadPhotos() {
     try {
-        console.log("Chargement des photos depuis Google Drive...");
+        console.log("Chargement des photos depuis un fichier local...");
         const galleryContainer = document.querySelector('.gallery');
         
         if (!galleryContainer) {
@@ -196,10 +196,8 @@ async function loadPhotos() {
             </div>
         `;
         
-        // Utiliser votre URL de déploiement Google Apps Script
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbxsfN5yl9SKfHyKgTKS4NxMZWQMVuiz3w3UrvqRSzUIMkvoKo7RePgcSP6q07hDgsD0oQ/exec';
-        
-        const response = await fetch(apiUrl);
+        // Utiliser le fichier JSON statique au lieu de l'API
+        const response = await fetch('/photos.json');
         
         if (!response.ok) {
             throw new Error(`Erreur HTTP! statut: ${response.status}`);
@@ -248,7 +246,7 @@ async function loadPhotos() {
         if (galleryContainer) {
             galleryContainer.innerHTML = `
                 <div class="error-message">
-                    <p>Impossible de charger les photos depuis Google Drive: ${error.message}</p>
+                    <p>Impossible de charger les photos depuis Google Photos: ${error.message}</p>
                     <button onclick="loadPhotos()">Réessayer</button>
                 </div>
             `;
@@ -565,15 +563,10 @@ function updateGallery(photos) {
         
         // Traitement de l'URL de l'image
         let imageSrc = photo.imageUrl;
-        if (imageSrc.includes('drive.google.com')) {
-            try {
-                const fileId = extractFileId(imageSrc);
-                if (fileId) {
-                    console.log(`ID de fichier extrait: ${fileId} pour l'image ${index}`);
-                    imageSrc = `https://lh3.googleusercontent.com/d/${fileId}`;
-                }
-            } catch (e) {
-                console.error("Erreur lors de l'extraction de l'ID:", e);
+        if (imageSrc.includes('googleusercontent.com')) {
+            // Assurer que l'URL a le bon format pour Google Photos
+            if (!imageSrc.includes('=w')) {
+                imageSrc = `${imageSrc}=w1024`;
             }
         }
         
@@ -646,180 +639,6 @@ function updateGallery(photos) {
     });
 }
 
-// Fonction pour extraire l'ID du fichier d'une URL Google Drive
-function extractFileId(url) {
-    if (!url) return null;
-    
-    let fileId = null;
-    
-    // Format: https://drive.google.com/file/d/FILE_ID/view
-    if (url.includes('/file/d/')) {
-        fileId = url.split('/file/d/')[1].split('/')[0];
-    } 
-    // Format: https://drive.google.com/open?id=FILE_ID
-    else if (url.includes('id=')) {
-        fileId = url.split('id=')[1].split('&')[0];
-    }
-    // Format: déjà un lien uc?export=view
-    else if (url.includes('uc?export=view&id=')) {
-        fileId = url.split('id=')[1].split('&')[0];
-    }
-    
-    return fileId;
-}
-
-// Fonction extractFileId améliorée
-function extractFileId(url) {
-    if (!url) return null;
-    
-    let fileId = null;
-    
-    try {
-        // Format: https://drive.google.com/file/d/FILE_ID/view
-        if (url.includes('/file/d/')) {
-            fileId = url.split('/file/d/')[1].split('/')[0];
-        } 
-        // Format: https://drive.google.com/open?id=FILE_ID
-        else if (url.includes('id=')) {
-            fileId = url.split('id=')[1].split('&')[0];
-        }
-        // Format: déjà un lien uc?export=view
-        else if (url.includes('uc?export=view&id=')) {
-            fileId = url.split('id=')[1].split('&')[0];
-        }
-        // Déjà un lien vers lh3.googleusercontent.com
-        else if (url.includes('lh3.googleusercontent.com/d/')) {
-            fileId = url.split('/d/')[1].split('/')[0];
-        }
-    } catch (e) {
-        console.error("Erreur lors de l'extraction de l'ID du fichier:", e);
-    }
-    
-    return fileId;
-}
-
-// Fonction pour mettre à jour la galerie
-function updateGallery(photos) {
-    const galleryContainer = document.querySelector('.gallery');
-    if (!galleryContainer) {
-        console.error("Conteneur de galerie introuvable");
-        return;
-    }
-    
-    // Vider la galerie
-    galleryContainer.innerHTML = '';
-    
-    // Ajouter les éléments pour contrôler la mise en page Masonry
-    const sizer = document.createElement('div');
-    sizer.className = 'gallery-sizer';
-    galleryContainer.appendChild(sizer);
-    
-    const gutter = document.createElement('div');
-    gutter.className = 'gallery-gutter';
-    galleryContainer.appendChild(gutter);
-    
-    if (!photos || photos.length === 0) {
-        galleryContainer.innerHTML = `
-            <div class="empty-state">
-                <p>Aucune photo ne correspond aux filtres sélectionnés</p>
-                <button onclick="document.getElementById('reset-filters').click()">Réinitialiser les filtres</button>
-            </div>
-        `;
-        return;
-    }
-    
-    console.log(`Mise à jour de la galerie avec ${photos.length} photos`);
-    
-    // Créer un fragment de document pour éviter les multiples reflows
-    const fragment = document.createDocumentFragment();
-    
-    // Créer tous les éléments de la galerie
-    photos.forEach((photo, index) => {
-        const galleryItem = document.createElement('div');
-        galleryItem.className = 'gallery-item';
-        galleryItem.setAttribute('data-id', photo.id);
-        
-        if (!photo.imageUrl) {
-            console.error(`Photo #${index} n'a pas d'URL d'image`);
-            return;
-        }
-        
-        const dateInfo = photo.formattedDate ? 
-            `<span class="photo-date">${photo.formattedDate}</span>` : '';
-        
-        // Traitement de l'URL de l'image
-        let imageSrc = photo.imageUrl;
-        if (imageSrc.includes('drive.google.com') && !imageSrc.includes('lh3.googleusercontent.com')) {
-            const fileId = extractFileId(imageSrc);
-            if (fileId) {
-                imageSrc = `https://lh3.googleusercontent.com/d/${fileId}`;
-            }
-        }
-
-        galleryItem.innerHTML = `
-            <span class="category">${photo.category || 'Non classé'}</span>
-            <div class="image-container">
-                <div class="image-placeholder" style="background-color: #2a2a2a; height: 200px; display: flex; align-items: center; justify-content: center;">
-                    <div class="loader"></div>
-                </div>
-                <img src="${imageSrc}" alt="${photo.title || 'Image sans titre'}" style="display: none;">
-            </div>
-            <div class="overlay">
-                <h3>${photo.title || 'Sans titre'}</h3>
-                ${dateInfo}
-            </div>
-        `;
-        
-        galleryItem.style.setProperty('--order', index);
-        fragment.appendChild(galleryItem);
-        
-        // Gérer les événements d'image et la lightbox
-        const img = galleryItem.querySelector('img');
-        const placeholder = galleryItem.querySelector('.image-placeholder');
-        
-        img.onload = function() {
-            placeholder.style.display = 'none';
-            img.style.display = 'block';
-        };
-        
-        img.onerror = function() {
-            console.error(`Erreur de chargement de l'image: ${imageSrc}`);
-            img.src = `https://picsum.photos/600/400?random=${index+1}`;
-        };
-        
-        galleryItem.addEventListener('click', () => {
-            openLightbox(photo);
-        });
-    });
-    
-    // Ajouter tous les éléments d'un coup
-    galleryContainer.appendChild(fragment);
-    
-    // Initialiser Masonry APRÈS le chargement des images
-    imagesLoaded(galleryContainer, function() {
-        console.log('Toutes les images sont chargées!');
-        
-        if (masonryInstance) {
-            masonryInstance.destroy();
-        }
-        
-        masonryInstance = new Masonry(galleryContainer, {
-            itemSelector: '.gallery-item',
-            columnWidth: '.gallery-sizer',
-            gutter: '.gallery-gutter',
-            percentPosition: true,
-            transitionDuration: '0.4s',
-            horizontalOrder: true
-        });
-        
-        // Exécuter layout une seconde fois après un court délai
-        setTimeout(() => {
-            masonryInstance.layout();
-            galleryContainer.classList.add('loaded');
-        }, 100);
-    });
-}
-
 // Fonction pour ouvrir la lightbox
 function openLightbox(photo) {
     const lightbox = document.getElementById('lightbox');
@@ -830,21 +649,18 @@ function openLightbox(photo) {
     
     // Définir les informations de la photo
     let imageSrc = photo.imageUrl;
-    if (imageSrc.includes('drive.google.com') && !imageSrc.includes('lh3.googleusercontent.com')) {
-        const fileId = extractFileId(imageSrc);
-        if (fileId) {
-            imageSrc = `https://lh3.googleusercontent.com/d/${fileId}`;
-        }
+    if (imageSrc.includes('googleusercontent.com') && !imageSrc.includes('=w')) {
+        imageSrc = `${imageSrc}=w1024`;
     }
     
     lightboxImage.src = imageSrc;
-    lightboxTitle.textContent = photo.title || 'Sans titre';
     
-    // Modification: Ne pas afficher la description, uniquement la date si disponible
-    if (photo.formattedDate) {
-        lightboxDescription.innerHTML = `<small>Prise le ${photo.formattedDate}</small>`;
-    } else {
-        lightboxDescription.innerHTML = ''; // Vider la description
+    // Modifier cette section pour éviter l'erreur "lightboxDescription is null"
+    if (lightboxTitle) lightboxTitle.textContent = photo.title || 'Sans titre';
+    
+    // Ajouter cette vérification avant d'accéder à lightboxDescription
+    if (lightboxDescription) {
+        lightboxDescription.textContent = photo.description || '';
     }
     
     lightboxCategory.textContent = photo.category || 'Non classé';

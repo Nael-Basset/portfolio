@@ -9,13 +9,16 @@ const TOKEN_PATH = path.join(__dirname, '../config/token.json');
 class PortfolioPhotoService {
   constructor() {
     this.initialized = false;
-    this.useGooglePhotos = true; // Assurez-vous que cette valeur est à true
+    this.useGooglePhotos = true;
+    this.debug = true; // Activer le débogage
   }
 
   async init() {
     if (this.useGooglePhotos && !this.initialized) {
       try {
+        if (this.debug) console.log("Initialisation de Google Photos...");
         this.initialized = await googlePhotosService.initialize(CREDENTIALS_PATH, TOKEN_PATH);
+        if (this.debug) console.log(`Initialisation: ${this.initialized ? "Réussie" : "Échouée"}`);
         return this.initialized;
       } catch (error) {
         console.error('Erreur d\'initialisation Google Photos:', error);
@@ -36,16 +39,25 @@ class PortfolioPhotoService {
       // Si on utilise Google Photos et qu'on peut s'authentifier
       if (this.useGooglePhotos && await this.init()) {
         try {
-          // Essayons d'abord avec le nom d'album "Portfolio"
-          console.log("Tentative de récupération de l'album 'Portfolio'");
+          if (this.debug) console.log("Tentative de récupération de l'album 'Portfolio'");
           const photos = await googlePhotosService.getAllPhotosFromAlbum("Portfolio");
           
+          if (this.debug) console.log(`Récupération réussie: ${photos.length} photos trouvées`);
+          
+          if (this.debug && photos.length > 0) {
+            console.log("Exemple d'URL d'image:", photos[0].url);
+            console.log("Exemple d'URL de miniature:", photos[0].thumbnailUrl);
+          }
+          
+          // Formater les photos pour le portfolio avec plus d'informations
           return photos.map(photo => ({
             id: photo.id,
             title: photo.title || 'Sans titre',
             description: photo.description || '',
             imageUrl: photo.url,
             thumbnailUrl: photo.thumbnailUrl,
+            // Format d'URL alternatif que vous pourriez tester
+            altImageUrl: `${photo.url}=w1024`,
             date: new Date(photo.createdTime)
           }));
         } catch (albumError) {
@@ -85,6 +97,7 @@ class PortfolioPhotoService {
     }
     
     // Fallback: utiliser les photos statiques
+    if (this.debug) console.log("Utilisation des photos statiques");
     return simplePhotoService.getPortfolioPhotos();
   }
 }
