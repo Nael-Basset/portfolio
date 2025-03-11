@@ -1,6 +1,10 @@
-# Credentials and tokens
+# Credentials and tokens (secrets non cryptés)
 src/config/credentials.json
 src/config/token.json
+
+# Ne pas ignorer les versions cryptées
+# src/config/credentials.encrypted.json
+# src/config/token.encrypted.json
 
 # Node.js
 node_modules/

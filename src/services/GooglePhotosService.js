@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const fs = require('fs').promises;
 const path = require('path');
+const { readAndDecrypt } = require('../utils/secretsManager');
 
 class GooglePhotosService {
   constructor() {
@@ -10,7 +11,22 @@ class GooglePhotosService {
 
   async initialize(credentialsPath, tokenPath) {
     try {
-      const credentials = JSON.parse(await fs.readFile(credentialsPath));
+      // Chemins des fichiers cryptés
+      const encryptedCredsPath = credentialsPath.replace('.json', '.encrypted.json');
+      const encryptedTokenPath = tokenPath.replace('.json', '.encrypted.json');
+      
+      // Tenter de lire le fichier crypté d'abord, sinon essayer le fichier normal
+      let credentials;
+      try {
+        credentials = await readAndDecrypt(encryptedCredsPath);
+        if (!credentials) {
+          console.log('Fichier crypté non trouvé, tentative avec le fichier non crypté');
+          credentials = JSON.parse(await fs.readFile(credentialsPath));
+        }
+      } catch (e) {
+        credentials = JSON.parse(await fs.readFile(credentialsPath));
+      }
+      
       const { client_secret, client_id } = credentials.installed || credentials.web;
       
       // Utilisation d'une redirection par défaut si non spécifiée
@@ -19,7 +35,17 @@ class GooglePhotosService {
       const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirectUri);
 
       try {
-        const token = JSON.parse(await fs.readFile(tokenPath));
+        // Tenter de lire le token crypté d'abord, sinon essayer le fichier normal
+        let token;
+        try {
+          token = await readAndDecrypt(encryptedTokenPath);
+          if (!token) {
+            token = JSON.parse(await fs.readFile(tokenPath));
+          }
+        } catch (e) {
+          token = JSON.parse(await fs.readFile(tokenPath));
+        }
+        
         oAuth2Client.setCredentials(token);
         this.auth = oAuth2Client;
         
@@ -100,7 +126,14 @@ class GooglePhotosService {
     try {
       const { tokens } = await this.auth.getToken(code);
       this.auth.setCredentials(tokens);
+      
+      // Enregistrer le token dans le fichier normal
       await fs.writeFile(tokenPath, JSON.stringify(tokens));
+      
+      // Crypter et enregistrer également le token
+      const encryptedTokenPath = tokenPath.replace('.json', '.encrypted.json');
+      const { encryptAndSave } = require('../utils/secretsManager');
+      await encryptAndSave(tokens, encryptedTokenPath);
       
       // Configuration correcte pour l'API Google Photos
       this.photosClient = {
